@@ -55,3 +55,50 @@ Ovaj dokument sadrži opšte mogućnosti softverskog proizvoda Project1.
 * **Konverzija modela** - Korisniku je omogućena konverzija između različitih tipova modela.
 
 * **Generisanje koda** - Korisniku ima mogućnost generisanja koda direktno na osnovu klasnog modela.
+
+## Ograničenja
+
+### Bezbednost
+
+Unutrašnje komponente alata ne smeju biti čitljive i lako dostupne korisniku.
+
+* Heširanje fajlova na lokalnom skladištu - Svaki fajl koji je generisan od strane Project1-a treba biti heširan pre čuvanja kako bi korisniku onemogućio uvid u unutrašnjost programa.
+
+* Bezbedna autentifikacija - Autentifikacija se treba dešavati na centralnom serveru i treba biti otporna na razne hakerske napada poput SQL injekcije i CSRF.
+
+### Raspoloživost
+
+Alat treba biti spreman za upotrebu u svakom trenutku i ne sme otkazivati.
+
+### Portabilnost
+
+Alat treba da se pokrene i radi bez mana na različitim platformama (MacOS, Windows, Linux, itd.) i u okviru različitih veb pregledača (Google Chrome, Opera, Mozilla Firefox, Safari, itd.) pri čemu treba imati konzistentan raspored UI elemenata i funkcionalnost.
+
+### Lokacizacija
+
+Alat bi trebalo da ima mogućnost lokalizacije.
+
+### GUI
+
+Radno okruženje alata treba da bude predstavljeno kroz grafički korisnički interfejs.
+
+### Događajima upravljani sistem
+
+Sistem treba da reaguje na događaje i okrivu i van granica sistema.
+
+### Interaktivni sistem
+
+Sistem je baziran na velikoj količini interakcija sa korisnikom.
+
+## Dokumentacija
+
+Ovaj odeljak opisuje dokumentaciju koja se mora razviti da bi podržala uspešnu implementaciju i korišćenje softverskog proizvoda Project1.
+
+### Uputstvo za korišćenje
+
+Korisnik ima mogućnost da u svakom trenutku pročita uputstvo kome se pristupa iz samog programa. Uputstvo sadrži detaljan pregled mogućnosti čije je korišćenje objašnjeno korak-po-korak. Uputstvo je stvoreno da pojasni opštu namenu alata, dok se za specifičnu upotrebu preporučuje online pomoć.
+
+### Online pomoć
+
+Online pomoć je namenjena korisnicima kojima uputstvo nije pomoglo ili alat koriste za specifični slučaj. Korisnk ima mogućnost da u svakom trenutku postavi pitanje čiji odgovor se dobija u roku od 24h. Pitanje se postavlja popunjavanjem formulara.
+
