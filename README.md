@@ -142,5 +142,5 @@ Korisnik ima mogućnost da u svakom trenutku pročita uputstvo kome se pristupa 
 
 ### Online pomoć
 
-Online pomoć je namenjena korisnicima kojima uputstvo nije pomoglo ili alat koriste za specifični slučaj. Korisnk ima mogućnost da u svakom trenutku postavi pitanje čiji odgovor se dobija u roku od 24h. Pitanje se postavlja popunjavanjem formulara.
+Online pomoć je namenjena korisnicima kojima uputstvo nije pomoglo ili alat koriste za specifični slučaj. Korisnk ima mogućnost da u svakom trenutku postavi pitanje čiji odgovor se dobija u roku od 24h. Pitanje se postavlja popunjavanjem [formulara](https://www.lazarjelic.com/ecloga/projects/software_admin/help.php).
 
