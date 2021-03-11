@@ -23,3 +23,24 @@ Ovaj arhitektonski šablon je pogodan za struktuiranje distribuiranih softverski
 * Manja tolerancija na kvar
 
 * Testiranje i otklanjanje grešaka
+
+
+### Event-bus pattern
+
+Arhitektura vođena događajima je kompatibilna sa mikrosevisnom arhitekturom. Kao posledica akcije, događaj se kreira i koristi se pri prenošenju poruka svima onima koji ih očekuju. Servisi nisu više povezani, jer u publish-subscribe modelu, pozivalac ne upućuje poziv direktno. Umesto toga, pozvana komponenta reaguje na događaj na eventualno konzistentan način, što znači da sistem ne poštuje ACID princip.
+
+![Event-bus pattern](https://miro.medium.com/max/790/1*DOZ4nVR9zkJm-EnXT3KOGQ.png)
+
+#### Prednosti
+
+* Skalabilnost
+
+* Asinhronost
+
+* Mogućnost oporavka
+
+#### Mane
+
+* Nekonzistentnost
+
+* Povećana kompleksnost
