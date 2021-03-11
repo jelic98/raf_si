@@ -8,16 +8,6 @@ Ovaj dokument upoznaje kupce i korisnike sa softverskim proizvodom Project1.
 
 ### Definicije, akronimi i skraćenice
 
-## Uvod
-
-Ovim dokumentom je prikazana, analizirana i definisana potreba za Project1. Dokument se fokusira se na potrebe zainteresovanih strana i opisuje detalje o tome kako Project1 ispunjava potrebe.
-
-### Svrha
-
-Ovaj dokument upoznaje kupce i korisnike sa softverskim proizvodom Project1.
-
-### Definicije, akronimi i skraćenice
-
 U ovom dokumentu koristimo sledeće akronime i skraćenice:
 
 * **Project1** - Kolaborativni alat za modelovanje softverskih rešenja projektnih timova.
