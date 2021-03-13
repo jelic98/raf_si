@@ -58,15 +58,15 @@ Softverski proizvod Project1 je nezavisan prilikom upotrebe. Tokom korišćenja 
 
 ### Sažetak sposobnosti
 
-Glavne funkcionalnosti programa Project1 podrazumevaju osnovne operacije za modelovanje softverskih rešenja projektnih timova, uključujuci kolaboraciju u realnom vremenu, konverzije izmedju modela i generisanje koda na osnovu modela. U radnom prostoru alata, korisnik može kreirati projekat, i u okviru projekta napraviti novi model. Uz oslonac na ovo rešenje, on može da kreira modele zahteva, funkcionalne modele i klasne dijagrame. Kako bi se ubrzali procesi dizajna i razvoja, alat obezbeđuje podršku za konverziju: modela zahteva u funkcionalni model i klasnog modela u Java kod. Zajednički rad na projektu je obezbeđen kroz praćenje verzija projekata. Svoje verzije modela korisnik komituje u neku bazu ili na server, a saradnici je mogu povući sa servera i spojiti sa svojim verzijama modela. Ovo može da funkcioniše i na drugačiji način, zavisno od izbora arhitekture. Zamisao je da praćenje i sinhronizovanje verzija bude jedna od funkcionalnosti.
+Glavne funkcionalnosti alata Project1 podrazumevaju osnovne operacije za modelovanje softverskih rešenja projektnih timova, uključujuci kolaboraciju u realnom vremenu, konverzije izmedju modela i generisanje koda na osnovu modela. U radnom prostoru alata, korisnik može kreirati projekat, i u okviru projekta napraviti novi model. Uz oslonac na ovo rešenje, on može da kreira modele zahteva, funkcionalne modele i klasne dijagrame. Kako bi se ubrzali procesi dizajna i razvoja, alat obezbeđuje podršku za konverziju: modela zahteva u funkcionalni model i klasnog modela u Java kod. Zajednički rad na projektu je obezbeđen kroz praćenje verzija projekata. Svoje verzije modela korisnik komituje u neku bazu ili na server, a saradnici je mogu povući sa servera i spojiti sa svojim verzijama modela. Ovo može da funkcioniše i na drugačiji način, zavisno od izbora arhitekture. Zamisao je da praćenje i sinhronizovanje verzija bude jedna od funkcionalnosti.
 
 ### Pretpostavke i zavisnosti
 
-Program Project1 se može izvršavati u okviru svih veb pregledača.
+Alat Project1 se može izvršavati u okviru svih veb pregledača.
 
 ### Licenciranje i instalacija
 
-Naši korisnici dobijaju licencu za korišćenje programa Project1, koja važi samo za jednan računar.
+Naši korisnici dobijaju licencu za korišćenje alata Project1, koja važi samo za jednan računar.
 
 ## Кarakteristike
 
@@ -94,7 +94,7 @@ Ovaj dokument sadrži opšte mogućnosti softverskog proizvoda Project1.
 
 Unutrašnje komponente alata ne smeju biti čitljive i lako dostupne korisniku.
 
-* Heširanje fajlova na lokalnom skladištu - Svaki fajl koji je generisan od strane Project1-a treba biti heširan pre čuvanja kako bi korisniku onemogućio uvid u unutrašnjost programa.
+* Heširanje fajlova na lokalnom skladištu - Svaki fajl koji je generisan od strane Project1-a treba biti heširan pre čuvanja kako bi korisniku onemogućio uvid u unutrašnjost alata.
 
 * Bezbedna autentifikacija - Autentifikacija se treba dešavati na centralnom serveru i treba biti otporna na razne hakerske napada poput SQL injekcije i CSRF.
 
@@ -128,7 +128,7 @@ Ovaj odeljak opisuje dokumentaciju koja se mora razviti da bi podržala uspešnu
 
 ### Uputstvo za korišćenje
 
-Korisnik ima mogućnost da u svakom trenutku pročita uputstvo kome se pristupa iz samog programa. Uputstvo sadrži detaljan pregled mogućnosti čije je korišćenje objašnjeno korak-po-korak. Uputstvo je stvoreno da pojasni opštu namenu alata, dok se za specifičnu upotrebu preporučuje online pomoć.
+Korisnik ima mogućnost da u svakom trenutku pročita uputstvo kome se pristupa iz samog alata. Uputstvo sadrži detaljan pregled mogućnosti čije je korišćenje objašnjeno korak-po-korak. Uputstvo je stvoreno da pojasni opštu namenu alata, dok se za specifičnu upotrebu preporučuje online pomoć.
 
 ### Online pomoć
 
