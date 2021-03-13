@@ -44,3 +44,25 @@ Arhitektura vođena događajima je kompatibilna sa mikrosevisnom arhitekturom. K
 * Nekonzistentnost
 
 * Povećana kompleksnost
+
+### Pipe-filter pattern
+
+Ovaj arhitektonski šablon je pogodan za dekompoziciju zadatka koji vrši kompleksno procesiranje na seriju zasebnih elemenata koji se mogu ponovo upotrebiti. Ovo može poboljšati skalabilnost i ponovnu upotrebljivost tako što dozvoljava da elementi zadatka koji vrše procesiranje budu raspoređeni na mašinama i skalirani nezavisno.
+
+![Pipe-filter pattern](https://miro.medium.com/max/875/1*qikehZcDhhl_wWsqeI_nvg.png)
+
+#### Prednosti
+
+* Razumljivost
+
+* Ponovna upotrebljivost
+
+* Konkurentno izvršavanje
+
+#### Mane
+
+* Povećana kompleksnost
+
+* Smanjene performanse
+
+* Nemogućnost interaktivne transformacije
