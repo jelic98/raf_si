@@ -76,7 +76,7 @@ Ovaj dokument sadrži opšte mogućnosti softverskog proizvoda Project1.
 
 * **Import** - Uvoz prethodno sačuvanih modela u radno okruženje.
 
-* **Eksport** - Eksportovanje modela u formatu koje odredi korisnik.
+* **Eksport** - Eksportovanje i čuvanje modela na korisnikovoj mašini.
 
 * **Kloniranje** - Korisniku je omogućeno kloniranje modela u cilju uštede vremena pri kreiranju slicnih, koji zahtevaju minimalne izmene.
 
