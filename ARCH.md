@@ -67,6 +67,8 @@ Ovaj arhitektonski šablon je pogodan za dekompoziciju zadatka koji vrši komple
 
 * Nemogućnost interaktivne transformacije
 
+### Studija slučaja
+
 Za izradu alata Project1 opredeljujemo se za mikroservisnu arhitekturu, tj. Broker pattern. Prednosti ovog pristupa uključuju skalabilnost na nivou servisa, proširivost i ponovnu upotrebljivost tako što interfejsi dopuštaju promene u implementaciji bez potrebe za izmenom klijenta. Sa druge strane, ovaj pristup nije pogodan zato što zahteva dodatni posao održavanja oko međusobnih ugovora i popravke servisa nakon otkaza. Dodatni problem mogu biti performanse kompletnog sistema zato što pojedinačni zahtev mora proći kroz više čvorova u distribuiranoj mreži.
 
 ![Arhitektura alata Project1](https://github.com/racunarski-fakultet/si2021-si-group-deepsea/blob/main/arch.png)
