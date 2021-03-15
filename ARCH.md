@@ -71,4 +71,8 @@ Ovaj arhitektonski šablon je pogodan za dekompoziciju zadatka koji vrši komple
 
 Za izradu alata Project1 opredeljujemo se za mikroservisnu arhitekturu, tj. Broker pattern. Prednosti ovog pristupa uključuju skalabilnost na nivou servisa, proširivost i ponovnu upotrebljivost tako što interfejsi dopuštaju promene u implementaciji bez potrebe za izmenom klijenta. Sa druge strane, ovaj pristup nije pogodan zato što zahteva dodatni posao održavanja oko međusobnih ugovora i popravke servisa nakon otkaza. Dodatni problem mogu biti performanse kompletnog sistema zato što pojedinačni zahtev mora proći kroz više čvorova u distribuiranoj mreži.
 
+Gorenavedeni arhitektonski šablon Event-bus nije adekvatan zato što se njegova upotreba svodi na redundantno korišćenje brokera uz asinhroni način komunikacije između servisa, što znači da će broker u ovom slučaju imati ulogu u jednostavnom prosleđivanju zahteva između servisa. Pipe-filter nije odgovarajuči arhitektonski šablon za ovaj tip problema zato što uslovljava postojanje kompleksnih veza između servisa koji su nezavisni, tj. njihov zajednički radni tok se ne može smestiti u jednotimenzioni niz filtera.
+
+Arhitektura alata Project1 je prikazana na slici u nastavku.
+
 ![Arhitektura alata Project1](https://github.com/racunarski-fakultet/si2021-si-group-deepsea/blob/main/arch.png)
