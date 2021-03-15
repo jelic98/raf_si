@@ -46,7 +46,7 @@ Zbog kompleksnosti alata za modelovanje, kako modernih tako i onih koji su na tr
 
 ### Izjava o rešenju
 
-Rešenje treba da omogući automatizaciju operacija nad modelima softverskih rešenja projektnih timova. Takođe, rešenje ne treba biti vezano za specifični domen, već se treba koristiti u poslovnim sistemima iz različitih domena.
+Rešenje treba da omogući automatizaciju operacija nad modelima softverskih rešenja projektnih timova. Takođe, rešenje ne treba biti vezano za specifični domen, već se treba koristiti u poslovnim sistemima iz različitih domena. Modeli su grupisani u porjekte i nije dozvoljeno kreiranje modela izvan projekta.
 
 ## Pregled
 
