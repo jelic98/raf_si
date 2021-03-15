@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 ## Uvod
 
 Ovim dokumentom je prikazana, analizirana i definisana potreba za Project1. Dokument se fokusira se na potrebe zainteresovanih strana i opisuje detalje o tome kako Project1 ispunjava potrebe.
