@@ -32,8 +32,8 @@ PUT models/{ID} [elements] - Update model
 DELETE models/{ID} [] - Delete model
 GET models/{ID} [] - Fetch model
 
-POST elements [type, model, params] - Create element
-PUT elements/{ID} [params] - Update element
+POST elements [type, model, details] - Create element
+PUT elements/{ID} [details] - Update element
 DELETE elements/{ID} [] - Delete element
 GET elements/{ID} [] - Fetch element
 

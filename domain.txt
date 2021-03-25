@@ -1,0 +1,56 @@
+Database: broker (mysql)
+
+Table: services
+
+id (primary)
+host
+port
+name
+
+Database: log (mysql)
+
+Table: logs
+
+id (primary)
+host
+port
+service
+message
+timestamp
+
+Database: auth (mysql)
+
+Table: users
+
+username (primary)
+password
+roles (many-to-many)
+teams (many-to-many)
+
+Table: teams
+
+name (primary)
+users (many-to-many)
+projects (many-to-many)
+
+Table: projects
+
+name (primary)
+models (many-to-many)
+teams (many-to-many)
+
+Databse: core (mongodb)
+
+Table: models
+
+name (primary)
+project (primary)
+type
+elements (many-to-many)
+
+Table: elements
+
+id (primary)
+type
+model
+details (object)
