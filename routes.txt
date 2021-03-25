@@ -1,0 +1,43 @@
+Service: Broker
+
+POST services [host, port, name] - Register new service
+
+
+Service: Auth
+
+POST users/register [username, password, passwordConfirm] - Register user
+PUT users/{ID} [password, passwordConfirm, passwordOld] - Update user
+DELETE users/{ID} [] - Delete user
+GET users/{ID} [] - Fetch user
+POST users/login [username, password] - Login user
+POST users/logout [] - Logout user
+
+POST teams [name, creator] - Create team
+PUT teams/{ID} [users] - Update team
+DELETE teams/{ID} [] - Delete team
+GET teams/{ID} [] - Fetch team
+
+POST projects [name] - Create project
+PUT projects/{ID} [teams] - Update project
+DELETE projects/{ID} [] - Delete project
+GET projects/{ID} [] - Fetch project
+
+GET auth [method, path] - Fetch authorization
+
+
+Service: Core
+
+POST models [name, project, type] - Create model
+PUT models/{ID} [elements] - Update model
+DELETE models/{ID} [] - Delete model
+GET models/{ID} [] - Fetch model
+
+POST elements [type, model, params] - Create element
+PUT elements/{ID} [params] - Update element
+DELETE elements/{ID} [] - Delete element
+GET elements/{ID} [] - Fetch element
+
+
+Service: Log
+
+POST logs [host, port, service, message] - Create message
