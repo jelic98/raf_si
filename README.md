@@ -1,5 +1,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+# [:floppy_disk: PowerDesigner modeli](https://github.com/racunarski-fakultet/si2021-si-group-deepsea/raw/main/PD.zip)
+
 ## Uvod
 
 Ovim dokumentom je prikazana, analizirana i definisana potreba za Project1. Dokument se fokusira se na potrebe zainteresovanih strana i opisuje detalje o tome kako Project1 ispunjava potrebe.
@@ -60,7 +62,7 @@ Softverski proizvod Project1 je nezavisan prilikom upotrebe. Tokom korišćenja 
 
 ### Sažetak sposobnosti
 
-Glavne funkcionalnosti alata Project1 podrazumevaju osnovne operacije za modelovanje softverskih rešenja projektnih timova, uključujuci kolaboraciju u realnom vremenu, konverzije izmedju modela i generisanje koda na osnovu modela. U radnom prostoru alata, korisnik može kreirati projekat, i u okviru projekta napraviti novi model. Uz oslonac na ovo rešenje, on može da kreira modele zahteva, funkcionalne modele i klasne dijagrame. Kako bi se ubrzali procesi dizajna i razvoja, alat obezbeđuje podršku za konverziju: modela zahteva u funkcionalni model i klasnog modela u Java kod. Zajednički rad na projektu je obezbeđen kroz praćenje verzija projekata. Svoje verzije modela korisnik komituje u neku bazu ili na server, a saradnici je mogu povući sa servera i spojiti sa svojim verzijama modela. Ovo može da funkcioniše i na drugačiji način, zavisno od izbora arhitekture. Zamisao je da praćenje i sinhronizovanje verzija bude jedna od funkcionalnosti.
+Glavne funkcionalnosti alata Project1 podrazumevaju osnovne operacije za modelovanje softverskih rešenja projektnih timova, uključujuci kolaboraciju u realnom vremenu, transformacije izmedju modela i generisanje koda na osnovu modela. U radnom prostoru alata, korisnik može kreirati projekat, i u okviru projekta napraviti novi model. Uz oslonac na ovo rešenje, on može da kreira modele zahteva, funkcionalne modele i klasne dijagrame. Kako bi se ubrzali procesi dizajna i razvoja, alat obezbeđuje podršku za transformaciju: modela zahteva u funkcionalni model i klasnog modela u Java kod. Zajednički rad na projektu je obezbeđen kroz praćenje verzija projekata. Svoje verzije modela korisnik komituje u neku bazu ili na server, a saradnici je mogu povući sa servera i spojiti sa svojim verzijama modela. Ovo može da funkcioniše i na drugačiji način, zavisno od izbora arhitekture. Zamisao je da praćenje i sinhronizovanje verzija bude jedna od funkcionalnosti.
 
 ### Pretpostavke i zavisnosti
 
@@ -86,7 +88,7 @@ Ovaj dokument sadrži opšte mogućnosti softverskog proizvoda Project1.
 
 * **Kolaboracija u realnom vremenu** - Više korisnika ima mogućnost izmene istog modela u realnom vremenu.
 
-* **Konverzija modela** - Korisniku je omogućena konverzija između različitih tipova modela.
+* **Transformacija modela** - Korisniku je omogućena transformacija između različitih tipova modela.
 
 * **Generisanje koda** - Korisniku ima mogućnost generisanja koda direktno na osnovu klasnog modela.
 
