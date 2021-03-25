@@ -24,7 +24,6 @@ Table: users
 
 username (primary)
 password
-roles (many-to-many)
 teams (many-to-many)
 
 Table: teams
@@ -32,12 +31,13 @@ Table: teams
 name (primary)
 users (many-to-many)
 projects (many-to-many)
+roles (many-to-many)
 
 Table: projects
 
 name (primary)
-models (many-to-many)
 teams (many-to-many)
+models (many-to-many)
 
 Databse: core (mongodb)
 
