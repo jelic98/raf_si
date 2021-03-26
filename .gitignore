@@ -1,4 +1,5 @@
 .DS_Store
-token.txt
+.github/
 logs/
 */secret/
+token.txt
