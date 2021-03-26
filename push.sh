@@ -6,6 +6,7 @@ if [ $# -eq 1 ]; then
 	&& git push -u origin HEAD \
 	&& gh pr create -f -a @me -b main --title "Close #$1" \
 	&& gh pr merge -d -s "pr-issue-$1" \
+	&& git pull \
 	&& git status \
 	&& git branch
 else
