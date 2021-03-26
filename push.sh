@@ -5,8 +5,7 @@ if [ $# -eq 1 ]; then
 	gh auth login --with-token < token.txt \
 	&& git push -u origin HEAD \
 	&& gh pr create -f -a @me -b main --title "Close #$1" \
-	&& git checkout main \
-	&& git branch -d "pr-issue-$1" \
+	&& gh pr merge -d -s "pr-issue-$1" \
 	&& git status \
 	&& git branch
 else
