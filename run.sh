@@ -1,11 +1,11 @@
 #!/bin/bash
+readonly PATH_LOG=logs/
+
 readonly BROKER_PORT=9000
 readonly BROKER_DIR=Broker
-readonly BROKER_LOG=log/broker.txt
 
 readonly LOG_PORT=9001
 readonly LOG_DIR=Log
-readonly LOG_LOG=log/log.txt
 
 readonly DATE="date +'%d-%m-%Y %H:%M:%S'"
 
@@ -28,12 +28,15 @@ waitforq() {
 	done
 }
 
+log "Setting up log directory"
+rm -rf "$PATH_LOG" && mkdir "$PATH_LOG"
+
 log "Starting $BROKER_DIR on port $BROKER_PORT"
-nohup php -S localhost:$BROKER_PORT -t $BROKER_DIR > $BROKER_LOG 2>&1 &
+nohup php -S localhost:$BROKER_PORT -t "$BROKER_DIR" > "$PATH_LOG/$BROKER_DIR.txt" 2>&1 &
 BROKER_PID=$(lsof -t -i:$BROKER_PORT)
 
 log "Starting $LOG_DIR on port $LOG_PORT"
-nohup php -S localhost:$LOG_PORT -t $LOG_DIR > $LOG_LOG 2>&1 &
+nohup php -S localhost:$LOG_PORT -t "$LOG_DIR" > "$PATH_LOG/$LOG_DIR.txt" 2>&1 &
 LOG_PID=$(lsof -t -i:$LOG_PORT)
 
 waitforq

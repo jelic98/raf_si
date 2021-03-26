@@ -1,42 +1,39 @@
 Service: Broker
 
 POST services [host, port, name] - Register new service
-
+GET services - Fetch all services
 
 Service: Auth
 
-POST users/register [username, password, passwordConfirm] - Register user
-PUT users/{ID} [password, passwordConfirm, passwordOld] - Update user
-DELETE users/{ID} [] - Delete user
-GET users/{ID} [] - Fetch user
-POST users/login [username, password] - Login user
-POST users/logout [] - Logout user
+POST auth/users/register [username, password, passwordConfirm] - Register user
+PUT auth/users/{ID} [password, passwordConfirm, passwordOld] - Update user
+DELETE auth/users/{ID} [] - Delete user
+GET auth/users/{ID} [] - Fetch user
+POST auth/users/login [username, password] - Login user
+POST auth/users/logout [] - Logout user
+GET auth/auth [method, path] - Fetch user authorization
 
-POST teams [name, creator] - Create team
-PUT teams/{ID} [users] - Update team
-DELETE teams/{ID} [] - Delete team
-GET teams/{ID} [] - Fetch team
+POST auth/teams [name, creator] - Create team
+PUT auth/teams/{ID} [users] - Update team
+DELETE auth/teams/{ID} [] - Delete team
+GET auth/teams/{ID} [] - Fetch team
 
-POST projects [name] - Create project
-PUT projects/{ID} [teams] - Update project
-DELETE projects/{ID} [] - Delete project
-GET projects/{ID} [] - Fetch project
-
-GET auth [method, path] - Fetch authorization
-
+POST auth/projects [name] - Create project
+PUT auth/projects/{ID} [teams] - Update project
+DELETE auth/projects/{ID} [] - Delete project
+GET auth/projects/{ID} [] - Fetch project
 
 Service: Core
 
-POST models [name, project, type] - Create model
-PUT models/{ID} [elements] - Update model
-DELETE models/{ID} [] - Delete model
-GET models/{ID} [] - Fetch model
+POST core/models [name, project, type] - Create model
+PUT core/models/{ID} [elements] - Update model
+DELETE core/models/{ID} [] - Delete model
+GET core/models/{ID} [] - Fetch model
 
-POST elements [type, model, details] - Create element
-PUT elements/{ID} [details] - Update element
-DELETE elements/{ID} [] - Delete element
-GET elements/{ID} [] - Fetch element
-
+POST core/elements [type, model, details] - Create element
+PUT core/elements/{ID} [details] - Update element
+DELETE core/elements/{ID} [] - Delete element
+GET core/elements/{ID} [] - Fetch element
 
 Service: Log
 
