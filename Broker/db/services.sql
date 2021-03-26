@@ -12,3 +12,4 @@ CREATE TABLE `services` (
 ALTER TABLE `services`
   ADD PRIMARY KEY (`name`);
 COMMIT;
+
