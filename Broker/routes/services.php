@@ -16,16 +16,10 @@
 
 			break;
 		case 'GET':
-			$services = [];
-			
 			$cmd = "SELECT * FROM `services`;";
 			$result = query_mysql($cmd);
 
-			while($row = mysqli_fetch_assoc($result)) {
-				$services[] = $row;
-			}
-
-			echo(json_encode($services));
+			echo(json_mysql($result));
 
 			break;
 		default:

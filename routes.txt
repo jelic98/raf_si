@@ -1,7 +1,12 @@
 Service: Broker
 
 POST services [host, port, name] - Register new service
-GET services - Fetch all services
+GET services [] - Fetch all services
+
+Service: Log
+
+POST log/logs [host, port, service, message] - Create new log
+GET log/logs [] - Fetch all logs
 
 Service: Auth
 
@@ -34,7 +39,3 @@ POST core/elements [type, model, details] - Create element
 PUT core/elements/{ID} [details] - Update element
 DELETE core/elements/{ID} [] - Delete element
 GET core/elements/{ID} [] - Fetch element
-
-Service: Log
-
-POST logs [host, port, service, message] - Create message

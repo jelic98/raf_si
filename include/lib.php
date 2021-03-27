@@ -75,4 +75,14 @@
 
 		return $result ? $result : error_msg(500, mysqli_error($connect));
 	}
+
+	function json_mysql($result) {
+		$json = [];
+		
+		while($row = mysqli_fetch_assoc($result)) {
+			$json[] = $row;
+		}
+
+		return json_encode($json);
+	}
 ?>
