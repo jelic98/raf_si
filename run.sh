@@ -7,6 +7,9 @@ readonly BROKER_DIR=Broker
 readonly LOG_PORT=9001
 readonly LOG_DIR=Log
 
+readonly CLIENT_PORT=9004
+readonly CLIENT_DIR=Client
+
 readonly DATE="date +'%d-%m-%Y %H:%M:%S'"
 
 log() {
@@ -39,7 +42,14 @@ log "Starting $LOG_DIR on port $LOG_PORT"
 nohup php -S 127.0.0.1:$LOG_PORT -t "$LOG_DIR" > "$PATH_LOG/$LOG_DIR.txt" 2>&1 &
 LOG_PID=$(lsof -t -i:$LOG_PORT)
 
+log "Starting $CLIENT_DIR on port $CLIENT_PORT"
+ng serve --port $CLIENT_PORT
+CLIENT_PID=$(lsof -t -i:$CLIENT_PORT)
+
 waitforq
+
+log "Stopping $CLIENT_DIR (PID $CLIENT_PID) on port $CLIENT_PORT"
+kill -9 $CLIENT_PID
 
 log "Stopping $LOG_DIR (PID $LOG_PID) on port $LOG_PORT"
 kill -9 $LOG_PID
