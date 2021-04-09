@@ -2,6 +2,8 @@
 	require('./secret/db.php');
 	require('../include/autoload.php');
 	
+	$SERVICE = 'Broker';
+	
 	clean_request();
 
 	$route = get_route();

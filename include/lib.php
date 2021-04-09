@@ -8,10 +8,14 @@
 		}
 	}
 
-	function check_request($params) {
+	function check_request($params, $path, $method) {
+		global $SERVICE;
+
+		$schema = file_get_contents('../' . $SERVICE . '/schema/' . $path . '_' . $method . '.json');
+		
 		foreach($params as $p) {
 			if(!isset($_REQUEST[$p])) {
-				error(400);
+				error(400, $schema);
 			}
 		}
 	}
@@ -48,7 +52,7 @@
 		return $path;
 	}
 
-	function error_msg($code, $message) {
+	function error_msg($code, $message, $schema=NULL) {
 		$messages = [
 			400 => 'Bad Request',
 			404 => 'Not Found',
@@ -60,12 +64,16 @@
 		$response['code'] = $code;
 		$response['message'] = is_null($message) ? $messages[$code] : $message;
 
+		if($code == 400 && !is_null($schema)) {
+			$response['schema'] = json_decode($schema);
+		}
+
 		http_response_code($code);
 		die(json_encode($response));
 	}
 
-	function error($code) {
-		error_msg($code, NULL);
+	function error($code, $schema=NULL) {
+		error_msg($code, NULL, $schema);
 	}
 
 	function query_mysql($cmd) {
