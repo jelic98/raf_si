@@ -30,9 +30,9 @@ GET auth/projects/{ID} [] - Fetch project
 Service: Core
 
 POST core/models [name, project, type] - Create model
-PUT core/models/{ID} [elements] - Update model
-DELETE core/models/{ID} [] - Delete model
-GET core/models/{ID} [] - Fetch model
+PUT core/models/{modelName}/{projectName} [elements] - Update model
+DELETE core/models/{modelName}/{projectName} [] - Delete model
+GET core/models/{modelName}/{projectName} [] - Fetch model
 
 POST core/elements [type, model, details] - Create element
 PUT core/elements/{ID} [details] - Update element
