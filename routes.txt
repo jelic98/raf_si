@@ -16,7 +16,6 @@ DELETE auth/users/{ID} [] - Delete user
 GET auth/users/{ID} [] - Fetch user
 POST auth/users/login [username, password] - Login user
 POST auth/users/logout [] - Logout user
-GET auth/auth [method, path] - Fetch user authorization
 
 POST auth/teams [name, creator] - Create team
 PUT auth/teams/{ID} [users] - Update team

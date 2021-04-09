@@ -9,4 +9,6 @@
 		
 	require($DIR . '/db.php');
 	require($DIR . '/lib.php');
+
+	$SERVICE = NULL;
 ?>

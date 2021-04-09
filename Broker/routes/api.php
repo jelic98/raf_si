@@ -24,5 +24,8 @@
 	]);
 
 	curl_exec($curl);
+
+	http_response_code(curl_getinfo($curl, CURLINFO_HTTP_CODE));
+
 	curl_close($curl);
 ?>

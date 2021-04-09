@@ -1,7 +1,7 @@
 <?php
 	switch($_SERVER['REQUEST_METHOD']) {
 		case 'POST':
-			check_request(['name', 'host', 'port']);
+			check_request(['name', 'host', 'port'], 'services', 'post');
 
 			$name = $_REQUEST['name'];
 			$host = $_REQUEST['host'];
