@@ -3,3 +3,5 @@
 logs/
 */secret/
 token.txt
+mvnw.cmd
+mvnw
