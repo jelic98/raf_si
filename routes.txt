@@ -10,31 +10,35 @@ GET log/logs [] - Fetch all logs
 
 Service: Auth
 
-POST auth/users/register [email, username, password, role] - Register user
-PUT auth/users/{ID} [email, username, password, passwordOld] - Update user
-DELETE auth/users/{ID} [] - Delete user
-GET auth/users/{ID} [] - Fetch user
+POST auth/users [email, username, password, role] - Register user
+PUT auth/users [user, email, username, password, passwordOld] - Update user
+DELETE auth/users [user] - Delete user
+GET auth/users [user] - Fetch user
 POST auth/users/login [username, password] - Login user
 POST auth/users/logout [] - Logout user
 
-POST auth/teams [name, creator] - Create team
-PUT auth/teams/{ID} [users] - Update team
-DELETE auth/teams/{ID} [] - Delete team
-GET auth/teams/{ID} [] - Fetch team
+POST auth/teams [name] - Create team
+PUT auth/teams [team, users] - Update team
+DELETE auth/teams [team] - Delete team
+GET auth/teams [team] - Fetch team
+GET auth/teams [] - Fetch teams
 
 POST auth/projects [name] - Create project
-PUT auth/projects/{ID} [teams] - Update project
-DELETE auth/projects/{ID} [] - Delete project
-GET auth/projects/{ID} [] - Fetch project
+PUT auth/projects [project, teams] - Update project
+DELETE auth/projects [project] - Delete project
+GET auth/projects [project] - Fetch project
+GET auth/projects/all [] - Fetch projects
 
 Service: Core
 
 POST core/models [name, project, type] - Create model
-PUT core/models/{modelName}/{projectName} [elements] - Update model
-DELETE core/models/{modelName}/{projectName} [] - Delete model
-GET core/models/{modelName}/{projectName} [] - Fetch model
+PUT core/models [project, model, elements] - Update model
+DELETE core/models [project, model] - Delete model
+GET core/models [project, model] - Fetch model
+GET core/models/all [project] - Fetch models
 
 POST core/elements [type, model, details] - Create element
-PUT core/elements/{ID} [details] - Update element
-DELETE core/elements/{ID} [] - Delete element
-GET core/elements/{ID} [] - Fetch element
+PUT core/elements [element, details] - Update element
+DELETE core/elements [element] - Delete element
+GET core/elements [element] - Fetch element
+GET core/models/all [model] - Fetch elements
