@@ -7,6 +7,12 @@ readonly BROKER_DIR=Broker
 readonly LOG_PORT=9001
 readonly LOG_DIR=Log
 
+readonly AUTH_PORT=9002
+readonly AUTH_DIR=Auth
+
+readonly CORE_PORT=9003
+readonly CORE_DIR=Core
+
 readonly CLIENT_PORT=9004
 readonly CLIENT_DIR=Client
 
@@ -42,14 +48,28 @@ log "Starting $LOG_DIR on port $LOG_PORT"
 nohup php -S 127.0.0.1:$LOG_PORT -t "$LOG_DIR" > "$PATH_LOG/$LOG_DIR.txt" 2>&1 &
 LOG_PID=$(lsof -t -i:$LOG_PORT)
 
+log "Starting $AUTH_DIR on port $AUTH_PORT"
+nohup mvn -f "$AUTH_DIR/pom.xml" spring-boot:run > "$PATH_LOG/$AUTH_DIR.txt" 2>&1 &
+AUTH_PID=$(lsof -t -i:$AUTH_PORT)
+
+log "Starting $CORE_DIR on port $CORE_PORT"
+nohup mvn -f "$CORE_DIR/pom.xml" spring-boot:run > "$PATH_LOG/$CORE_DIR.txt" 2>&1 &
+CORE_PID=$(lsof -t -i:$CORE_PORT)
+
 log "Starting $CLIENT_DIR on port $CLIENT_PORT"
-ng serve --port $CLIENT_PORT
+nohup ng serve --port $CLIENT_PORT > "$PATH_LOG/$CLIENT_DIR.txt" 2>&1 &
 CLIENT_PID=$(lsof -t -i:$CLIENT_PORT)
 
 waitforq
 
 log "Stopping $CLIENT_DIR (PID $CLIENT_PID) on port $CLIENT_PORT"
 kill -9 $CLIENT_PID
+
+log "Stopping $CORE_DIR (PID $CORE_PID) on port $CORE_PORT"
+kill -9 $CORE_PID
+
+log "Stopping $AUTH_DIR (PID $AUTH_PID) on port $AUTH_PORT"
+kill -9 $AUTH_PID
 
 log "Stopping $LOG_DIR (PID $LOG_PID) on port $LOG_PORT"
 kill -9 $LOG_PID

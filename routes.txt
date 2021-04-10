@@ -10,7 +10,7 @@ GET log/logs [] - Fetch all logs
 
 Service: Auth
 
-POST auth/users/register [email, username, password] - Register user
+POST auth/users/register [email, username, password, role] - Register user
 PUT auth/users/{ID} [email, username, password, passwordOld] - Update user
 DELETE auth/users/{ID} [] - Delete user
 GET auth/users/{ID} [] - Fetch user
