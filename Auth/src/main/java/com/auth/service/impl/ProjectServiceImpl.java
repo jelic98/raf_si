@@ -9,6 +9,7 @@ import com.auth.domain.dto.ProjectResDto;
 import com.auth.domain.dto.TeamResDto;
 import com.auth.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

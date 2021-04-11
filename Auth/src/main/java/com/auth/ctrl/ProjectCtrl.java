@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/projects")
 @RequiredArgsConstructor
@@ -25,6 +27,17 @@ public class ProjectCtrl {
 
     @Autowired
     private TokenHandlerService tokenHandlerService;
+
+    @GetMapping("/all")
+    public List<ProjectResDto> getElements(@RequestHeader String authorization) {
+        String username = tokenHandlerService.getUsernameByToken(authorization);
+        List<ProjectResDto> projects =  projectService.findAllProjects();
+        for(ProjectResDto dto : projects){
+            if(!dto.getCreator().getUsername().equals(username))
+                projects.remove(dto);
+        }
+        return projects;
+    }
 
     @GetMapping("/{id}")
     public ProjectResDto getElement(@PathVariable("id") String id) {

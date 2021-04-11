@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResDto createNewUser(UserReqDto userReqDto) {
+        System.out.println(userReqDto);
         return saveAndReturnDTO(new User(userReqDto));
     }
 
