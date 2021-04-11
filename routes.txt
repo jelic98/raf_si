@@ -21,7 +21,7 @@ POST auth/teams [name] - Create team
 PUT auth/teams [team, users] - Update team
 DELETE auth/teams [team] - Delete team
 GET auth/teams [team] - Fetch team
-GET auth/teams [] - Fetch teams
+GET auth/teams/all [] - Fetch teams
 
 POST auth/projects [name] - Create project
 PUT auth/projects [project, teams] - Update project

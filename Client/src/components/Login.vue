@@ -56,10 +56,14 @@ export default {
     },
     methods: {
         submit: function() {
-
-            axios.post('/auth/users/login', {
-                username: this.form.username,
-                password: this.form.password
+			let body = new FormData();
+				body.append('username', this.form.username);
+				body.append('password', this.form.password);
+				axios({
+					method: "post",
+					url: "/auth/users/login/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 sessionStorage.setItem('auth-token', response.data.accessToken);
                 sessionStorage.setItem('auth-user', JSON.stringify(response.data));

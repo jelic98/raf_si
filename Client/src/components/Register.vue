@@ -80,13 +80,18 @@ export default {
                 })
             }
             else{
-
-                axios.post('/auth/users/', {
-                username: this.form.username,
-                password: this.form.password,
-                email: this.form.email,
-                role: this.form.role
-            }).then((response) => {
+				let body = new FormData();
+				body.append('username', this.form.username);
+				body.append('email', this.form.email);
+				body.append('password', this.form.password);
+				body.append('role', this.form.role);
+				axios({
+					method: "post",
+					url: "/auth/users/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+            .then((response) => {
                 this.$router.push('/login');
             }).catch((error) => {
                 
