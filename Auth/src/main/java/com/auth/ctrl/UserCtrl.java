@@ -2,6 +2,7 @@ package com.auth.ctrl;
 
 import com.auth.domain.User;
 import com.auth.domain.dto.LoginDto;
+import com.auth.domain.dto.LoginResDto;
 import com.auth.domain.dto.UserReqDto;
 import com.auth.domain.dto.UserResDto;
 import com.auth.service.AuthService;
@@ -30,7 +31,7 @@ public class UserCtrl {
     }
 
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute LoginDto dto){
+    public LoginResDto loginUser(@ModelAttribute LoginDto dto){
         return authService.login(dto);
     }
 
