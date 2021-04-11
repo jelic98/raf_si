@@ -57,7 +57,7 @@ nohup mvn -f "$CORE_DIR/pom.xml" spring-boot:run > "$PATH_LOG/$CORE_DIR.txt" 2>&
 CORE_PID=$(lsof -t -i:$CORE_PORT)
 
 log "Starting $CLIENT_DIR on port $CLIENT_PORT"
-nohup ng serve --port $CLIENT_PORT > "$PATH_LOG/$CLIENT_DIR.txt" 2>&1 &
+nohup npm run serve --prefix "$CLIENT_DIR" -- --port $CLIENT_PORT > "$PATH_LOG/$CLIENT_DIR.txt" 2>&1 &
 CLIENT_PID=$(lsof -t -i:$CLIENT_PORT)
 
 waitforq

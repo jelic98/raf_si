@@ -9,7 +9,7 @@ import routes from './routes';
 Vue.config.productionTip = false;
 
 window.axios = require('axios').create({
-    baseURL: 'http://localhost:9000/'
+    baseURL: 'http://127.0.0.1:9000/'
 });
 
 import "@fortawesome/fontawesome-free/css/all.css";
