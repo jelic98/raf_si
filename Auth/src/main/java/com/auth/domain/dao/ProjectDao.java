@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectDao extends JpaRepository<Project, String> {
     public Project findByName(String name);
+    public void deleteByName(String name);
 }

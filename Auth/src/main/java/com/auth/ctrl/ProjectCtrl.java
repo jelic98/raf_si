@@ -4,10 +4,7 @@ import com.auth.domain.Project;
 import com.auth.domain.dao.ProjectDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/projects")
@@ -20,6 +17,11 @@ public class ProjectCtrl {
     public Project getElement(@PathVariable("id") String id) {
         //System.out.println(projectDao.findByName(id));
         return projectDao.findByName(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id){
+        projectDao.deleteByName(id);
     }
 
 }
