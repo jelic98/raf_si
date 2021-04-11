@@ -14,18 +14,26 @@
 
 	$host = $row['host'];
 	$port = $row['port'];
-
+	
 	$curl = curl_init();
-
+	
 	curl_setopt_array($curl, [
 		CURLOPT_URL => "$host:$port/$service_path",
 		CURLOPT_CUSTOMREQUEST => $_SERVER['REQUEST_METHOD'],
-		CURLOPT_POSTFIELDS => $_REQUEST
+		CURLOPT_POSTFIELDS => $_REQUEST,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		CURLOPT_HTTPHEADER => [
+			'Authorization: ' . getallheaders()['Authorization']
+		]
 	]);
 
-	curl_exec($curl);
-
-	http_response_code(curl_getinfo($curl, CURLINFO_HTTP_CODE));
-
+	$response = curl_exec($curl);
+	$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	
 	curl_close($curl);
+
+	http_response_code($code);
+	echo $response;
 ?>
