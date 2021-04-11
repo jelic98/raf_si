@@ -1,6 +1,6 @@
 package com.auth.task;
 
-import com.auth.ctrl.Config;
+import com.auth.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -75,8 +75,8 @@ public class RegisterTask {
                     .header("Content-Type", "application/json")
                     .data(map)
                     .post();
-            Config.schema = schema.text();
-            System.out.println(Config.schema);
+            Constants.schema = schema.text();
+            System.out.println(Constants.schema);
         } catch (IOException e) {
             e.printStackTrace();
         }

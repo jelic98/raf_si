@@ -1,6 +1,8 @@
 package com.auth.ctrl;
 
+import com.auth.domain.Project;
 import com.auth.domain.Team;
+import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dao.TeamDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ public class TeamCtrl {
 
     @GetMapping("/{id}")
     public Team getElement(@PathVariable("id") String id) {
-        //System.out.println(teamDao.findByName(id));
         return teamDao.findByName(id);
     }
 

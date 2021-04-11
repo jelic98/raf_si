@@ -15,7 +15,6 @@ public class ProjectCtrl {
 
     @GetMapping("/{id}")
     public Project getElement(@PathVariable("id") String id) {
-        //System.out.println(projectDao.findByName(id));
         return projectDao.findByName(id);
     }
 
@@ -23,5 +22,4 @@ public class ProjectCtrl {
     public void delete(@PathVariable("id") String id){
         projectDao.deleteByName(id);
     }
-
 }
