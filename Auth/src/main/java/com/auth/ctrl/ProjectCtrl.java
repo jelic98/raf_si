@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,11 +32,14 @@ public class ProjectCtrl {
     @GetMapping("/all")
     public List<ProjectResDto> getElements(@RequestHeader String authorization) {
         String username = tokenHandlerService.getUsernameByToken(authorization);
-        List<ProjectResDto> projects =  projectService.findAllProjects();
+        List<ProjectResDto> projects = projectService.findAllProjects();
+        if(projects == null)
+            projects = new ArrayList<>();
         for(ProjectResDto dto : projects){
             if(!dto.getCreator().getUsername().equals(username))
                 projects.remove(dto);
         }
+
         return projects;
     }
 
