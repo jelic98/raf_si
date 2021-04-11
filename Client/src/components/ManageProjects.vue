@@ -202,15 +202,17 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.all([
-                axios.get('/auth/projects/all'),
-                axios.get('/auth/teams/all')
-            ]).then(axios.spread((projects, teams) => {
-
+            axios.get('/auth/teams/all')
+			.then((teams) => {
+				this.teams      = teams.data.teams;
+            }).catch((error) => {
+            
+			});
+            
+            axios.get('/auth/projects/all')
+			.then((projects) => {
                 this.projects   = projects.data.projects;
-                this.teams      = teams.data.teams;
-
-            })).catch((error) => {
+            }).catch((error) => {
 
             });
         },
