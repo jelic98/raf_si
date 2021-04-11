@@ -40,7 +40,7 @@ public class TeamCtrl {
     }
 
     @PostMapping("")
-    public TeamResDto createElement(@RequestBody TeamReqCreateDto dto, @RequestHeader String authorization){
+    public TeamResDto createElement(@ModelAttribute TeamReqCreateDto dto, @RequestHeader String authorization){
         String username = tokenHandlerService.getUsernameByToken(authorization);
         User creator = new User(userService.findByUsername(username));
         return teamService.createNewTeam(dto.getName(), creator);

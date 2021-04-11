@@ -37,7 +37,7 @@ public class ProjectCtrl {
     }
 
     @PostMapping("")
-    public ProjectResDto createElement(@RequestBody ProjectReqCreateDto dto, @RequestHeader String authorization){
+    public ProjectResDto createElement(@ModelAttribute ProjectReqCreateDto dto, @RequestHeader String authorization){
         String username = tokenHandlerService.getUsernameByToken(authorization);
         User creator = new User(userService.findByUsername(username));
         System.out.println(dto.getName());

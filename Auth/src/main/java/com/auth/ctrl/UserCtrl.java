@@ -1,6 +1,5 @@
 package com.auth.ctrl;
 
-import com.auth.domain.Team;
 import com.auth.domain.User;
 import com.auth.domain.dto.LoginDto;
 import com.auth.domain.dto.UserReqDto;
@@ -10,10 +9,7 @@ import com.auth.service.TokenHandlerService;
 import com.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpHeaders;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -29,12 +25,12 @@ public class UserCtrl {
     private AuthService authService;
 
     @PostMapping("")
-    public UserResDto getElement(@RequestBody UserReqDto dto) {
+    public UserResDto getElement(@ModelAttribute UserReqDto dto) {
         return userService.createNewUser(dto);
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginDto dto){
+    public String loginUser(@ModelAttribute LoginDto dto){
         return authService.login(dto);
     }
 
@@ -46,7 +42,7 @@ public class UserCtrl {
     }
 
     @PutMapping("")
-    public UserResDto updateElement(@RequestHeader String authorization, @RequestBody UserReqDto dto) {
+    public UserResDto updateElement(@RequestHeader String authorization, @ModelAttribute UserReqDto dto) {
         String token = authorization;
         String password = dto.getPassword();
         String username = tokenHandlerService.getUsernameByToken(token);

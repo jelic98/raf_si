@@ -81,7 +81,7 @@ export default {
             }
             else{
 
-                axios.post('/auth/users/register', {
+                axios.post('/auth/users/', {
                 username: this.form.username,
                 password: this.form.password,
                 email: this.form.email,

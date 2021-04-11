@@ -60,25 +60,4 @@ public class RegisterTask {
             e.printStackTrace();
         }
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void getSchema(){
-        String url = "http://" + registerHost + ":" + registerPort + "/" + schemaServicePath;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, String> map = new HashMap<>();
-
-        try {
-            Document schema = Jsoup.connect(url).ignoreHttpErrors(true)
-                    .header("Content-Type", "application/json")
-                    .data(map)
-                    .post();
-            Constants.schema = schema.text();
-            System.out.println(Constants.schema);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

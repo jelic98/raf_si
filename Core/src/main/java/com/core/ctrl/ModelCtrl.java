@@ -47,14 +47,14 @@ public class ModelCtrl {
     }
 
     @PostMapping("/")
-    public Model postModel(@RequestBody ModelReqDto dto){
+    public Model postModel(@ModelAttribute ModelReqDto dto){
         Model m = new Model(dto);
         modelDao.insert(m);
         return m;
     }
 
     @PutMapping("/{nameId}/{projectId}")
-    public Model updateModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId, @RequestBody Object elements){
+    public Model updateModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId, @ModelAttribute Object elements){
         Model m = modelDao.findOneBy_id(nameId, projectId);
         if(m == null)
             return modelDao.findOneBy_id(nameId, projectId);

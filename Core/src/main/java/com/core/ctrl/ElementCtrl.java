@@ -23,14 +23,14 @@ public class ElementCtrl {
     }
 
     @PostMapping("/")
-    public Element postModel(@RequestBody ElementReqDto dto){
+    public Element postModel(@ModelAttribute ElementReqDto dto){
         Element e = new Element(dto);
         elementDao.insert(e);
         return e;
     }
 
     @PutMapping("/{id}")
-    public Element updateElement(@PathVariable("id") String id, @RequestBody Object details){
+    public Element updateElement(@PathVariable("id") String id, @ModelAttribute Object details){
         Element e = elementDao.findAllBy_id(id);
         if(e == null)
             return elementDao.findAllBy_id(id);
