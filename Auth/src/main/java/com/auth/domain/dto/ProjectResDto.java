@@ -1,6 +1,8 @@
 package com.auth.domain.dto;
 
+import com.auth.domain.Project;
 import com.auth.domain.Team;
+import com.auth.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +18,10 @@ public class ProjectResDto {
 
     private String name;
     private List<String> teams;
-    private List<String> models;
+    private User creator;
 
+    public ProjectResDto(Project p){
+        name = p.getName();
+        creator = p.getCreator();
+    }
 }

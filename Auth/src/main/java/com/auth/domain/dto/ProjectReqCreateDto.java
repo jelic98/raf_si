@@ -1,6 +1,5 @@
 package com.auth.domain.dto;
 
-import com.auth.domain.User;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,10 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class TeamReqDto {
+public class ProjectReqCreateDto {
 
-    @NotNull
     private String name;
-
-    private User creator;
 }

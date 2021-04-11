@@ -22,7 +22,7 @@ import java.util.List;
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     @ManyToOne(targetEntity = User.class)
@@ -31,5 +31,8 @@ public class Project {
     @ManyToMany(targetEntity = Team.class)
     private List<Team> team;
 
-    //private List<String> models;
+    public Project(String name, User creator){
+        this.name = name;
+        this.creator = creator;
+    }
 }

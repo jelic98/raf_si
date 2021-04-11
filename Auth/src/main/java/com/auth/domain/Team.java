@@ -1,7 +1,9 @@
 package com.auth.domain;
 
+import com.auth.domain.dto.TeamReqDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +23,10 @@ import java.util.List;
         property = "name")
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
+    @NotNull
     @ManyToOne(targetEntity = User.class)
     private User creator;
 
@@ -32,4 +35,14 @@ public class Team {
 
     @ManyToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Project> project;
+
+    public Team(TeamReqDto dto){
+        name = dto.getName();
+        creator = dto.getCreator();
+    }
+
+    public Team(String name, User creator) {
+        this.name = name;
+        this.creator = creator;
+    }
 }
