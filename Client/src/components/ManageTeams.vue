@@ -189,7 +189,7 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.get('/auth/teams').then((response) => {
+            axios.get('/auth/teams/all').then((response) => {
                 this.teams = response.data.teams;
             }).catch((error) => {
 

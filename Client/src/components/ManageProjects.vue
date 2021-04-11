@@ -204,7 +204,7 @@ export default {
 
             axios.all([
                 axios.get('/auth/projects/all'),
-                axios.get('/auth/teams')
+                axios.get('/auth/teams/all')
             ]).then(axios.spread((projects, teams) => {
 
                 this.projects   = projects.data.projects;
