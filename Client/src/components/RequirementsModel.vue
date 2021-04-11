@@ -516,7 +516,7 @@ export default {
                     })
                 }
 
-                current.details.children.append({
+                current.details.children.push({
                     model_name: 'model-name',
                     type: 'requirement',
                     details: {
