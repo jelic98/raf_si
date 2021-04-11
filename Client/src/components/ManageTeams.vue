@@ -8,6 +8,11 @@
                     <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Team</span>
                 </b-button>
             </b-field>
+            <b-field>
+                <b-button @click="modal_open = true" type="is-light">
+                    <span class="icon"><i class="fas fa-trash"></i></span> <span>Delete users</span>
+                </b-button>
+            </b-field>
         </div>
 
         <div v-for="team in teams" :key="team.name"  class="columns" style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
@@ -84,6 +89,25 @@
                 </footer>
             </div>
         </b-modal>
+
+        <b-modal :active.sync="delet_modal_open" @close="closeModal">
+            <div class="modal-card" style="width: auto">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Edit Team</p>
+                </header>
+
+                <section class="modal-card-body">
+                    <b-field label="Username">
+                        <b-input v-model="del_user"></b-input>
+                    </b-field>
+
+                    <b-button type="is-success" @click="deletUser">
+                        Delete user
+                    </b-button>
+                </section>
+            </div>
+        </b-modal>
+
     </div>
 </template>
 
@@ -96,60 +120,63 @@ export default {
         return {
             modal_open: false,
             edit_modal_open: false,
+            delet_modal_open: false,
             editing_team_name: null,
             user: null,
+            del_user: null,
             new_username: null,
             form: {
                 name: null,
                 users: []
             },
             teams: [
-                // {
-                //     id: 1,
-                //     name: 'Team 1',
-                //     users: [
-                //         {
-                //             username: 'user1'
-                //         },
-                //         {
-                //             username: 'user2'
-                //         },
-                //         {
-                //             username: 'user3'
-                //         }
-                //     ]
-                // },
-                // {
-                //     id: 2,
-                //     name: 'Team 2',
-                //     users: [
-                //         {
-                //             username: 'user1'
-                //         },
-                //         {
-                //             username: 'user2'
-                //         },
-                //         {
-                //             username: 'user3'
-                //         }
-                //     ]
-                // },
-                // {
-                //     id: 3,
-                //     name: 'Team 3',
-                //     users: [
-                //         {
-                //             username: 'user1'
-                //         },
-                //         {
-                //             username: 'user2'
-                //         }
-                //     ]
-                // }
+                {
+                    id: 1,
+                    name: 'Team 1',
+                    users: [
+                        {
+                            username: 'user1'
+                        },
+                        {
+                            username: 'user2'
+                        },
+                        {
+                            username: 'user3'
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Team 2',
+                    users: [
+                        {
+                            username: 'user1'
+                        },
+                        {
+                            username: 'user2'
+                        },
+                        {
+                            username: 'user3'
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: 'Team 3',
+                    users: [
+                        {
+                            username: 'user1'
+                        },
+                        {
+                            username: 'user2'
+                        }
+                    ]
+                }
             ]
         }
     },
     mounted: function() {
+
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
 
         this.load();
@@ -180,6 +207,11 @@ export default {
             }).then((response) => {
                 this.load();
             }).catch((error) => {
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Team already exists`,
+                    type: 'is-danger'
+                })
 
             });
         },
@@ -196,7 +228,30 @@ export default {
             }).then((response) => {
                 this.load();
             }).catch((error) => {
-
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Invalid username`,
+                    type: 'is-danger'
+                })
+            });
+        },
+        deletUser: function() {
+            this.$buefy.dialog.confirm({
+                title: 'Are you sure?',
+                message: 'Are you sure you would like to delete this team?',
+                onConfirm: () => {
+                    axios.put('/auth/teams', {
+                        user: this.del_user
+                    }).then((response) => {
+                        this.load();
+                    }).catch((error) => {
+                        this.$buefy.toast.open({
+                            duration: 5000,
+                            message: `Invalid username`,
+                            type: 'is-danger'
+                        })
+                    });
+                }
             });
         },
         deleteTeam: function(team_name) {

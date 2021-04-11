@@ -26,7 +26,7 @@
                         </a>
                     </router-link>
 
-                    <a class="button is-success">
+                    <a class="button is-success" @click="logout">
                         <strong>Logout</strong>
                     </a>
                 </div>
@@ -36,7 +36,25 @@
 </template>
 <script>
 export default {
-    name: "Navbar"
+    name: "Navbar",
+
+    methods:{
+        logout: function(){
+            
+
+            axios.post('/auth/users/logout', {
+                
+            }).then((response) => {
+                sessions.storage.removeItem('auth-token');
+                sessions.storage.removeItem('auth-user');
+                this.$router.push('/login');
+            }).catch((error) => {
+                
+
+            });
+        }
+    }
+
 };
 </script>
 

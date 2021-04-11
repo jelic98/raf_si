@@ -20,25 +20,40 @@ const routes = [
     },
     {
         path: '/projects',
-        component: ManageProjects
+        component: ManageProjects,
+        meta: {
+            requires_login: true
+        }
     },
     {
         path: '/projects/:project_name',
         component: Project,
-        props: true
+        props: true,
+        meta: {
+            requires_login: true
+        }
     },
     {
         path: '/projects/:project_name/models/:model_name',
         component: RequirementsModel,
-        props: true
+        props: true,
+        meta: {
+            requires_login: true
+        }
     },
     {
         path: '/teams',
-        component: ManageTeams
+        component: ManageTeams,
+        meta: {
+            requires_login: true
+        }
     },
     {
         path: '/profile',
-        component: Profile
+        component: Profile,
+        meta: {
+            requires_login: true
+        }
     }
 ];
 

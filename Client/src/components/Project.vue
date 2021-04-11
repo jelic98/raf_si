@@ -126,7 +126,7 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.get('/auth/project', {
+            axios.get('/core/models/all', {
                 project: this.project_name
             }).then((response) => {
                 this.models = response.data.project.models

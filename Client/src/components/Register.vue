@@ -15,11 +15,11 @@
                         </b-field>
 
                         <b-field label="Email">
-                            <b-input v-model="form.email"></b-input>
+                            <b-input v-model="form.email" type="email" ref="err_email"></b-input>
                         </b-field>
 
                         <b-field label="Password">
-                            <b-input v-model="form.password" type="password"></b-input>
+                            <b-input v-model="form.password" ref="err_pass" type="password" minlength="6"></b-input>
                         </b-field>
 
                         <b-field label="Register as:" style="margin-top: 30px">
@@ -64,12 +64,24 @@ export default {
                 email: null,
                 password: null,
                 role: 'user'
-            }
+                
+            },
+            has_err: false
         }
     },
     methods: {
         submit: function() {
-            axios.post('/auth/users/register', {
+
+            if (this.$refs.err_email.checkHtml5Validity()==false || this.$refs.err_pass.checkHtml5Validity()==false){
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Invalid input`,
+                    type: 'is-danger'
+                })
+            }
+            else{
+
+                axios.post('/auth/users/register', {
                 username: this.form.username,
                 password: this.form.password,
                 email: this.form.email,
@@ -77,8 +89,19 @@ export default {
             }).then((response) => {
                 this.$router.push('/login');
             }).catch((error) => {
-
+                
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Username already exists`,
+                    type: 'is-danger'
+                })
+            
             });
+                
+            }
+            
+
+            
         }
     }
 }

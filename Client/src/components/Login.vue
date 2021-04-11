@@ -65,6 +65,11 @@ export default {
                 sessionStorage.setItem('auth-user', JSON.stringify(response.data));
                 this.$router.push('/projects');
             }).catch((error) => {
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Invalid credentials`,
+                    type: 'is-danger'
+                })
 
             });
         }

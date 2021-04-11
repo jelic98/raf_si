@@ -9,7 +9,7 @@ import routes from './routes';
 Vue.config.productionTip = false;
 
 window.axios = require('axios').create({
-    baseURL: 'http://127.0.0.1:9000/'
+    baseURL: 'http://localhost:9000/'
 });
 
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -22,6 +22,22 @@ Vue.use(Buefy);
 let router = new VueRouter({
     mode: 'history',
     routes: routes
+});
+
+router.beforeEach((to, from, next)=>{
+    if(to.meta && to.meta.requires_login){
+        let user = sessionStorage.getItem('auth-user');
+        if(user){
+            next();
+        }
+        else{
+            router.push('/login')
+        }
+    }
+    else{
+        next();
+    }
+    
 });
 
 new Vue({
