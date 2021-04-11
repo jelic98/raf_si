@@ -63,7 +63,7 @@ export default {
 					method: "post",
 					url: "/auth/users/login/",
 					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+					headers: { "Authorization": "a", "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 sessionStorage.setItem('auth-token', response.data.accessToken);
                 sessionStorage.setItem('auth-user', JSON.stringify(response.data));
