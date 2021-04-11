@@ -1,5 +1,7 @@
 package com.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -14,6 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "username")
 public class User {
 
     @Id
@@ -21,8 +27,9 @@ public class User {
 
     private String password;
 
-    @Transient
-    @ManyToMany(mappedBy = "users")
-    private List<Team> teams;
+    private String email;
+
+    @ManyToMany(targetEntity = Team.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Team> team;
 
 }

@@ -1,7 +1,9 @@
 package com.auth.ctrl;
 
 import com.auth.domain.Project;
+import com.auth.domain.Team;
 import com.auth.domain.dao.ProjectDao;
+import com.auth.domain.dao.TeamDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,16 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/projects")
+@RequestMapping(value = "/teams")
 @RequiredArgsConstructor
-public class ProjectCtrl {
+public class TeamCtrl {
     @Autowired
-    private ProjectDao projectDao;
+    private TeamDao teamDao;
 
     @GetMapping("/{id}")
-    public Project getElement(@PathVariable("id") String id) {
-        //System.out.println(projectDao.findByName(id));
-        return projectDao.findByName(id);
+    public Team getElement(@PathVariable("id") String id) {
+        //System.out.println(teamDao.findByName(id));
+        return teamDao.findByName(id);
     }
-
 }

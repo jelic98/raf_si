@@ -1,5 +1,6 @@
 package com.auth.task;
 
+import com.auth.ctrl.Config;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,6 +33,9 @@ public class RegisterTask {
     @Value("${spring.application.name}")
     private String serverName;
 
+    @Value("${schema.service.path}")
+    private String schemaServicePath;
+
     private static final int rate = 30000;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -47,11 +51,32 @@ public class RegisterTask {
         map.put("port", serverPort);
 
         try {
-            Document asd = Jsoup.connect(url).ignoreHttpErrors(true)
+            Document res = Jsoup.connect(url).ignoreHttpErrors(true)
                     .header("Content-Type", "application/json")
                     .data(map)
                     .post();
-            System.out.println(asd);
+            System.out.println(res);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void getSchema(){
+        String url = "http://" + registerHost + ":" + registerPort + "/" + schemaServicePath;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> map = new HashMap<>();
+
+        try {
+            Document schema = Jsoup.connect(url).ignoreHttpErrors(true)
+                    .header("Content-Type", "application/json")
+                    .data(map)
+                    .post();
+            Config.schema = schema.text();
+            System.out.println(Config.schema);
         } catch (IOException e) {
             e.printStackTrace();
         }

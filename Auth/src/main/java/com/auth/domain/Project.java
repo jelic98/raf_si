@@ -1,5 +1,7 @@
 package com.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,17 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "Project")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class Project {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
+    @ManyToOne(targetEntity = User.class)
+    private User creator;
 
-    @ManyToMany
-    @JoinTable(name = "TeamProject",
-            joinColumns = @JoinColumn(name = "ProjectName"),
-            inverseJoinColumns = @JoinColumn(name = "teamName"))
-    private List<Team> teams;
+    @ManyToMany(targetEntity = Team.class)
+    private List<Team> team;
 
     //private List<String> models;
 }
