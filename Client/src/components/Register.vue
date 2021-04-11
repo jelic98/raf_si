@@ -1,0 +1,89 @@
+<template>
+    <div class="container">
+        <div class="columns" style="margin-top: 100px">
+            <div class="column is-half is-offset-one-quarter">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Register
+                        </p>
+                    </header>
+
+                    <section class="card-content" style="padding: 50px">
+                        <b-field label="Username">
+                            <b-input v-model="form.username"></b-input>
+                        </b-field>
+
+                        <b-field label="Email">
+                            <b-input v-model="form.email"></b-input>
+                        </b-field>
+
+                        <b-field label="Password">
+                            <b-input v-model="form.password" type="password"></b-input>
+                        </b-field>
+
+                        <b-field label="Register as:" style="margin-top: 30px">
+                            <b-radio-button v-model="form.role"
+                                            native-value="admin" expanded>
+                                <span>Admin</span>
+                            </b-radio-button>
+
+                            <b-radio-button v-model="form.role"
+                                            native-value="user" expanded>
+                                <span>User</span>
+                            </b-radio-button>
+                        </b-field>
+
+                        <div style="padding-left: 40px; padding-right: 40px;">
+                            <b-button @click="submit" type="is-success" style="margin-top: 35px" expanded>
+                                Register
+                            </b-button>
+                        </div>
+
+                        <div class="has-text-centered" style="margin-top: 30px">
+                            <router-link to="/login">
+                                <small class="is-italic" style="text-decoration: underline;">
+                                    Already have an account?
+                                </small>
+                            </router-link>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    name: "Register",
+    data: function() {
+        return {
+            form: {
+                username: null,
+                email: null,
+                password: null,
+                role: 'user'
+            }
+        }
+    },
+    methods: {
+        submit: function() {
+            axios.post('/auth/users/register', {
+                username: this.form.username,
+                password: this.form.password,
+                email: this.form.email,
+                role: this.form.role
+            }).then((response) => {
+                this.$router.push('/login');
+            }).catch((error) => {
+
+            });
+        }
+    }
+}
+</script>
+
+<style scoped>
+
+</style>
