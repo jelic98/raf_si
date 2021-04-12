@@ -32,10 +32,14 @@ public class ModelCtrl {
     @Autowired
     private ElementDao elementDao;
 
-    @GetMapping("/")
-    public List<Model> getModel(){
-        System.out.println(modelDao.findAll());
-        return modelDao.findAll();
+    @GetMapping("/all/{id}")
+    public List<Model> getModel(@PathVariable("id") String id){
+        List<Model> models = modelDao.findAll();
+        for(Model m : models){
+            if(!m.get_id().getProject().equals(id))
+                models.remove(m);
+        }
+        return models;
     }
     @GetMapping("/{nameId}/{projectId}")
     public ModelResDto getModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId){

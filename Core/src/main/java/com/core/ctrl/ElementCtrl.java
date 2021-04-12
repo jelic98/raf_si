@@ -10,12 +10,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/elements")
 @RequiredArgsConstructor
 public class ElementCtrl {
     @Autowired
     private ElementDao elementDao;
+
+    @GetMapping("/all/{id}")
+    public List<Element> getAllElements(@PathVariable("id") String id) {
+        List<Element> elements = elementDao.findAll();
+        for(Element e : elements){
+            if(!e.getModel().getName().equals(id))
+                elements.remove(e);
+        }
+        return elements;
+    }
 
     @GetMapping("/{id}")
     public Element getElement(@PathVariable("id") String id) {
