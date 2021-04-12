@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,7 +43,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectResDto> findAllProjects() {
-        return null;
+        List<ProjectResDto> projects = new ArrayList<>();
+        for(Project p : projectDao.findAll()){
+            projects.add(new ProjectResDto(p));
+        }
+        return projects;
     }
 
     private ProjectResDto saveAndReturnDTO(Project project){

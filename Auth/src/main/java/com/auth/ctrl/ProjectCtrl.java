@@ -39,7 +39,7 @@ public class ProjectCtrl {
             if(!dto.getCreator().equals(username))
                 projects.remove(dto);
         }
-
+        System.out.println(projects);
         return projects;
     }
 
@@ -60,4 +60,7 @@ public class ProjectCtrl {
         System.out.println(dto.getName());
         return projectService.createNewProject(dto.getName(), creator);
     }
+
+    /*@PutMapping("")
+    public Project*/
 }
