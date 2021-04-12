@@ -47,9 +47,7 @@
                     </header>
 
                     <section class="card-content" style="padding: 50px">
-                        <p>
-                            Teams: {{ toString(project.teams) }}
-                        </p>
+                        
                     </section>
                 </div>
             </div>
@@ -226,6 +224,7 @@ export default {
             }).then((response) => {
                 this.projects.push(response.data.name);
                 this.load();
+		this.modal_open = false;
             }).catch((error) => {
             
 			});
@@ -272,6 +271,7 @@ export default {
             this.modal_open             = false;
         },
         toString(array) {
+		
             let string = '';
 
             array.forEach((element) => {
