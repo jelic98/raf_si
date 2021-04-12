@@ -15,12 +15,21 @@
 	$host = $row['host'];
 	$port = $row['port'];
 	
+	$method = $_SERVER['REQUEST_METHOD'];
+
+	if($method == 'GET' || $method == 'POST') {
+		$data = $_REQUEST;
+	}else {
+		$data = [];
+		parse_str(file_get_contents("php://input"), $data);
+	}
+
 	$curl = curl_init();
 	
 	curl_setopt_array($curl, [
 		CURLOPT_URL => "$host:$port/$service_path",
-		CURLOPT_CUSTOMREQUEST => $_SERVER['REQUEST_METHOD'],
-		CURLOPT_POSTFIELDS => $_REQUEST,
+		CURLOPT_CUSTOMREQUEST => $method,
+		CURLOPT_POSTFIELDS => $data,
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,

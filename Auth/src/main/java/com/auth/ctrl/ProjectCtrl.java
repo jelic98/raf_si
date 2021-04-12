@@ -4,6 +4,7 @@ import com.auth.domain.Project;
 import com.auth.domain.User;
 import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dto.ProjectReqCreateDto;
+import com.auth.domain.dto.ProjectReqDto;
 import com.auth.domain.dto.ProjectResDto;
 import com.auth.domain.dto.TeamReqCreateDto;
 import com.auth.service.ProjectService;
@@ -48,9 +49,10 @@ public class ProjectCtrl {
         return projectService.findByName(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id){
-        projectService.deleteProjectByName(id);
+    @DeleteMapping("")
+    public void delete(@ModelAttribute ProjectReqCreateDto dto){
+        System.out.println(dto);
+        projectService.deleteProjectByName(dto.getName());
     }
 
     @PostMapping("")
@@ -61,6 +63,8 @@ public class ProjectCtrl {
         return projectService.createNewProject(dto.getName(), creator);
     }
 
-    /*@PutMapping("")
-    public Project*/
+    @PutMapping("")
+    public ProjectResDto updateElement(@ModelAttribute ProjectReqDto dto){
+        return projectService.saveExistingProject(dto);
+    }
 }
