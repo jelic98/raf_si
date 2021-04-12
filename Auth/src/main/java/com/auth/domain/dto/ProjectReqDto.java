@@ -13,5 +13,5 @@ public class ProjectReqDto {
 
     @NotNull
     private String name;
-    
+    private String teams;
 }

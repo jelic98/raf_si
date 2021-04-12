@@ -5,6 +5,7 @@ import com.auth.domain.Team;
 import com.auth.domain.User;
 import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dao.TeamDao;
+import com.auth.domain.dto.ProjectReqDto;
 import com.auth.domain.dto.ProjectResDto;
 import com.auth.domain.dto.TeamResDto;
 import com.auth.service.ProjectService;
@@ -22,8 +23,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public ProjectResDto saveExistingProject(ProjectResDto projectResDto) {
-        return null;
+    public ProjectResDto saveExistingProject(ProjectReqDto projectReqDto) {
+        String[] teams = projectReqDto.getTeams().split(",");
+        System.out.println(teams);
+        //Project projectToSave = projectDao.findByName(projectReqDto.getName());
+        return null;//saveAndReturnDTO(projectToSave);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.auth.domain;
 
+import com.auth.domain.dto.ProjectReqDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;

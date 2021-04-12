@@ -4,6 +4,7 @@ import com.auth.domain.Project;
 import com.auth.domain.User;
 import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dto.ProjectReqCreateDto;
+import com.auth.domain.dto.ProjectReqDto;
 import com.auth.domain.dto.ProjectResDto;
 import com.auth.domain.dto.TeamReqCreateDto;
 import com.auth.service.ProjectService;
@@ -63,5 +64,7 @@ public class ProjectCtrl {
     }
 
     @PutMapping("")
-    public Project
+    public ProjectResDto updateElement(@ModelAttribute ProjectReqDto dto){
+        return projectService.saveExistingProject(dto);
+    }
 }
