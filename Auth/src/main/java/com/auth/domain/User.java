@@ -48,4 +48,13 @@ public class User {
         email = dto.getEmail();
         role = dto.getRole();
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

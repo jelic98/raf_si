@@ -18,10 +18,10 @@ public class ProjectResDto {
 
     private String name;
     private List<String> teams;
-    private User creator;
+    private String creator;
 
     public ProjectResDto(Project p){
         name = p.getName();
-        creator = p.getCreator();
+        creator = p.getCreator().getUsername();
     }
 }

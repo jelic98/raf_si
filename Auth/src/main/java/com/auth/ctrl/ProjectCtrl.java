@@ -36,7 +36,7 @@ public class ProjectCtrl {
         if(projects == null)
             projects = new ArrayList<>();
         for(ProjectResDto dto : projects){
-            if(!dto.getCreator().getUsername().equals(username))
+            if(!dto.getCreator().equals(username))
                 projects.remove(dto);
         }
 
