@@ -293,77 +293,6 @@ export default {
     },
     data() {
         return {
-            // test_requirements: [
-            //     {
-            //         id: 1,
-            //         code: '1',
-            //         name: 'req',
-            //         priority: 1,
-            //         risk: 'low',
-            //         children: [
-            //             {
-            //                 id: 2,
-            //                 parent_id: 1,
-            //                 code: '1.1',
-            //                 name: 'req',
-            //                 priority: 1,
-            //                 risk: 'low',
-            //                 children: [
-            //                     {
-            //                         id: 5,
-            //                         parent_id: 1,
-            //                         code: '1.1.1',
-            //                         name: 'req',
-            //                         priority: 1,
-            //                         risk: 'low',
-            //                         children: []
-            //                     }
-            //                 ]
-            //             },
-            //             {
-            //                 id: 3,
-            //                 parent_id: 1,
-            //                 code: '1.2',
-            //                 name: 'req',
-            //                 priority: 1,
-            //                 risk: 'low',
-            //                 children: [
-            //                     {
-            //                         id: 5,
-            //                         parent_id: 1,
-            //                         code: '1.2.1',
-            //                         name: 'req',
-            //                         priority: 1,
-            //                         risk: 'low',
-            //                         children: []
-            //                     },
-            //                     {
-            //                         id: 5,
-            //                         parent_id: 1,
-            //                         code: '1.2.2',
-            //                         name: 'req',
-            //                         priority: 1,
-            //                         risk: 'low',
-            //                         children: []
-            //                     }
-            //                 ]
-            //             },
-            //             {
-            //                 id: 4,
-            //                 parent_id: 1,
-            //                 code: '1.3',
-            //                 name: 'req',
-            //                 priority: 1,
-            //                 risk: 'low',
-            //                 children: [
-            //                     {
-
-            //                     }
-            //                 ]
-            //             }
-            //         ]
-            //     }
-            // ],
             modal_open: false,
             edit_modal_open: false,
             actor_modal_open: false,
@@ -383,62 +312,62 @@ export default {
                 elements: []
             },
             requirements: [
-                // {
-                // model_name: 'model-name',
-                // id: 1,
-                // type: 'requirement',
-                // details: {
-                //     parent_id: null,
-                //     title: 'Requirement name',
-                //     description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                //     requirement_type: 'functional',
-                //     priority: 1,
-                //     risk: 'low',
-                //     actor_id: 1,
-                //     children: [
-                //         {
-                //             model_name: 'model-name',
-                //             id: 2,
-                //             type: 'requirement',
-                //             details: {
-                //                 parent_id: 1,
-                //                 title: 'Requirement name 2',
-                //                 description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                //                 requirement_type: 'functional',
-                //                 priority: 1,
-                //                 risk: 'low',
-                //                 actor_id: 1,
-                //                 children: []
-                //             }
-                //         },
-                //         {
-                //             model_name: 'model-name',
-                //             id: 3,
-                //             type: 'requirement',
-                //             details: {
-                //                 parent_id: 1,
-                //                 title: 'Requirement name 3',
-                //                 description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                //                 requirement_type: 'functional',
-                //                 priority: 1,
-                //                 risk: 'low',
-                //                 actor_id: 1,
-                //                 children: []
-                //             }
-                //         }
-                //     ]
-                // }
-            //}
+                {
+                    model_name: 'model-name',
+                    id: 1,
+                    type: 'requirement',
+                    details: {
+                        parent_id: null,
+                        title: 'Requirement name',
+                        description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
+                        requirement_type: 'functional',
+                        priority: 1,
+                        risk: 'low',
+                        actor_id: 1,
+                        children: [
+                            {
+                                model_name: 'model-name',
+                                id: 2,
+                                type: 'requirement',
+                                details: {
+                                    parent_id: 1,
+                                    title: 'Requirement name 2',
+                                    description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
+                                    requirement_type: 'functional',
+                                    priority: 1,
+                                    risk: 'low',
+                                    actor_id: 1,
+                                    children: []
+                                }
+                            },
+                            {
+                                model_name: 'model-name',
+                                id: 3,
+                                type: 'requirement',
+                                details: {
+                                    parent_id: 1,
+                                    title: 'Requirement name 3',
+                                    description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
+                                    requirement_type: 'functional',
+                                    priority: 1,
+                                    risk: 'low',
+                                    actor_id: 1,
+                                    children: []
+                                }
+                            }
+                        ]
+                    }
+                }
             ],
             actors: [
-            //     {
-            //     model: 'model-name',
-            //     id: 1,
-            //     type: 'actor',
-            //     details: {
-            //         name: 'Actor 1'
-            //     }
-            // }
+                    {
+                    model: 'model-name',
+                    id: 1,
+                    type: 'actor',
+                    details: {
+                        name: 'Actor 1'
+                    }
+                }
             ],
             requirements_no_depth: []
         };
@@ -478,10 +407,10 @@ export default {
             body.append('model', this.model_name)
 
             axios({
-					method: "get",
-					url: "/core/models/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "get",
+                url: "/core/models/",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.name = response.data.name;
                 this.model.elements = response.data.elements;
@@ -499,6 +428,11 @@ export default {
             });
         },
         addRequirement: function() {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
 
             if (this.parent_requirement) {
                 let split = this.parent_requirement.details.code.split('.');
@@ -514,7 +448,11 @@ export default {
 
                 for (let i = 1; i < split.length; i++) {
                     current.details.children.forEach((child) => {
-                        if (child.details.code == split[i]) {
+                        // if (child.details.code == split[i]) {
+                        //     current = child;
+                        // }
+
+                        if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
                     })
@@ -535,14 +473,17 @@ export default {
                         children: []
                     }
                 });
+
                 let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
                 if (jwt) {
                     axios.defaults.headers.common['Authorization'] = jwt;
                 }
-                let data = new FormData()
-                data.append('element',root_req.id)
-                data.append('details',root_req.details)
+
+                let body = new FormData();
+                body.append('element', root_req.id);
+                body.append('details', root_req.details);
+
                 axios({
 					method: "put",
 					url: "/core/elements/",
@@ -555,26 +496,49 @@ export default {
                 });
 
             } else {
-                let data = new FormData()
-                data.append('type','requirement')
-                data.append('model_name',this.model_name)
-                data.append('project', this.project_name)
+                let body = new FormData();
+
                 let details = {
-                        parent_id: null,
-                        title: this.form.title,
-                        description: this.form.description,
-                        type: this.form.type,
-                        priority: this.form.priority,
-                        risk: this.form.risk,
-                        actor_id: this.form.actor_id
-                    }
-                data.append('details', details)
+                    parent_id: null,
+                    title: this.form.title,
+                    description: this.form.description,
+                    type: this.form.type,
+                    priority: this.form.priority,
+                    risk: this.form.risk,
+                    actor_id: this.form.actor_id
+                };
+
+                body.append('type', 'requirement');
+                body.append('model', this.model_name);
+                body.append('details', details);
+
                 axios({
-					method: "post",
-					url: "/core/elements/",
+                    method: "post",
+                    url: "/core/elements/",
+                    data: body,
+                    headers: { "Content-Type": "multipart/form-data" },
+                }).then((response) => {
+                    this.load();
+                }).catch((error) => {
+
+                });
+
+                body = new FormData();
+
+                this.requirements.push(details);
+
+                this.model.elements.concat(this.requirements);
+                this.model.elements.concat(this.actors);
+
+                body.append('elements', this.model.elements);
+                body.append('model', this.model_name);
+                body.append('project', this.project_name);
+
+                axios({
+					method: "put",
+					url: "/core/models/",
 					data: body,
 					headers: { "Content-Type": "multipart/form-data" },
-                
                 }).then((response) => {
                     this.load();
                 }).catch((error) => {
@@ -609,9 +573,22 @@ export default {
             current.details.risk = this.form.risk;
             current.details.actor_id = this.form.actor_id;
 
-            axios.put('/core/elements', {
-                element: root_req.id,
-                details: root_req.details
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+
+            body.append('element', root_req.id);
+            body.append('details', root_req.details);
+
+            axios({
+                method: "put",
+                url: "/core/elements",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
             }).catch((error) => {
@@ -619,6 +596,12 @@ export default {
             });
         },
         deleteRequirement: function(requirement) {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
             if (requirement.parent_id) {
                 let split = requirement.details.code.split('.');
                 let current = null;
@@ -633,7 +616,11 @@ export default {
 
                 for (let i = 1; i < split.length; i++) {
                     current.details.children.forEach((child) => {
-                        if (child.details.code == split[i]) {
+                        // if (child.details.code == split[i]) {
+                        //     current = child;
+                        // }
+
+                        if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
                     })
@@ -643,17 +630,30 @@ export default {
                     return child.id !== requirement.id;
                 });
 
-                axios.put('/core/elements', {
-                    element: root_req.id,
-                    details: root_req.details
+                let body = new FormData();
+
+                body.append('element', root_req.id);
+                body.append('details', root_req.details);
+
+                axios({
+                    method: "put",
+                    url: "/core/elements",
+                    data: body,
+                    headers: { "Content-Type": "multipart/form-data" },
                 }).then((response) => {
                     this.load();
                 }).catch((error) => {
 
                 });
             } else {
-                axios.delete('/core/elements', {
-                    element: requirement.id
+                let body = new FormData();
+                body.append('element', requirement.id);
+
+                axios({
+                    method: "delete",
+                    url: "/core/elements",
+                    data: body,
+                    headers: { "Content-Type": "multipart/form-data" },
                 }).then((response) => {
                     this.load();
                 }).catch((error) => {
@@ -662,12 +662,25 @@ export default {
             }
         },
         addActor: function() {
-            axios.post('/core/elements', {
-                type: 'actor',
-                model: this.model_name,
-                details: {
-                    name: this.form.actor_name
-                }
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+
+            body.append('type', 'actor');
+            body.append('model', this.model_name);
+            body.append('details', {
+                name: this.form.actor_name
+            });
+
+            axios({
+                method: "post",
+                url: "/core/elements",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
             }).catch((error) => {

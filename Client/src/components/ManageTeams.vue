@@ -190,6 +190,7 @@ export default {
             }
 
             let body = new FormData();
+
 			axios({
 					method: "get",
 					url: "/auth/projects/all",
@@ -200,8 +201,6 @@ export default {
             }).catch((error) => {
             
 			});
-
-            
         },
         addTeam: function () {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -211,7 +210,8 @@ export default {
             }
 
             let body = new FormData();
-            body.append('name', this.form.name)
+            body.append('name', this.form.name);
+
 			axios({
 					method: "post",
 					url: "/auth/teams",
@@ -237,11 +237,12 @@ export default {
             let body = new FormData();
 			body.append('team', this.editing_team_name);
             body.append('users', this.form.users);
+
 			axios({
-					method: "put",
-					url: "/auth/teams/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "put",
+                url: "/auth/teams/",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
 
                 this.load();
@@ -262,13 +263,15 @@ export default {
                 title: 'Are you sure?',
                 message: 'Are you sure you would like to delete this team?',
                 onConfirm: () => {
-                    let body = new FormData();
                     let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
                     if (jwt) {
                         axios.defaults.headers.common['Authorization'] = jwt;
                     }
+
+                    let body = new FormData();
                     body.append('user', this.del_user);
+
                     axios({
                         method: "delete",
                         url: "/auth/users/",
@@ -300,21 +303,20 @@ export default {
                     if (jwt) {
                         axios.defaults.headers.common['Authorization'] = jwt;
                     }
-                    let body=new FormData()
-                    body.append('team',team_name);
+
+                    let body = new FormData()
+                    body.append('team', team_name);
 
                     axios({
-					method: "delete",
-					url: "/auth/teams/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                        method: "delete",
+                        url: "/auth/teams/",
+                        data: body,
+                        headers: { "Content-Type": "multipart/form-data" }
                     }).then((response) => {
                         this.load();
                     }).catch((error) => {
 
                     });
-
-                    
                 }
             });
         },

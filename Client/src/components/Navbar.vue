@@ -48,9 +48,9 @@ export default {
             }
 
             axios({
-					method: "post",
-					url: "/auth/users/logout",
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "post",
+                url: "/auth/users/logout",
+                headers: { "Content-Type": "multipart/form-data" }
             }).then((response) => {
                 sessionStorage.removeItem('auth-token');
                 sessionStorage.removeItem('auth-user');

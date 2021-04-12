@@ -94,22 +94,22 @@ export default {
                 type: null
             },
             models: [
-                // {
-                //     name: 'Model 1',
-                //     type: 'requirements'
-                // },
-                // {
-                //     name: 'Model 2',
-                //     type: 'requirements'
-                // },
-                // {
-                //     name: 'Model 3',
-                //     type: 'requirements'
-                // },
-                // {
-                //     name: 'Model 4',
-                //     type: 'requirements'
-                // }
+                {
+                    name: 'Model 1',
+                    type: 'requirements'
+                },
+                {
+                    name: 'Model 2',
+                    type: 'requirements'
+                },
+                {
+                    name: 'Model 3',
+                    type: 'requirements'
+                },
+                {
+                    name: 'Model 4',
+                    type: 'requirements'
+                }
             ]
         }
     },
@@ -141,10 +141,16 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.post('/core/models', {
-                name: this.form.name,
-                project: this.project_name,
-                type: this.form.type
+            let body = new FormData();
+            body.append('name', this.form.name);
+            body.append('project', this.form.project);
+            body.append('type', this.form.type);
+
+            axios({
+                method: "post",
+                url: "/core/models",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.projects.push(response.data.project);
             }).catch((error) => {
@@ -166,7 +172,7 @@ export default {
             });
 
             return string.slice(0, string.length - 2);
-        },
+        }
     }
 }
 </script>

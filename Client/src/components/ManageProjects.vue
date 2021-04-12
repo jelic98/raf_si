@@ -80,7 +80,7 @@
                 </header>
 
                 <section class="modal-card-body">
-                    <b-field v-for="team in teams" :key="team.id">
+                    <b-field v-for="team in teams" :key="team.name">
                         <b-checkbox v-model="form.teams" size="is-medium" :native-value="team.name">{{ team.name }}</b-checkbox>
                     </b-field>
                 </section>
@@ -111,72 +111,67 @@ export default {
                 teams: []
             },
             projects: [
-                // {
-                //     id: 1,
-                //     name: 'Project 1',
-                //     teams: [
-                //         {
-                //             name: 'Team 1',
-                //         },
-                //         {
-                //             name: 'Team 2',
-                //         },
-                //         {
-                //             name: 'Team 3',
-                //         }
-                //     ],
-                //     models: [
-                //         {
-                //             name: 'Model 1'
-                //         },
-                //         {
-                //             name: 'Model 2'
-                //         },
-                //         {
-                //             name: 'Model 3'
-                //         }
-                //     ]
-                // },
-                // {
-                //     id: 2,
-                //     name: 'Project 2',
-                //     teams: [],
-                //     models: []
-                // },
-                // {
-                //     id: 3,
-                //     name: 'Project 3',
-                //     teams: [],
-                //     models: []
-                // },
-                // {
-                //     id: 4,
-                //     name: 'Project 4',
-                //     teams: [],
-                //     models: []
-                // }
+                {
+                    id: 1,
+                    name: 'Project 1',
+                    teams: [
+                        {
+                            name: 'Team 1',
+                        },
+                        {
+                            name: 'Team 2',
+                        },
+                        {
+                            name: 'Team 3',
+                        }
+                    ],
+                    models: [
+                        {
+                            name: 'Model 1'
+                        },
+                        {
+                            name: 'Model 2'
+                        },
+                        {
+                            name: 'Model 3'
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Project 2',
+                    teams: [],
+                    models: []
+                },
+                {
+                    id: 3,
+                    name: 'Project 3',
+                    teams: [],
+                    models: []
+                },
+                {
+                    id: 4,
+                    name: 'Project 4',
+                    teams: [],
+                    models: []
+                }
             ],
             teams: [
-                // {
-                //     id: 1,
-                //     name: 'Team 1'
-                // },
-                // {
-                //     id: 2,
-                //     name: 'Team 2'
-                // },
-                // {
-                //     id: 3,
-                //     name: 'Team 3'
-                // },
-                // {
-                //     id: 4,
-                //     name: 'Team 4'
-                // },
-                // {
-                //     id: 5,
-                //     name: 'Team 5'
-                // }
+                {
+                    name: 'Team 1'
+                },
+                {
+                    name: 'Team 2'
+                },
+                {
+                    name: 'Team 3'
+                },
+                {
+                    name: 'Team 4'
+                },
+                {
+                    name: 'Team 5'
+                }
             ]
         }
     },
@@ -216,6 +211,7 @@ export default {
 
 			let body = new FormData();
 			body.append('name', this.form.title);
+
 			axios({
 					method: "post",
 					url: "/auth/projects/",
@@ -223,8 +219,8 @@ export default {
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.projects.push(response.data.name);
+                this.closeModal();
                 this.load();
-		this.modal_open = false;
             }).catch((error) => {
             
 			});
@@ -239,6 +235,7 @@ export default {
             let body = new FormData();
             body.append('name', this.editing_project_name)
 			body.append('teams', this.form.teams);
+
 			axios({
 					method: "put",
 					url: "/auth/projects/",
@@ -246,39 +243,43 @@ export default {
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
-		this.modal_open = false;
+                this.modal_open = false;
             }).catch((error) => {
             
 			});
 
         },
-
-
         deleteProject: function(project_name) {
-
             this.$buefy.dialog.confirm({
                 title: 'Are you sure?',
                 message: 'Are you sure you would like to delete this project?',
                 onConfirm: () => {
+                    let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+                    if (jwt) {
+                        axios.defaults.headers.common['Authorization'] = jwt;
+                    }
+
                     let body = new FormData();
-			body.append('name', this.form.title);
+                    body.append('name', this.form.title);
+
                     axios({
-                            method: "delete",
-                            url: "/auth/projects/",
-                            data: body,
-                            headers: { "Content-Type": "multipart/form-data" },
+                        method: "delete",
+                        url: "/auth/projects/",
+                        data: body,
+                        headers: { "Content-Type": "multipart/form-data" }
                     }).then((response) => {
                         this.load();
+                    }).catch((error) => {
 
-            }).catch((error) => {
-            
-			});
+                    });
                 }
             });
         },
         closeModal() {
             this.form = {
-                name: null
+                name: null,
+                teams: []
             };
 
             this.editing_project_name     = null;
