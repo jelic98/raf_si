@@ -25,9 +25,6 @@
                             <p>
                                 Teams: {{ toString(project.teams) }}
                             </p>
-                            <p style="margin-top: 20px">
-                                Models: {{ toString(project.models) }}
-                            </p>
                         </section>
                     </div>
                 </router-link>
@@ -52,9 +49,6 @@
                     <section class="card-content" style="padding: 50px">
                         <p>
                             Teams: {{ toString(project.teams) }}
-                        </p>
-                        <p v-if="typeof project.models !== 'undefined'" style="margin-top: 20px">
-                            Models: {{ toString(project.models) }}
                         </p>
                     </section>
                 </div>
