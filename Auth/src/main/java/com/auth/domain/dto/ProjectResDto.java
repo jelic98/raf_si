@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,5 +24,10 @@ public class ProjectResDto {
     public ProjectResDto(Project p){
         name = p.getName();
         creator = p.getCreator().getUsername();
+        teams = new ArrayList<>();
+        if(p.getTeam() != null) {
+            for(Team t : p.getTeam())
+                teams.add(t.getName());
+        }
     }
 }
