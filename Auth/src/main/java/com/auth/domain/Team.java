@@ -4,10 +4,7 @@ import com.auth.domain.dto.TeamReqDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 @Table(name = "Team")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -44,5 +42,9 @@ public class Team {
     public Team(String name, User creator) {
         this.name = name;
         this.creator = creator;
+    }
+
+    public Team(String name) {
+        this.name = name;
     }
 }

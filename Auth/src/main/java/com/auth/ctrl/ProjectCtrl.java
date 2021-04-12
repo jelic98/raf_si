@@ -65,6 +65,7 @@ public class ProjectCtrl {
 
     @PutMapping("")
     public ProjectResDto updateElement(@ModelAttribute ProjectReqDto dto){
+        System.out.println(dto);
         return projectService.saveExistingProject(dto);
     }
 }
