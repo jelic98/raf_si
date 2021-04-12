@@ -49,7 +49,7 @@ export default {
         }
     },
     mounted: function() {
-        let user = sessionStorage.getItem('auth-user');
+        let user = JSON.parse(sessionStorage.getItem('auth-user'));
         if(user) {
             this.$router.push('/projects');
         }
@@ -65,7 +65,7 @@ export default {
 					data: body,
 					headers: { "Authorization": "a", "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                sessionStorage.setItem('auth-token', response.data.accessToken);
+                sessionStorage.setItem('auth-token', JSON.stringify(response.data.accessToken));
                 sessionStorage.setItem('auth-user', JSON.stringify(response.data));
                 this.$router.push('/projects');
             }).catch((error) => {

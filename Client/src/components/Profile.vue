@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         load: function() {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
@@ -65,7 +65,7 @@ export default {
             });
         },
         changePassword: function() {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;

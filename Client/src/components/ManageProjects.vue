@@ -53,7 +53,7 @@
                         <p>
                             Teams: {{ toString(project.teams) }}
                         </p>
-                        <p style="margin-top: 20px">
+                        <p v-if="typeof project.models !== 'undefined'" style="margin-top: 20px">
                             Models: {{ toString(project.models) }}
                         </p>
                     </section>
@@ -69,8 +69,7 @@
 
                 <section class="modal-card-body">
                     <b-field label="Project Name">
-                        <b-input v-model="form.title">
-                        </b-input>
+                    <b-input v-model="form.title"></b-input>
                     </b-field>
                 </section>
 
@@ -196,43 +195,49 @@ export default {
     },
     methods: {
         load: function () {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
+			axios.get('/auth/projects/all')
+			.then((projects) => {
+                this.projects   = projects.data;
+            }).catch((error) => {
+
+            });
+           
             axios.get('/auth/teams/all')
 			.then((teams) => {
-				this.teams      = teams.data.teams;
-            }).catch((error) => {
-            
-			});
-            
-            axios.get('/auth/projects/all')
-			.then((projects) => {
-                this.projects   = projects.data.projects;
+                this.teams   = teams.data;
             }).catch((error) => {
 
             });
         },
         saveProject: function () {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.post('/auth/projects', {
-                name: this.form.name
+			let body = new FormData();
+			body.append('name', this.form.title);
+			axios({
+					method: "post",
+					url: "/auth/projects/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.projects.push(response.data.project);
+                this.projects.push(response.data.name);
+                this.load();
             }).catch((error) => {
-
-            });
+            
+			});
         },
         editProject: function() {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;

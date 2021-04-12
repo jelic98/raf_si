@@ -183,7 +183,7 @@ export default {
     },
     methods: {
         load: function() {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
@@ -196,7 +196,7 @@ export default {
             });
         },
         addTeam: function () {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
@@ -216,7 +216,7 @@ export default {
             });
         },
         editTeam: function() {
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
