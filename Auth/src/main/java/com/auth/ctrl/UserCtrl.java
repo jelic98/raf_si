@@ -58,4 +58,9 @@ public class UserCtrl {
         String username = tokenHandlerService.getUsernameByToken(authorization);
         userService.deleteUserByUsername(username);
     }
+
+    @PostMapping("/logout")
+    public void logoutUser(@ModelAttribute LoginDto dto){
+
+    }
 }

@@ -52,8 +52,8 @@ export default {
 					url: "/auth/users/logout",
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                sessions.storage.removeItem('auth-token');
-                sessions.storage.removeItem('auth-user');
+                sessionStorage.removeItem('auth-token');
+                sessionStorage.removeItem('auth-user');
                 this.$router.push('/login');
             }).catch((error) => {
                 

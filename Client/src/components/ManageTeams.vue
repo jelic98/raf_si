@@ -211,10 +211,10 @@ export default {
             }
 
             let body = new FormData();
-            body.append('name': this.form.name)
+            body.append('name', this.form.name)
 			axios({
 					method: "post",
-					url: "/auth/tems",
+					url: "/auth/teams",
 					data: body,
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
@@ -263,30 +263,31 @@ export default {
                 message: 'Are you sure you would like to delete this team?',
                 onConfirm: () => {
                     let body = new FormData();
+                    let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
-            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+                    if (jwt) {
+                        axios.defaults.headers.common['Authorization'] = jwt;
+                    }
+                    body.append('user', this.del_user);
+                    axios({
+                        method: "delete",
+                        url: "/auth/users/",
+                        data: body,
+                        headers: {"Content-Type": "multipart/form-data"},
+                    }).then((response) => {
 
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
-            }
-            body.append('user', this.del_user);
-			axios({
-					method: "delete",
-					url: "/auth/users/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
-            }).then((response) => {
+                        this.load();
+                        this.modal_open = false
 
-                this.load();
-                this.modal_open =false
+                    }).catch((error) => {
+                        this.$buefy.toast.open({
+                            duration: 5000,
+                            message: `Invalid username`,
+                            type: 'is-danger'
+                        })
 
-            }).catch((error) => {
-                this.$buefy.toast.open({
-                    duration: 5000,
-                    message: `Invalid username`,
-                    type: 'is-danger'
-                })
-                
+                    });
+                },
             });
         },
         deleteTeam: function(team_name) {

@@ -246,7 +246,7 @@ export default {
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
-		        this.modal_open = false;
+		this.modal_open = false;
             }).catch((error) => {
             
 			});
@@ -261,7 +261,7 @@ export default {
                 message: 'Are you sure you would like to delete this project?',
                 onConfirm: () => {
                     let body = new FormData();
-			        body.append('name', this.form.title);
+			body.append('name', this.form.title);
                     axios({
                             method: "delete",
                             url: "/auth/projects/",
