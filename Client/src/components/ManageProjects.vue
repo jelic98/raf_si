@@ -236,28 +236,43 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.put('/auth/projects', {
-                teams: this.form.teams
+            let body = new FormData();
+            body.append('name', this.editing_project_name)
+			body.append('teams', this.form.teams);
+			axios({
+					method: "put",
+					url: "/auth/projects/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-
                 this.load();
-
+		        this.modal_open = false;
             }).catch((error) => {
+            
+			});
 
-            });
         },
+
+
         deleteProject: function(project_name) {
+
             this.$buefy.dialog.confirm({
                 title: 'Are you sure?',
                 message: 'Are you sure you would like to delete this project?',
                 onConfirm: () => {
-                    axios.delete('/auth/projects', {
-                        project: project_name
+                    let body = new FormData();
+			        body.append('name', this.form.title);
+                    axios({
+                            method: "delete",
+                            url: "/auth/projects/",
+                            data: body,
+                            headers: { "Content-Type": "multipart/form-data" },
                     }).then((response) => {
                         this.load();
-                    }).catch((error) => {
 
-                    });
+            }).catch((error) => {
+            
+			});
                 }
             });
         },

@@ -189,11 +189,19 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.get('/auth/teams/all').then((response) => {
-                this.teams = response.data.teams;
+            let body = new FormData();
+			axios({
+					method: "get",
+					url: "/auth/projects/all",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
+            }).then((response) => {
+                this.tems = response.data.teams;
             }).catch((error) => {
+            
+			});
 
-            });
+            
         },
         addTeam: function () {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -202,18 +210,22 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.post('/auth/teams', {
-                name: this.form.name
+            let body = new FormData();
+            body.append('name': this.form.name)
+			axios({
+					method: "post",
+					url: "/auth/tems",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.load();
+                this.load()
             }).catch((error) => {
                 this.$buefy.toast.open({
                     duration: 5000,
                     message: `Team already exists`,
                     type: 'is-danger'
                 })
-
-            });
+			});
         },
         editTeam: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -222,36 +234,59 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.put('/auth/teams', {
-                team: this.editing_team_name,
-                users: this.form.users
+            let body = new FormData();
+			body.append('team', this.editing_team_name);
+            body.append('users', this.form.users);
+			axios({
+					method: "put",
+					url: "/auth/teams/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
+
                 this.load();
+
             }).catch((error) => {
                 this.$buefy.toast.open({
                     duration: 5000,
                     message: `Invalid username`,
                     type: 'is-danger'
                 })
-            });
+            
+			});
+
+        
         },
         deletUser: function() {
             this.$buefy.dialog.confirm({
                 title: 'Are you sure?',
                 message: 'Are you sure you would like to delete this team?',
                 onConfirm: () => {
-                    axios.put('/auth/teams', {
-                        user: this.del_user
-                    }).then((response) => {
-                        this.load();
-                    }).catch((error) => {
-                        this.$buefy.toast.open({
-                            duration: 5000,
-                            message: `Invalid username`,
-                            type: 'is-danger'
-                        })
-                    });
-                }
+                    let body = new FormData();
+
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+            body.append('user', this.del_user);
+			axios({
+					method: "delete",
+					url: "/auth/users/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
+            }).then((response) => {
+
+                this.load();
+                this.modal_open =false
+
+            }).catch((error) => {
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Invalid username`,
+                    type: 'is-danger'
+                })
+                
             });
         },
         deleteTeam: function(team_name) {
@@ -259,13 +294,26 @@ export default {
                 title: 'Are you sure?',
                 message: 'Are you sure you would like to delete this team?',
                 onConfirm: () => {
-                    axios.delete('/auth/teams', {
-                        team: team_name
+                    let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+                    if (jwt) {
+                        axios.defaults.headers.common['Authorization'] = jwt;
+                    }
+                    let body=new FormData()
+                    body.append('team',team_name);
+
+                    axios({
+					method: "delete",
+					url: "/auth/teams/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
                     }).then((response) => {
                         this.load();
                     }).catch((error) => {
 
                     });
+
+                    
                 }
             });
         },

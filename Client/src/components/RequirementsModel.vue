@@ -473,14 +473,18 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.get('/core/models', {
-                params: {
-                    project: this.project_name,
-                    model: this.model_name
-                }
-            }).then((response) => {
-                this.model = response.data.model;
+            let body = new FormData();
+            body.append('projcet', this.project_name)
+            body.append('model', this.model_name)
 
+            axios({
+					method: "get",
+					url: "/core/models/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
+            }).then((response) => {
+                this.name = response.data.name;
+                this.model.elements = response.data.elements;
                 this.model.elements.forEach((element) => {
                     if (element.type === 'requirement') {
                         this.requirements.push(element);
@@ -517,7 +521,8 @@ export default {
                 }
 
                 current.details.children.push({
-                    model_name: 'model-name',
+                    project_name: this.project_name,
+                    model_name: this.name,
                     type: 'requirement',
                     details: {
                         parent_id: current.id,
@@ -530,10 +535,19 @@ export default {
                         children: []
                     }
                 });
+                let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
-                axios.put('/core/elements', {
-                    element: root_req.id,
-                    details: root_req.details
+                if (jwt) {
+                    axios.defaults.headers.common['Authorization'] = jwt;
+                }
+                let data = new FormData()
+                data.append('element',root_req.id)
+                data.append('details',root_req.details)
+                axios({
+					method: "put",
+					url: "/core/elements/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
                 }).then((response) => {
                     this.load();
                 }).catch((error) => {
@@ -541,11 +555,11 @@ export default {
                 });
 
             } else {
-
-                axios.post('/core/elements', {
-                    type: 'requirement',
-                    model: this.model_name,
-                    details: {
+                let data = new FormData()
+                data.append('type','requirement')
+                data.append('model_name',this.model_name)
+                data.append('project', this.project_name)
+                let details = {
                         parent_id: null,
                         title: this.form.title,
                         description: this.form.description,
@@ -554,6 +568,13 @@ export default {
                         risk: this.form.risk,
                         actor_id: this.form.actor_id
                     }
+                data.append('details', details)
+                axios({
+					method: "post",
+					url: "/core/elements/",
+					data: body,
+					headers: { "Content-Type": "multipart/form-data" },
+                
                 }).then((response) => {
                     this.load();
                 }).catch((error) => {
