@@ -47,8 +47,10 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.post('/auth/users/logout', {
-                
+            axios({
+					method: "post",
+					url: "/auth/users/logout",
+					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 sessions.storage.removeItem('auth-token');
                 sessions.storage.removeItem('auth-user');
