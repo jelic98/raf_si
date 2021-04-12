@@ -48,9 +48,10 @@ public class ProjectCtrl {
         return projectService.findByName(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id){
-        projectService.deleteProjectByName(id);
+    @DeleteMapping("")
+    public void delete(@ModelAttribute ProjectReqCreateDto dto){
+        System.out.println(dto);
+        projectService.deleteProjectByName(dto.getName());
     }
 
     @PostMapping("")
@@ -61,6 +62,6 @@ public class ProjectCtrl {
         return projectService.createNewProject(dto.getName(), creator);
     }
 
-    /*@PutMapping("")
-    public Project*/
+    @PutMapping("")
+    public Project
 }
