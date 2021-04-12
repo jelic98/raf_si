@@ -41,7 +41,7 @@ export default {
     methods:{
         logout: function(){
             
-            let jwt = sessionStorage.getItem('auth-token');
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;

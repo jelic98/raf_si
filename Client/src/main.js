@@ -26,7 +26,7 @@ let router = new VueRouter({
 
 router.beforeEach((to, from, next)=>{
     if(to.meta && to.meta.requires_login){
-        let user = sessionStorage.getItem('auth-user');
+        let user = JSON.parse(sessionStorage.getItem('auth-user'));
         if(user){
             next();
         }
