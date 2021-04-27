@@ -6,6 +6,7 @@ import Project from "./components/Project";
 
 import ManageTeams from "./components/ManageTeams";
 import RequirementsModel from "./components/RequirementsModel";
+import ClassModel from "./components/ClassModel";
 import Profile from "./components/Profile";
 
 const routes = [
@@ -17,6 +18,10 @@ const routes = [
     {
         path: '/register',
         component: Register
+    },
+    {
+        path: '/class',
+        component: ClassModel
     },
     {
         path: '/projects',
