@@ -1,23 +1,24 @@
 #!/bin/bash
-readonly PATH_LOG=logs/
 
+# Define constants
+readonly PATH_LOG=logs/
 readonly BROKER_PORT=9000
 readonly BROKER_DIR=Broker
-
 readonly LOG_PORT=9001
 readonly LOG_DIR=Log
-
 readonly AUTH_PORT=9002
 readonly AUTH_DIR=Auth
-
 readonly CORE_PORT=9003
 readonly CORE_DIR=Core
-
 readonly CLIENT_PORT=9004
 readonly CLIENT_DIR=Client
-
 readonly DATE="date +'%d-%m-%Y %H:%M:%S'"
 
+# Extract global arguments
+readonly ARG_N=$#
+readonly ARG_1=$1
+
+# Define logging helper function
 log() {
 	printf "\033[0;36m"
 	file=$(basename $0)
@@ -25,6 +26,26 @@ log() {
 	printf "\033[0m"
 }
 
+# Define starting helper function
+start() {
+	if [ $ARG_N -eq 0 ] || [ $ARG_1 = $1 ]; then
+		log "Starting $1 on port $2"
+		eval "nohup $3 2>&1 &"
+	fi
+}
+
+# Define stopping helper function
+stop() {
+	if [ $ARG_N -eq 0 ] || [ $ARG_1 = $1 ]; then
+		pid=$(lsof -t -i:$2)
+		if [ $pid ]; then
+			log "Stopping $1 (PID $pid) on port $2"
+		fi
+		kill -9 $pid 2>/dev/null
+	fi
+}
+
+# Define waiting helper function
 waitforq() {
 	log "Press Q to stop"
 	while [ true ]; do
@@ -37,42 +58,30 @@ waitforq() {
 	done
 }
 
+# Create log directory
 log "Setting up log directory"
 rm -rf "$PATH_LOG" && mkdir "$PATH_LOG"
 
-log "Starting $BROKER_DIR on port $BROKER_PORT"
-nohup php -S 127.0.0.1:$BROKER_PORT -t "$BROKER_DIR" > "$PATH_LOG/$BROKER_DIR.txt" 2>&1 &
+# Stop previously started service before restarting it
+stop $CLIENT_DIR $CLIENT_PORT
+stop $CORE_DIR $CORE_PORT
+stop $AUTH_DIR $AUTH_PORT
+stop $LOG_DIR $LOG_PORT
+stop $BROKER_DIR $BROKER_PORT
 
-log "Starting $LOG_DIR on port $LOG_PORT"
-nohup php -S 127.0.0.1:$LOG_PORT -t "$LOG_DIR" > "$PATH_LOG/$LOG_DIR.txt" 2>&1 &
+# Start service
+start $BROKER_DIR $BROKER_PORT "php -S 127.0.0.1:$BROKER_PORT -t '$BROKER_DIR' > '$PATH_LOG/$BROKER_DIR.txt'"
+start $LOG_DIR $LOG_PORT "php -S 127.0.0.1:$LOG_PORT -t '$LOG_DIR' > '$PATH_LOG/$LOG_DIR.txt'"
+start $AUTH_DIR $AUTH_PORT "mvn -f '$AUTH_DIR/pom.xml' spring-boot:run > '$PATH_LOG/$AUTH_DIR.txt'"
+start $CORE_DIR $CORE_PORT "mvn -f '$CORE_DIR/pom.xml' spring-boot:run > '$PATH_LOG/$CORE_DIR.txt'"
+start $CLIENT_DIR $CLIENT_PORT "npm run serve --prefix '$CLIENT_DIR' -- --port $CLIENT_PORT > '$PATH_LOG/$CLIENT_DIR.txt'"
 
-log "Starting $AUTH_DIR on port $AUTH_PORT"
-nohup mvn -f "$AUTH_DIR/pom.xml" spring-boot:run > "$PATH_LOG/$AUTH_DIR.txt" 2>&1 &
-
-log "Starting $CORE_DIR on port $CORE_PORT"
-nohup mvn -f "$CORE_DIR/pom.xml" spring-boot:run > "$PATH_LOG/$CORE_DIR.txt" 2>&1 &
-
-log "Starting $CLIENT_DIR on port $CLIENT_PORT"
-nohup npm run serve --prefix "$CLIENT_DIR" -- --port $CLIENT_PORT > "$PATH_LOG/$CLIENT_DIR.txt" 2>&1 &
-
+# Wait for cancellation request by user
 waitforq
 
-CLIENT_PID=$(lsof -t -i:$CLIENT_PORT)
-log "Stopping $CLIENT_DIR (PID $CLIENT_PID) on port $CLIENT_PORT"
-kill -9 $CLIENT_PID
-
-CORE_PID=$(lsof -t -i:$CORE_PORT)
-log "Stopping $CORE_DIR (PID $CORE_PID) on port $CORE_PORT"
-kill -9 $CORE_PID
-
-AUTH_PID=$(lsof -t -i:$AUTH_PORT)
-log "Stopping $AUTH_DIR (PID $AUTH_PID) on port $AUTH_PORT"
-kill -9 $AUTH_PID
-
-LOG_PID=$(lsof -t -i:$LOG_PORT)
-log "Stopping $LOG_DIR (PID $LOG_PID) on port $LOG_PORT"
-kill -9 $LOG_PID
-
-BROKER_PID=$(lsof -t -i:$BROKER_PORT)
-log "Stopping $BROKER_DIR (PID $BROKER_PID) on port $BROKER_PORT"
-kill -9 $BROKER_PID
+# Stop service
+stop $CLIENT_DIR $CLIENT_PORT
+stop $CORE_DIR $CORE_PORT
+stop $AUTH_DIR $AUTH_PORT
+stop $LOG_DIR $LOG_PORT
+stop $BROKER_DIR $BROKER_PORT
