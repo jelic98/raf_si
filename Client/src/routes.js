@@ -25,10 +25,6 @@ const routes = [
         component: UseCase
     },
     {
-        path: '/class',
-        component: ClassModel
-    },
-    {
         path: '/projects',
         component: ManageProjects,
         meta: {
@@ -46,6 +42,14 @@ const routes = [
     {
         path: '/projects/:project_name/models/:model_name',
         component: RequirementsModel,
+        props: true,
+        meta: {
+            requires_login: true
+        }
+    },
+	{
+        path: '/projects/:project_name/models/:model_name/oom',
+        component: ClassModel,
         props: true,
         meta: {
             requires_login: true

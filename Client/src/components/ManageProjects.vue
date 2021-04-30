@@ -110,69 +110,8 @@ export default {
                 title: null,
                 teams: []
             },
-            projects: [
-                {
-                    id: 1,
-                    name: 'Project 1',
-                    teams: [
-                        {
-                            name: 'Team 1',
-                        },
-                        {
-                            name: 'Team 2',
-                        },
-                        {
-                            name: 'Team 3',
-                        }
-                    ],
-                    models: [
-                        {
-                            name: 'Model 1'
-                        },
-                        {
-                            name: 'Model 2'
-                        },
-                        {
-                            name: 'Model 3'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    name: 'Project 2',
-                    teams: [],
-                    models: []
-                },
-                {
-                    id: 3,
-                    name: 'Project 3',
-                    teams: [],
-                    models: []
-                },
-                {
-                    id: 4,
-                    name: 'Project 4',
-                    teams: [],
-                    models: []
-                }
-            ],
-            teams: [
-                {
-                    name: 'Team 1'
-                },
-                {
-                    name: 'Team 2'
-                },
-                {
-                    name: 'Team 3'
-                },
-                {
-                    name: 'Team 4'
-                },
-                {
-                    name: 'Team 5'
-                }
-            ]
+            projects: [],
+            teams: []
         }
     },
     mounted: function() {

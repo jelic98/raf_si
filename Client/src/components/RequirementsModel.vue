@@ -403,7 +403,7 @@ export default {
             }
 
             let body = new FormData();
-            body.append('projcet', this.project_name)
+            body.append('project', this.project_name)
             body.append('model', this.model_name)
 
             axios({
