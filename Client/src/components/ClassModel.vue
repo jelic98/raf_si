@@ -16,6 +16,8 @@ export default {
                     path: go.TreeLayout.PathSource,
                     setsPortSpot: false,
                     setsChildPortSpot: false,
+					isInitial: false,
+					isOngoing: false,
                     arrangement: go.TreeLayout.ArrangementHorizontal
                 })
             });
@@ -35,14 +37,37 @@ export default {
             }
         }
 
+        function convertIsTreeLink(r) {
+            return r === "generalization";
+        }
+
+        function convertFromArrow(r) {
+            switch (r) {
+                case "generalization":
+                    return "";
+                default:
+                    return "";
+            }
+        }
+
+        function convertToArrow(r) {
+            switch (r) {
+                case "generalization":
+                    return "Triangle";
+                case "aggregation":
+                    return "StretchedDiamond";
+                default:
+                    return "";
+            }
+        }
+
         var propertyTemplate =
             $(go.Panel, "Horizontal",
                 $(go.TextBlock, {
                         isMultiline: false,
                         editable: false,
                         width: 12
-                    },
-                    new go.Binding("text", "visibility", convertVisibility)),
+                    }),
                 $(go.TextBlock, {
                         isMultiline: false,
                         editable: true
@@ -66,8 +91,8 @@ export default {
                     },
                     new go.Binding("text", "default", function(s) {
                         return s ? " = " + s : "";
-                    }))
-            );
+                    })),
+                new go.Binding("text", "visibility", convertVisibility));
 
         var methodTemplate =
             $(go.Panel, "Horizontal",
@@ -112,6 +137,7 @@ export default {
                     fromSpot: go.Spot.AllSides,
                     toSpot: go.Spot.AllSides
                 },
+				new go.Binding("location", "loc").makeTwoWay(),
                 $(go.Shape, {
                     fill: "lightyellow"
                 }),
@@ -187,29 +213,7 @@ export default {
                 )
             );
 
-        function convertIsTreeLink(r) {
-            return r === "generalization";
-        }
-
-        function convertFromArrow(r) {
-            switch (r) {
-                case "generalization":
-                    return "";
-                default:
-                    return "";
-            }
-        }
-
-        function convertToArrow(r) {
-            switch (r) {
-                case "generalization":
-                    return "Triangle";
-                case "aggregation":
-                    return "StretchedDiamond";
-                default:
-                    return "";
-            }
-        }
+		myDiagram.addDiagramListener("BackgroundSingleClicked", addNode);
 
         myDiagram.linkTemplate =
             $(go.Link, {
@@ -384,6 +388,20 @@ export default {
             nodeDataArray: nodedata,
             linkDataArray: linkdata
         });
+		function addNode(e) {
+			let point = e.diagram.lastInput.documentPoint;
+			myDiagram.model.addNodeData({
+				loc: point,
+                key: 15,
+                name: "Random",
+                properties: [{
+                        name: "name",
+                        type: "String",
+                        visibility: "public"
+                    }
+                ]
+            });
+		}
     }
 }
 </script>
