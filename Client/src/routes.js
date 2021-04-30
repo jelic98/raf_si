@@ -8,6 +8,7 @@ import ManageTeams from "./components/ManageTeams";
 import RequirementsModel from "./components/RequirementsModel";
 import ClassModel from "./components/ClassModel";
 import Profile from "./components/Profile";
+import UseCase from "./components/UseCase";
 
 const routes = [
     {
@@ -18,6 +19,10 @@ const routes = [
     {
         path: '/register',
         component: Register
+    },
+    {
+        path: '/use_case',
+        component: UseCase
     },
     {
         path: '/class',
