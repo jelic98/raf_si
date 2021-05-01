@@ -311,64 +311,8 @@ export default {
             model: {
                 elements: []
             },
-            requirements: [
-                {
-                    model_name: 'model-name',
-                    id: 1,
-                    type: 'requirement',
-                    details: {
-                        parent_id: null,
-                        title: 'Requirement name',
-                        description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                        requirement_type: 'functional',
-                        priority: 1,
-                        risk: 'low',
-                        actor_id: 1,
-                        children: [
-                            {
-                                model_name: 'model-name',
-                                id: 2,
-                                type: 'requirement',
-                                details: {
-                                    parent_id: 1,
-                                    title: 'Requirement name 2',
-                                    description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                                    requirement_type: 'functional',
-                                    priority: 1,
-                                    risk: 'low',
-                                    actor_id: 1,
-                                    children: []
-                                }
-                            },
-                            {
-                                model_name: 'model-name',
-                                id: 3,
-                                type: 'requirement',
-                                details: {
-                                    parent_id: 1,
-                                    title: 'Requirement name 3',
-                                    description: 'Test Test Test Test Test Test Test Test Test Test Test Test',
-                                    requirement_type: 'functional',
-                                    priority: 1,
-                                    risk: 'low',
-                                    actor_id: 1,
-                                    children: []
-                                }
-                            }
-                        ]
-                    }
-                }
-            ],
-            actors: [
-                    {
-                    model: 'model-name',
-                    id: 1,
-                    type: 'actor',
-                    details: {
-                        name: 'Actor 1'
-                    }
-                }
-            ],
+            requirements: [],
+            actors: [],
             requirements_no_depth: []
         };
     },
@@ -382,15 +326,10 @@ export default {
                 this.requirements_no_depth.push(requirement);
 
                 if (base == '') {
-
                     requirement.details.code = `${index + 1}`;
-
                     this.render(`${index + 1}`, requirement.details.children);
-
                 } else {
-
                     requirement.details.code = `${base}.${index + 1}`;
-
                     this.render(`${base}.${index + 1}`, requirement.details.children);
                 }
             });
@@ -448,10 +387,6 @@ export default {
 
                 for (let i = 1; i < split.length; i++) {
                     current.details.children.forEach((child) => {
-                        // if (child.details.code == split[i]) {
-                        //     current = child;
-                        // }
-
                         if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
@@ -616,10 +551,6 @@ export default {
 
                 for (let i = 1; i < split.length; i++) {
                     current.details.children.forEach((child) => {
-                        // if (child.details.code == split[i]) {
-                        //     current = child;
-                        // }
-
                         if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
