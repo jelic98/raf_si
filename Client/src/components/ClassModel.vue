@@ -1,12 +1,13 @@
 <template>
     <div>
         <Navbar></Navbar>
-        <b-button type='is-primary' @click='saveModel'>Save</b-button>
-        <div id='paletteDiv' style='width: 100vw; height: 10vh;'>
-            <b-button @click='setState("class")'>Class</b-button>
-            <b-button @click='setState("generalization")'>Generalization</b-button>
-            <b-button @click='setState("aggregation")'>Aggregation</b-button>
-            <b-button @click='setState("composition")'>Composition</b-button>
+        <div class="card">
+            <section class="card-content" style="padding: 50px">
+                <b-button type='is-primary' @click='saveModel'>Save</b-button>
+                <b-radio-button v-for="state in states" :key="state.value" v-model="state.active" :native-value="state.value" expanded>
+                    <span>{{ state.value }}</span>
+                </b-radio-button>
+            </section>
         </div>
         <div id='diagramDiv' style='width: 100vw; height: 90vh;'></div>
     </div>
@@ -29,14 +30,18 @@ export default {
             required: true,
             type: String
         }
-
     },
     data: function() {
         return {
             nodes: [],
             diagram: null,
             nodeKey: 0,
-            state: 'class'
+            states: [
+                { value: 'class' },
+                { value: 'generalization' },
+                { value: 'aggregation' },
+                { value: 'composition' }
+            ]
         };
     },
     mounted: function() {
@@ -44,8 +49,16 @@ export default {
         this.initDiagram();
     },
     methods: {
-        setState: function(state) {
-            this.state = state;
+        getState: function() {
+			console.log(this.states)
+            for(let i = 0; i < this.states.length; i++) {
+                let s = this.states[i];
+                if(s.active) {
+                    return s.value;
+                }
+            }
+
+            return this.states[0].value;
         },
         convertVisibility: function(v) {
             switch (v) {
@@ -140,7 +153,7 @@ export default {
             });
         },
         createNode: function(e) {
-            switch (this.state) {
+            switch (this.getState()) {
                 case 'class':
                     var node = {
                         key: this.nodeKey++,
@@ -166,7 +179,7 @@ export default {
             }
         },
         createLink: function(e) {
-            this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.state);
+            this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.getState());
         },
         makePort: function(name, spot) {
             return $(go.Shape, 'Rectangle', {
