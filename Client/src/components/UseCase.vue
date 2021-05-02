@@ -95,8 +95,7 @@ export default {
             second: null
         }
     },
-    mounted: function() {
-    },
+    mounted: function() {},
     methods: {
         addUseCase: function() {
             let use_case = {

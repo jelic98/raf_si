@@ -1,14 +1,97 @@
 <template>
     <div>
         <Navbar></Navbar>
+
         <div class="card">
             <section class="card-content" style="padding: 50px">
-                <b-button type='is-primary' @click='saveModel'>Save</b-button>
-                <b-radio-button v-for="state in states" :key="state.value" v-model="state.active" :native-value="state.value" expanded>
-                    <span>{{ state.value }}</span>
-                </b-radio-button>
+                <b-field>
+                    <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state.value">
+                        <span>{{ `${state.value.charAt(0).toUpperCase()}${state.value.slice(1)}`  }}</span>
+                    </b-radio-button>
+
+                    <b-button style="margin-left: auto" type='is-primary' @click='saveModel'>Save</b-button>
+                </b-field>
             </section>
         </div>
+
+        <b-modal :active.sync="modal_open" has-modal-card>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">
+                        Add Node
+                    </p>
+                </header>
+
+                <section class="modal-card-body">
+                    <b-field label="Name">
+                        <b-input v-model="form.name" placeholder="Enter a Name"></b-input>
+                    </b-field>
+
+                    <hr/>
+
+                    <p class="subtitle">
+                        Properties
+                        <b-button @click="form.properties.push({ name: null, visibility: null, type: null})" class="is-pulled-right is-small" type="is-primary">
+                            <span class="icon"><i class="fas fa-plus"></i></span>
+                        </b-button>
+                    </p>
+
+                    <b-table :data="form.properties">
+                        <b-table-column placeholder="Enter a Name" label="Name" v-slot="props">
+                            <b-input v-model="props.row.name"></b-input>
+                        </b-table-column>
+
+                        <b-table-column placeholder="Select a Visbility" label="Visibility" v-slot="props">
+                            <b-select v-model="props.row.visibility">
+                                <option value="private">Public</option>
+                                <option value="public">Private</option>
+                            </b-select>
+                        </b-table-column>
+
+                        <b-table-column placeholder="Select a Type" label="Type" v-slot="props">
+                            <b-select v-model="props.row.type">
+                                <option value="string">String</option>
+                                <option value="int">Integer</option>
+                            </b-select>
+                        </b-table-column>
+                    </b-table>
+
+                    <hr/>
+
+                    <p class="subtitle">
+                        Methods
+                        <b-button @click="form.methods.push({ name: null, visibility: null, type: null})" class="is-pulled-right is-small" type="is-primary">
+                            <span class="icon"><i class="fas fa-plus"></i></span>
+                        </b-button>
+                    </p>
+
+                    <b-table :data="form.methods">
+                        <b-table-column placeholder="Enter a Name" label="Name" v-slot="props">
+                            <b-input v-model="props.row.name"></b-input>
+                        </b-table-column>
+
+                        <b-table-column placeholder="Select a Visbility" label="Visibility" v-slot="props">
+                            <b-select v-model="props.row.visibility">
+                                <option value="private">Public</option>
+                                <option value="public">Private</option>
+                            </b-select>
+                        </b-table-column>
+
+                        <b-table-column placeholder="Select a Type" label="Type" v-slot="props">
+                            <b-select v-model="props.row.type">
+                                <option value="string">String</option>
+                                <option value="int">Integer</option>
+                            </b-select>
+                        </b-table-column>
+                    </b-table>
+                </section>
+
+                <footer class="modal-card-foot">
+                    <b-button style="margin-left: 10px" type='is-success' @click="createNode" expanded>Save</b-button>
+                </footer>
+            </div>
+        </b-modal>
+
         <div id='diagramDiv' style='width: 100vw; height: 90vh;'></div>
     </div>
 </template>
@@ -33,7 +116,49 @@ export default {
     },
     data: function() {
         return {
+            form: {
+                name: null,
+                properties: [],
+                methods: []
+            },
+            // properties: [
+            //     {
+            //         name: 'Property 1',
+            //         visibility: 'public',
+            //         type: 'string'
+            //     },
+            //     {
+            //         name: 'Property 2',
+            //         visibility: 'public',
+            //         type: 'int'
+            //     },
+            //     {
+            //         name: 'Property 3',
+            //         visibility: 'private',
+            //         type: 'string'
+            //     }
+            // ],
+            // methods: [
+            //     {
+            //         name: 'Method 1',
+            //         visibility: 'public',
+            //         type: 'string'
+            //     },
+            //     {
+            //         name: 'Method 2',
+            //         visibility: 'public',
+            //         type: 'int'
+            //     },
+            //     {
+            //         name: 'Method 3',
+            //         visibility: 'private',
+            //         type: 'string'
+            //     }
+            // ],
+            modal_open: false,
+            active_state: null,
             nodes: [],
+            links: [],
             diagram: null,
             nodeKey: 0,
             states: [
@@ -41,7 +166,8 @@ export default {
                 { value: 'generalization' },
                 { value: 'aggregation' },
                 { value: 'composition' }
-            ]
+            ],
+            event: null
         };
     },
     mounted: function() {
@@ -49,17 +175,17 @@ export default {
         this.initDiagram();
     },
     methods: {
-        getState: function() {
-			console.log(this.states)
-            for(let i = 0; i < this.states.length; i++) {
-                let s = this.states[i];
-                if(s.active) {
-                    return s.value;
-                }
-            }
-
-            return this.states[0].value;
-        },
+        // getState: function() {
+		// 	console.log(this.states)
+        //     for(let i = 0; i < this.states.length; i++) {
+        //         let s = this.states[i];
+        //         if(s.active) {
+        //             return s.value;
+        //         }
+        //     }
+        //
+        //     return this.states[0].value;
+        // },
         convertVisibility: function(v) {
             switch (v) {
                 case 'public':
@@ -120,6 +246,10 @@ export default {
             }).then((response) => {
                 this.name = response.data.name;
                 this.model.elements = response.data.elements;
+
+                this.nodes = [];
+                this.links = [];
+
                 this.model.elements.forEach((element) => {
                     if (element.type === 'class') {
                         this.nodes.push(element);
@@ -141,45 +271,136 @@ export default {
 
             let body = new FormData();
 
-            body.append('details', this.nodes);
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('elements', this.nodes.concat(this.links));
 
             axios({
-                method: "put",
-                url: "/core/models",
+                method: 'put',
+                url: '/core/models',
                 data: body,
                 headers: {
                     "Content-Type": "multipart/form-data"
-                },
+                }
+            }).then((response) => {
+                this.loadModel();
+                this.initDiagram();
+            }).catch((error) => {
+
             });
         },
-        createNode: function(e) {
-            switch (this.getState()) {
+        openModal: function(e) {
+            switch (this.active_state) {
                 case 'class':
-                    var node = {
-                        key: this.nodeKey++,
-                        loc: e.diagram.lastInput.documentPoint,
-                        name: 'Professor',
-                        properties: [{
-                            name: 'classes',
-                            type: 'List<Course>',
-                            visibility: 'public'
-                        }],
-                        methods: [{
-                            name: 'teach',
-                            parameters: [{
-                                name: 'class',
-                                type: 'Course'
-                            }],
-                            visibility: 'private'
-                        }]
-                    };
-                    this.nodes.push(node);
-                    this.diagram.model.addNodeData(node);
+                    this.event = e;
+                    this.modal_open = true;
                     break;
             }
         },
+        createNode: function() {
+            // var node = {
+            //     key: this.nodeKey++,
+            //     loc: this.event.diagram.lastInput.documentPoint,
+            //     name: 'Professor',
+            //     properties: [{
+            //         name: 'classes',
+            //         type: 'List<Course>',
+            //         visibility: 'public'
+            //     }, {
+            //         name: 'classes2',
+            //         type: 'List<Course>',
+            //         visibility: 'public'
+            //     }],
+            //     methods: [{
+            //         name: 'teach',
+            //         parameters: [{
+            //             name: 'class',
+            //             type: 'Course'
+            //         }],
+            //         visibility: 'private'
+            //     }, {
+            //         name: 'teach2',
+            //         parameters: [{
+            //             name: 'class',
+            //             type: 'Course'
+            //         }],
+            //         visibility: 'private'
+            //     }]
+            // };
+
+            let node = {
+                key: this.nodeKey++,
+                loc: this.event.diagram.lastInput.documentPoint,
+                name: this.form.name,
+                properties: this.form.properties,
+                methods: this.form.methods
+            };
+
+            this.active_state = null;
+
+            var jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            var body = new FormData();
+
+            this.modal_open = false;
+            this.event = null;
+
+            body.append('type', 'class');
+            body.append('model', this.model_name);
+            body.append('details', node);
+
+            axios({
+                method: 'post',
+                url: '/core/elements',
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
+            }).then((response) => {
+                var body = new FormData();
+
+                body.append('project', this.project_name);
+                body.append('model', this.model_name);
+                body.append('elements', this.nodes.concat(this.links));
+
+                axios({
+                    method: 'put',
+                    url: '/core/models',
+                    data: body,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+
+                this.loadModel();
+                this.initDiagram();
+            }).catch((error) => {
+
+            });
+
+            // this.nodes.push(node);
+            this.diagram.model.addNodeData(node);
+        },
         createLink: function(e) {
-            this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.getState());
+            let from = this.nodes.filter((node) => {
+                return node.key === e.subject.data.from;
+            })[0];
+
+            let to = this.nodes.filter((node) => {
+                return node.key === e.subject.data.to;
+            })[0];
+
+            this.links.push({
+                from: from,
+                to: to,
+                type: this.active_state
+            });
+
+            this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.active_state);
+
+            this.active_state = null;
         },
         makePort: function(name, spot) {
             return $(go.Shape, 'Rectangle', {
@@ -194,6 +415,47 @@ export default {
                 fromLinkable: true,
                 toLinkable: true,
                 cursor: 'pointer'
+            });
+        },
+        deleteNode: function(e) {
+            let to_delete = { nodes: [], links: [] };
+
+            this.diagram.selection.each((part) => {
+                if (part instanceof go.Node) {
+                    let node = this.nodes.filter((node) => {
+                        return node.key === part.key;
+                    })[0];
+
+                    to_delete.nodes.push(node);
+                }
+            });
+
+            to_delete.nodes.forEach((node) => {
+                let body = new FormData();
+                body.append('element', node.id);
+
+                axios({
+                    method: "delete",
+                    url: "/core/elements",
+                    data: body,
+                    headers: { "Content-Type": "multipart/form-data" },
+                }).then((response) => {
+                }).catch((error) => {
+                    body = new FormData();
+
+                    body.append('project', this.project_name);
+                    body.append('model', this.model_name);
+                    body.append('elements', this.nodes.concat(this.links));
+
+                    axios({
+                        method: 'put',
+                        url: '/core/models',
+                        data: body,
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    });
+                });
             });
         },
         initDiagram: function() {
@@ -264,12 +526,14 @@ export default {
                         },
                         new go.Binding('text', 'type').makeTwoWay())
                 );
+
             this.diagram =
                 $(go.Diagram, 'diagramDiv', {
                     'undoManager.isEnabled': true,
                     'draggingTool.dragsLink': true,
                     'draggingTool.isGridSnapEnabled': true,
                     'linkingTool.isUnconnectedLinkValid': true,
+                    'commandHandler.deleteSelection': this.deleteNode,
                     layout: $(go.TreeLayout, {
                         angle: 90,
                         path: go.TreeLayout.PathSource,
@@ -385,7 +649,7 @@ export default {
                 });
             this.diagram.model = $(go.GraphLinksModel);
             this.diagram.model.nodeDataArray = this.nodes;
-            this.diagram.addDiagramListener('BackgroundSingleClicked', this.createNode);
+            this.diagram.addDiagramListener('BackgroundSingleClicked', this.openModal);
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
         }
     }

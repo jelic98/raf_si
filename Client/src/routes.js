@@ -51,9 +51,9 @@ const routes = [
         path: '/projects/:project_name/models/:model_name/oom',
         component: ClassModel,
         props: true,
-        meta: {
-            requires_login: true
-        }
+        // meta: {
+        //     requires_login: true
+        // }
     },
     {
         path: '/teams',
