@@ -4,8 +4,8 @@ from src.parser import Parser
 from src.validator import Validator
 
 
-META_MODELS, META_RULES = 'meta/Models.meta', 'meta/Rules.meta'
-GEN_MODELS, GEN_RULES = 'gen/Models.py', 'gen/Rules.py'
+META_MODELS, META_RULES = 'meta/models.meta', 'meta/rules.meta'
+GEN_MODELS, GEN_RULES = 'gen/models.py', 'gen/rules.py'
 diagram = '{"nodes":[{"name":"1"}, {"name":"2"}], "links":[{"from":"1","to":"2","type":"generalization"}]}'
 
 
