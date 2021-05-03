@@ -32,8 +32,6 @@ public class RegisterTask {
     @Value("${spring.application.name}")
     private String serverName;
 
-    private static final int rate = 30000;
-
     @EventListener(ApplicationReadyEvent.class)
     public void register(){
         String url = "http://" + registerHost + ":" + registerPort + "/services";

@@ -10,9 +10,5 @@
 	{
 		"name": "port",
 		"type": "integer"
-	},
-	{
-		"name": "service",
-		"type": "string"
 	}
 ]

@@ -10,13 +10,13 @@
             </b-field>
         </div>
 
-        <div v-for="model in models" :key="model.name"  class="columns" style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
+        <div v-for="model in models" :key="model._id.name"  class="columns" style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
             <div class="column" style="margin: 0 30px;">
 
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">
-                            {{ model.name }}
+                            {{ model._id.name }}
                         </p>
                         <router-link class="button" :to="`/projects/${project_name}/models/${model.name}`"
                                   type="is-light"
@@ -77,7 +77,7 @@
 <script>
 import Navbar from "./Navbar";
 export default {
-    name: "ManageProjects",
+    name: "Project",
     components: {Navbar},
     props: {
         project_name: {
@@ -93,24 +93,7 @@ export default {
                 name: null,
                 type: null
             },
-            models: [
-                {
-                    name: 'Model 1',
-                    type: 'requirements'
-                },
-                {
-                    name: 'Model 2',
-                    type: 'requirements'
-                },
-                {
-                    name: 'Model 3',
-                    type: 'requirements'
-                },
-                {
-                    name: 'Model 4',
-                    type: 'requirements'
-                }
-            ]
+            models: []
         }
     },
     mounted: function() {
@@ -129,7 +112,7 @@ export default {
             axios.get('/core/models/all', {
                 project: this.project_name
             }).then((response) => {
-                this.models = response.data.project.models
+                this.models = response.data
             }).catch((error) => {
 
             })
@@ -143,7 +126,7 @@ export default {
 
             let body = new FormData();
             body.append('name', this.form.name);
-            body.append('project', this.form.project);
+            body.append('project', this.project_name);
             body.append('type', this.form.type);
 
             axios({
@@ -166,11 +149,6 @@ export default {
         },
         toString(array) {
             let string = '';
-
-            array.forEach((element) => {
-                string += `${element.name}, `
-            });
-
             return string.slice(0, string.length - 2);
         }
     }

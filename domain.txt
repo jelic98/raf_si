@@ -51,10 +51,4 @@ Table: models
 name (primary)
 project (primary)
 type
-elements (many-to-many)
-
-Table: elements
-id (primary)
-type
-model
-details (object)
+etails (object)
