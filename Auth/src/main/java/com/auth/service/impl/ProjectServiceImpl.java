@@ -28,13 +28,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResDto saveExistingProject(ProjectReqDto projectReqDto) {
+        System.out.println("LOGGGGGGGGGGG: " + projectReqDto);
+        System.out.println("TEAAAAAAAA: " + projectReqDto.getTeams());
         String[] teams = projectReqDto.getTeams().split(",");
         Project project = projectDao.findByName(projectReqDto.getName());
         Project projectToSave = new Project(project.getName(), project.getCreator());
         List<Team> teamsToAdd = project.getTeam();
         for (int i = 0; i < teams.length; i++){
             String team = teams[i].substring(teams[i].indexOf("\"", 8), teams[i].lastIndexOf("\""));
-            team = team.substring(1, team.length());
+            team = team.substring(1);
             Team teamToAdd = new Team(team);
             System.out.println(teamToAdd);
             if(!teamsToAdd.contains(teamToAdd))

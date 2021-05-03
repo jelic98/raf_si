@@ -177,7 +177,7 @@ export default {
 
 			axios({
 					method: "put",
-					url: "/auth/projects/",
+					url: "/auth/projects",
 					data: body,
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {

@@ -1,6 +1,5 @@
 package com.auth.task;
 
-import com.auth.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,11 +32,6 @@ public class RegisterTask {
     @Value("${spring.application.name}")
     private String serverName;
 
-    @Value("${schema.service.path}")
-    private String schemaServicePath;
-
-    private static final int rate = 30000;
-
     @EventListener(ApplicationReadyEvent.class)
     public void register(){
         String url = "http://" + registerHost + ":" + registerPort + "/services";
@@ -51,11 +45,11 @@ public class RegisterTask {
         map.put("port", serverPort);
 
         try {
-            Document res = Jsoup.connect(url).ignoreHttpErrors(true)
+            Document asd = Jsoup.connect(url).ignoreHttpErrors(true)
                     .header("Content-Type", "application/json")
                     .data(map)
                     .post();
-            System.out.println(res);
+            System.out.println(asd);
         } catch (IOException e) {
             e.printStackTrace();
         }

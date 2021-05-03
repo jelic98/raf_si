@@ -308,9 +308,7 @@ export default {
                 actor_id: null,
                 actor_name: null
             },
-            model: {
-                elements: []
-            },
+            model: {},
             requirements: [],
             actors: [],
             requirements_no_depth: []

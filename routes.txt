@@ -36,9 +36,3 @@ PUT core/models [project, model, elements] - Update model
 DELETE core/models [project, model] - Delete model
 GET core/models [project, model] - Fetch model
 GET core/models/all [project] - Fetch models
-
-POST core/elements [type, model, details] - Create element
-PUT core/elements [element, details] - Update element
-DELETE core/elements [element] - Delete element
-GET core/elements [element] - Fetch element
-GET core/models/all [model] - Fetch elements
