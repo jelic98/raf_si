@@ -1,0 +1,35 @@
+node Class
+name
+attributes list
+methods list
+parentClass list
+
+node Interface
+name
+methods list
+attributes list
+parentInterfaces list
+
+node Method
+name
+type
+visibility
+enclosingClass
+parameters list
+
+node Attribute
+name
+type
+visibility
+enclosingClass
+
+node Parameter
+name
+type
+enclosingMethod
+
+node Visibility
+PUBLIC
+PRIVATE
+PACKAGE
+PROTECTED
