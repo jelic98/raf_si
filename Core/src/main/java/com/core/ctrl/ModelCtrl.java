@@ -4,10 +4,7 @@ import com.core.domain.Element;
 import com.core.domain.Model;
 import com.core.domain.dao.ElementDao;
 import com.core.domain.dao.ModelDao;
-import com.core.domain.dto.ElementDto;
-import com.core.domain.dto.ElementReqDto;
-import com.core.domain.dto.ModelReqDto;
-import com.core.domain.dto.ModelResDto;
+import com.core.domain.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,43 +29,48 @@ public class ModelCtrl {
     @Autowired
     private ElementDao elementDao;
 
-    @GetMapping("/all/{id}")
-    public List<Model> getModel(@PathVariable("id") String id){
+    @GetMapping("/all")
+    public List<Model> getModel(/*@PathVariable("id") String id*/){
         List<Model> models = modelDao.findAll();
-        for(Model m : models){
+        /*for(Model m : models){
             if(!m.get_id().getProject().equals(id))
                 models.remove(m);
-        }
+        }*/
         return models;
     }
-    @GetMapping("/{nameId}/{projectId}")
-    public ModelResDto getModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId){
-        Model m = modelDao.findOneBy_id(nameId, projectId);
+    @GetMapping("")
+    public ModelResDto getModel(@ModelAttribute ModelGetReqDto dto){
+        Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
+        System.out.println(m);
         List<Object> elems = new ArrayList<>();
-        for(Object o : ((List<Object>) m.getElements()))
-            elems.add(elementDao.findAllBy_id((String) o));
+        if(m.getElements() != null)
+            for(Object o : ((List<Object>) m.getElements())) {
+                Element e = elementDao.findAllBy_id((String) o);
+                if(e != null)
+                    elems.add(e);
+            }
         return new ModelResDto(m, elems);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Model postModel(@ModelAttribute ModelReqDto dto){
         Model m = new Model(dto);
         modelDao.insert(m);
         return m;
     }
 
-    @PutMapping("/{nameId}/{projectId}")
-    public Model updateModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId, @ModelAttribute Object elements){
-        Model m = modelDao.findOneBy_id(nameId, projectId);
+    @PutMapping("")
+    public Model updateModel(@ModelAttribute ModelPutReqDto dto){
+        Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
         if(m == null)
-            return modelDao.findOneBy_id(nameId, projectId);
-        m.setElements(elements);
+            return modelDao.findOneBy_id(dto.getName(), dto.getProject());
+        m.setElements(dto.getElements());
         modelDao.save(m);
         return m;
     }
 
-    @DeleteMapping("/{nameId}/{projectId}")
-    public void deleteModel(@PathVariable("nameId") String nameId, @PathVariable("projectId") String projectId){
-        modelDao.deleteBy_id(nameId, projectId);
+    @DeleteMapping("")
+    public void deleteModel(@ModelAttribute ModelGetReqDto dto){
+        modelDao.deleteBy_id(dto.getName(), dto.getProject());
     }
 }
