@@ -14,7 +14,7 @@
             </section>
         </div>
 
-        <b-modal :active.sync="modal_open" has-modal-card>
+        <b-modal :active.sync="modal_open" has-modal-card @close="modalClose">
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">
@@ -23,7 +23,17 @@
                 </header>
 
                 <section class="modal-card-body">
-                    <b-field label="Name">
+                    <b-field>
+                        <b-radio-button v-model="form.type" native-value="class">
+                            <span>Class</span>
+                        </b-radio-button>
+
+                        <b-radio-button v-model="form.type" native-value="interface">
+                            <span>Interface</span>
+                        </b-radio-button>
+                    </b-field>
+
+                    <b-field :type="name_error === true ? 'is-danger' : ''" :message="name_error === true ? 'Name is required' : ''" label="Name">
                         <b-input v-model="form.name" placeholder="Enter a Name"></b-input>
                     </b-field>
 
@@ -50,8 +60,7 @@
 
                         <b-table-column placeholder="Select a Type" label="Type" v-slot="props">
                             <b-select v-model="props.row.type">
-                                <option value="string">String</option>
-                                <option value="int">Integer</option>
+                                <option v-for="(type, index) in nodeTypes" :key="index" :value="type.value">{{ type.display }}</option>
                             </b-select>
                         </b-table-column>
                     </b-table>
@@ -79,8 +88,7 @@
 
                         <b-table-column placeholder="Select a Type" label="Type" v-slot="props">
                             <b-select v-model="props.row.type">
-                                <option value="string">String</option>
-                                <option value="int">Integer</option>
+                                <option v-for="(type, index) in nodeTypes" :key="index" :value="type.value">{{ type.display }}</option>
                             </b-select>
                         </b-table-column>
                     </b-table>
@@ -92,7 +100,7 @@
             </div>
         </b-modal>
 
-        <div id='diagramDiv' style='width: 100vw; height: 90vh;'></div>
+        <div id='diagramDiv' style='width: 100vw; height: 75vh;'></div>
     </div>
 </template>
 <script>
@@ -117,6 +125,7 @@ export default {
     data: function() {
         return {
             form: {
+                type: null,
                 name: null,
                 properties: [],
                 methods: []
@@ -167,7 +176,18 @@ export default {
                 { value: 'aggregation' },
                 { value: 'composition' }
             ],
-            event: null
+            name_error: false,
+            event: null,
+            nodeTypes: [
+                {
+                    value: 'int',
+                    display: 'Integer'
+                },
+                {
+                    value: 'string',
+                    display: 'String'
+                }
+            ]
         };
     },
     mounted: function() {
@@ -327,39 +347,34 @@ export default {
             //         visibility: 'private'
             //     }]
             // };
-
             let node = {
                 key: this.nodeKey++,
                 loc: this.event.diagram.lastInput.documentPoint,
-                name: this.form.name,
                 properties: this.form.properties,
-                methods: this.form.methods
+                methods: this.form.methods,
+                // category: this.form.type
             };
 
-            this.active_state = null;
 
-            var jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
+            if (this.form.type === 'interface') {
+                node.name = `<<Interface>>\n${this.form.name}`;
+            } else {
+                node.name = this.form.name;
             }
 
-            var body = new FormData();
+            if (!this.form.name) {
+                this.name_error = true;
+            } else {
+                this.active_state = null;
 
-            this.modal_open = false;
-            this.event = null;
+                let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
-            body.append('type', 'class');
-            body.append('model', this.model_name);
-            body.append('details', node);
+                if (jwt) {
+                    axios.defaults.headers.common['Authorization'] = jwt;
+                }
 
-            axios({
-                method: 'post',
-                url: '/core/elements',
-                data: body,
-                headers: { "Content-Type": "multipart/form-data" },
-            }).then((response) => {
-                var body = new FormData();
+                this.event = null;
+                let body = new FormData();
 
                 body.append('project', this.project_name);
                 body.append('model', this.model_name);
@@ -374,14 +389,18 @@ export default {
                     }
                 });
 
-                this.loadModel();
-                this.initDiagram();
-            }).catch((error) => {
+                // this.nodes.push(node);
+                this.diagram.commit((d) => {
+                    d.model.addNodeData(node);
+                });
 
-            });
+                this.nodeTypes.push({
+                    value: node.name,
+                    display: node.name
+                })
 
-            // this.nodes.push(node);
-            this.diagram.model.addNodeData(node);
+                this.modalClose();
+            }
         },
         createLink: function(e) {
             let from = this.nodes.filter((node) => {
@@ -432,29 +451,18 @@ export default {
 
             to_delete.nodes.forEach((node) => {
                 let body = new FormData();
-                body.append('element', node.id);
+
+                body.append('project', this.project_name);
+                body.append('model', this.model_name);
+                body.append('elements', this.nodes.concat(this.links));
 
                 axios({
-                    method: "delete",
-                    url: "/core/elements",
+                    method: 'put',
+                    url: '/core/models',
                     data: body,
-                    headers: { "Content-Type": "multipart/form-data" },
-                }).then((response) => {
-                }).catch((error) => {
-                    body = new FormData();
-
-                    body.append('project', this.project_name);
-                    body.append('model', this.model_name);
-                    body.append('elements', this.nodes.concat(this.links));
-
-                    axios({
-                        method: 'put',
-                        url: '/core/models',
-                        data: body,
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    });
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
                 });
             });
         },
@@ -557,10 +565,11 @@ export default {
                             $(go.TextBlock, {
                                     row: 0,
                                     columnSpan: 2,
-                                    margin: 3,
+                                    margin: 8,
                                     alignment: go.Spot.Center,
+                                    textAlign: 'center',
                                     font: 'bold 12pt sans-serif',
-                                    isMultiline: false,
+                                    isMultiline: true,
                                     editable: true
                                 },
                                 new go.Binding('text', 'name').makeTwoWay()),
@@ -651,6 +660,17 @@ export default {
             this.diagram.model.nodeDataArray = this.nodes;
             this.diagram.addDiagramListener('BackgroundSingleClicked', this.openModal);
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
+        },
+        modalClose: function() {
+            this.name_error = false;
+            this.modal_open = false;
+
+            this.form = {
+                type: null,
+                name: null,
+                properties: [],
+                methods: []
+            };
         }
     }
 }
