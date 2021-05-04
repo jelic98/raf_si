@@ -53,12 +53,12 @@
                         </b-radio-button>
 
                         <b-radio-button v-model="form.type"
-                                        native-value="functional" disabled expanded>
+                                        native-value="functional" expanded>
                             <span>Functional</span>
                         </b-radio-button>
 
                         <b-radio-button v-model="form.type"
-                                        native-value="use_case" disabled expanded>
+                                        native-value="use_case" expanded>
                             <span>Use Case</span>
                         </b-radio-button>
                     </b-field>

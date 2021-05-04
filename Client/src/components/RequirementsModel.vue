@@ -10,40 +10,43 @@
             <b-tabs>
                 <b-tab-item label="Model">
                     <b-field>
-                        <b-button @click="() => {form.parent_id = null; modal_open = true}" type="is-success">
+                        <b-button @click="() => { this.form.parent_id = null; this.modal_open = true}" type="is-success">
                             <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Root Requirement</span>
                         </b-button>
+
+                        <b-button style="margin-left: auto" type='is-primary' @click="saveModel">Save</b-button>
                     </b-field>
+
 
                     <b-table
                         :data="requirements_no_depth">
 
                         <b-table-column label="#" v-slot="props">
-                            {{ props.row.details.code }}
+                            {{ props.row.code }}
                         </b-table-column>
 
                         <b-table-column label="Title" v-slot="props">
-                            {{ props.row.details.title }}
+                            {{ props.row.title }}
                         </b-table-column>
 
                         <b-table-column label="Description" v-slot="props">
-                            {{ props.row.details.description }}
+                            {{ props.row.description }}
                         </b-table-column>
 
                         <b-table-column label="Type" v-slot="props">
-                            {{ props.row.details.requirement_type }}
+                            {{ props.row.requirement_type }}
                         </b-table-column>
 
                         <b-table-column label="Priority" v-slot="props">
-                            {{ props.row.details.priority }}
+                            {{ props.row.priority }}
                         </b-table-column>
 
                         <b-table-column label="Risk" v-slot="props">
-                            {{ props.row.details.risk }}
+                            {{ props.row.risk }}
                         </b-table-column>
 
                         <b-table-column label="Actor" v-slot="props">
-                            {{ getActorName(props.row.details.actor_id) }}
+                            {{ props.row.actor_name }}
                         </b-table-column>
 
                         <b-table-column label="Manage" v-slot="props">
@@ -69,9 +72,9 @@
                         </b-button>
                     </b-field>
 
-                    <b-table :data="actors">
+                    <b-table :data="details.actors">
                         <b-table-column label="Name" v-slot="props">
-                            {{ props.row.details.name }}
+                            {{ props.row.name }}
                         </b-table-column>
                     </b-table>
                 </b-tab-item>
@@ -94,12 +97,12 @@
                     </b-field>
 
                     <b-field label="Type" style="margin-top: 30px">
-                        <b-radio-button v-model="form.type"
+                        <b-radio-button v-model="form.requirement_type"
                                         native-value="functional" expanded>
                             <span>Functional</span>
                         </b-radio-button>
 
-                        <b-radio-button v-model="form.type"
+                        <b-radio-button v-model="form.requirement_type"
                                         native-value="non_functional" expanded>
                             <span>Non-functional</span>
                         </b-radio-button>
@@ -150,9 +153,9 @@
                     </b-field>
 
                     <b-field label="Actor" style="margin-top: 30px">
-                        <b-select v-model="form.actor_id" placeholder="Select an Actor">
-                            <option v-for="actor in actors" :key="actor.id" :value="actor.id">
-                                {{ actor.details.name }}
+                        <b-select v-model="form.actor_name" placeholder="Select an Actor">
+                            <option v-for="(actor, key) in details.actors" :key="key" :value="actor.name">
+                                {{ actor.name }}
                             </option>
                         </b-select>
                     </b-field>
@@ -169,7 +172,7 @@
         <b-modal :active.sync="edit_modal_open" @close="closeModal">
             <div class="modal-card" style="width: auto">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">Add Requirement</p>
+                    <p class="modal-card-title">Edit Requirement</p>
                 </header>
 
                 <section class="modal-card-body">
@@ -182,13 +185,11 @@
                     </b-field>
 
                     <b-field label="Type" style="margin-top: 30px">
-                        <b-radio-button v-model="form.type"
-                                        native-value="functional" expanded>
+                        <b-radio-button v-model="form.requirement_type" native-value="functional" expanded>
                             <span>Functional</span>
                         </b-radio-button>
 
-                        <b-radio-button v-model="form.type"
-                                        native-value="non_functional" expanded>
+                        <b-radio-button v-model="form.requirement_type" native-value="non_functional" expanded>
                             <span>Non-functional</span>
                         </b-radio-button>
                     </b-field>
@@ -238,9 +239,9 @@
                     </b-field>
 
                     <b-field label="Actor" style="margin-top: 30px">
-                        <b-select v-model="form.actor_id" placeholder="Select an Actor">
-                            <option v-for="actor in actors" :key="actor.id" :value="actor.id">
-                                {{ actor.details.name }}
+                        <b-select v-model="form.actor_name" placeholder="Select an Actor">
+                            <option v-for="(actor, key) in details.actors" :key="key" :value="actor.name">
+                                {{ actor.name }}
                             </option>
                         </b-select>
                     </b-field>
@@ -262,7 +263,7 @@
 
                 <section class="modal-card-body">
                     <b-field label="Title">
-                        <b-input v-model="form.actor_name"></b-input>
+                        <b-input v-model="actor_form.name"></b-input>
                     </b-field>
                 </section>
 
@@ -299,19 +300,22 @@ export default {
             parent_requirement: null,
             editing_requirement: null,
             form: {
-                code: null,
                 title: null,
                 description: null,
                 requirement_type: null,
                 priority: null,
                 risk: null,
-                actor_id: null,
                 actor_name: null
             },
+            actor_form: {
+                name: null
+            },
             model: {},
-            requirements: [],
-            actors: [],
-            requirements_no_depth: []
+            requirements_no_depth: [],
+            details: {
+                requirements: [],
+                actors: []
+            }
         };
     },
     mounted: function() {
@@ -324,11 +328,11 @@ export default {
                 this.requirements_no_depth.push(requirement);
 
                 if (base == '') {
-                    requirement.details.code = `${index + 1}`;
-                    this.render(`${index + 1}`, requirement.details.children);
+                    requirement.code = `${index + 1}`;
+                    this.render(`${index + 1}`, requirement.children);
                 } else {
-                    requirement.details.code = `${base}.${index + 1}`;
-                    this.render(`${base}.${index + 1}`, requirement.details.children);
+                    requirement.code = `${base}.${index + 1}`;
+                    this.render(`${base}.${index + 1}`, requirement.children);
                 }
             });
         },
@@ -345,188 +349,113 @@ export default {
 
             axios({
                 method: "get",
-                url: "/core/models/",
+                url: "/core/models",
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.name = response.data.name;
-                this.model.elements = response.data.elements;
-                this.model.elements.forEach((element) => {
-                    if (element.type === 'requirement') {
-                        this.requirements.push(element);
-                    } else if (element.type === 'actor') {
-                        this.actors.push(element);
-                    }
-                });
-
-                this.render('', this.requirements);
+                this.details = response.data.details;
+                this.render('', this.details.requirements);
             }).catch((error) => {
 
             });
         },
         addRequirement: function() {
-            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
-            }
-
             if (this.parent_requirement) {
-                let split = this.parent_requirement.details.code.split('.');
+                let split = this.parent_requirement.code.split('.');
                 let current = null;
                 let root_req = null;
 
-                this.requirements.forEach((root) => {
-                    if (root.details.code == split[0]) {
+                this.details.requirements.forEach((root) => {
+                    if (root.code == split[0]) {
                         current     = root;
                         root_req    = root;
                     }
                 });
 
                 for (let i = 1; i < split.length; i++) {
-                    current.details.children.forEach((child) => {
-                        if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
+                    current.children.forEach((child) => {
+                        if (child.code.split('.')[child.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
-                    })
+                    });
                 }
 
-                current.details.children.push({
+                current.children.push({
                     project_name: this.project_name,
-                    model_name: this.name,
-                    type: 'requirement',
-                    details: {
-                        parent_id: current.id,
-                        title: this.form.name,
-                        description: this.form.name,
-                        requirement_type: this.form.requirement_type,
-                        priority: this.form.priority,
-                        risk: this.form.risk,
-                        actor_id: this.form.actor_id,
-                        children: []
-                    }
+                    model_name: this.model_name,
+                    parent_id: current.id,
+                    title: this.form.title,
+                    description: this.form.description,
+                    requirement_type: this.form.requirement_type,
+                    priority: this.form.priority,
+                    risk: this.form.risk,
+                    actor_name: this.form.actor_name,
+                    children: []
                 });
 
-                let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-                if (jwt) {
-                    axios.defaults.headers.common['Authorization'] = jwt;
-                }
-
-                let body = new FormData();
-                body.append('element', root_req.id);
-                body.append('details', root_req.details);
-
-                axios({
-					method: "put",
-					url: "/core/elements/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
-                }).then((response) => {
-                    this.load();
-                }).catch((error) => {
-
-                });
+                this.requirements_no_depth = [];
+                this.render('', this.details.requirements);
 
             } else {
-                let body = new FormData();
-
-                let details = {
+                let requirement = {
+                    project_name: this.project_name,
+                    model_name: this.model_name,
                     parent_id: null,
                     title: this.form.title,
                     description: this.form.description,
-                    type: this.form.type,
+                    requirement_type: this.form.requirement_type,
                     priority: this.form.priority,
                     risk: this.form.risk,
-                    actor_id: this.form.actor_id
+                    actor_name: this.form.actor_name,
+                    children: []
                 };
 
-                body.append('type', 'requirement');
-                body.append('model', this.model_name);
-                body.append('details', details);
-
-                axios({
-                    method: "post",
-                    url: "/core/elements/",
-                    data: body,
-                    headers: { "Content-Type": "multipart/form-data" },
-                }).then((response) => {
-                    this.load();
-                }).catch((error) => {
-
-                });
-
-                body = new FormData();
-
-                this.requirements.push(details);
-
-                this.model.elements.concat(this.requirements);
-                this.model.elements.concat(this.actors);
-
-                body.append('elements', this.model.elements);
-                body.append('model', this.model_name);
-                body.append('project', this.project_name);
-
-                axios({
-					method: "put",
-					url: "/core/models/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
-                }).then((response) => {
-                    this.load();
-                }).catch((error) => {
-
-                });
+                this.requirements_no_depth = [];
+                this.details.requirements.push(requirement);
+                this.render('', this.details.requirements);
             }
+
+            this.parent_requirement = null;
+            this.modal_open = false;
+            this.form = {
+                parent_id: null,
+                title: null,
+                description: null,
+                requirement_type: null,
+                priority: null,
+                risk: null,
+                actor_name: null
+            };
         },
         editRequirement: function() {
-            let split = this.editing_requirement.details.code.split('.');
+            let split = this.editing_requirement.code.split('.');
             let current = null;
-            let root_req = null;
 
-            this.requirements.forEach((root) => {
-                if (root.details.code == split[0]) {
-                    current     = root;
-                    root_req    = root;
+            this.details.requirements.forEach((root) => {
+                if (root.code == split[0]) {
+                    current = root;
                 }
             });
 
-            for (let i = 1; i < split.length; i++) {
-                current.details.children.forEach((child) => {
-                    if (child.details.code == split[i]) {
+            for (let i = 1; i <= split.length; i++) {
+                current.children.forEach((child) => {
+                    if (child.code.split('.')[child.code.split('.').length - 1] == split[i]) {
                         current = child;
                     }
-                })
+                });
             }
 
-            current.details.title = this.form.title;
-            current.details.description = this.form.description;
-            current.details.requirement_type = this.form.requirement_type;
-            current.details.priority = this.form.priority;
-            current.details.risk = this.form.risk;
-            current.details.actor_id = this.form.actor_id;
+            current.title = this.form.title;
+            current.description = this.form.description;
+            current.requirement_type = this.form.requirement_type;
+            current.priority = this.form.priority;
+            current.risk = this.form.risk;
+            current.actor_name = this.form.actor_name;
 
-            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
-            }
-
-            let body = new FormData();
-
-            body.append('element', root_req.id);
-            body.append('details', root_req.details);
-
-            axios({
-                method: "put",
-                url: "/core/elements",
-                data: body,
-                headers: { "Content-Type": "multipart/form-data" },
-            }).then((response) => {
-                this.load();
-            }).catch((error) => {
-
-            });
+            this.edit_modal_open = false;
+            this.requirements_no_depth = [];
+            this.render('', this.details.requirements);
         },
         deleteRequirement: function(requirement) {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -548,31 +477,15 @@ export default {
                 });
 
                 for (let i = 1; i < split.length; i++) {
-                    current.details.children.forEach((child) => {
+                    current.children.forEach((child) => {
                         if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
                     })
                 }
 
-                current.details.children = current.details.children.filter((child) => {
+                current.children = current.children.filter((child) => {
                     return child.id !== requirement.id;
-                });
-
-                let body = new FormData();
-
-                body.append('element', root_req.id);
-                body.append('details', root_req.details);
-
-                axios({
-                    method: "put",
-                    url: "/core/elements",
-                    data: body,
-                    headers: { "Content-Type": "multipart/form-data" },
-                }).then((response) => {
-                    this.load();
-                }).catch((error) => {
-
                 });
             } else {
                 let body = new FormData();
@@ -590,7 +503,7 @@ export default {
                 });
             }
         },
-        addActor: function() {
+        saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
@@ -599,15 +512,13 @@ export default {
 
             let body = new FormData();
 
-            body.append('type', 'actor');
+            body.append('project', this.project_name);
             body.append('model', this.model_name);
-            body.append('details', {
-                name: this.form.actor_name
-            });
+            body.append('details', this.details);
 
             axios({
-                method: "post",
-                url: "/core/elements",
+                method: "delete",
+                url: "/core/models",
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
@@ -616,16 +527,23 @@ export default {
 
             });
         },
+        addActor: function() {
+            this.details.actors.push({
+                name: this.actor_form.name
+            });
+
+            this.actor_modal_open = false;
+            this.actor_form = {
+                name: null
+            };
+        },
         closeModal: function() {
             this.form = {
-                parent_id: null,
-                code: null,
                 title: null,
                 description: null,
-                type: null,
+                requirement_type: null,
                 priority: null,
                 risk: null,
-                actor_id: null,
                 actor_name: null
             };
 
@@ -634,28 +552,24 @@ export default {
         },
         openEditModal: function(requirement) {
             this.editing_requirement = requirement;
+
+            this.form = {
+                parent_id: requirement.parent_id,
+                title: requirement.title,
+                description: requirement.description,
+                requirement_type: requirement.requirement_type,
+                priority: parseInt(requirement.priority),
+                risk: requirement.risk,
+                actor_name: requirement.actor_name
+            };
+
             this.edit_modal_open = true;
-        },
-        getActorName(actor_id) {
-            let str = '';
-
-            this.actors.forEach((actor) => {
-                if (actor_id == actor.id) {
-                    str = actor.details.name;
-                }
-            });
-
-            return str;
         }
     }
 }
 </script>
 
 <style>
-.ant-pagination {
-    margin-right: 30px !important;
-}
-
 textarea {
     resize: none !important;
 }

@@ -9,8 +9,20 @@
                         <span>{{ state.display  }}</span>
                     </b-radio-button>
 
-                    <b-button style="margin-left: auto" type='is-primary' @click='saveModel'>Save</b-button>
+                    <b-button style="margin-left: auto" type='is-light' @click='undo'>
+                        <span class="icon"><i class="fas fa-undo-alt"></i></span>
+                    </b-button>
+
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-redo-alt"></i></span>
+                    </b-button>
+
+                    <b-button style="margin-left: 10px" type='is-primary' @click='saveModel'>Save</b-button>
                 </b-field>
+
+                <b-message v-for="(error, key) in errors" :key="key" type="is-danger">
+                    {{ error }}
+                </b-message>
             </section>
         </div>
 
@@ -114,15 +126,63 @@ export default {
                 }
             ],
             first: null,
-            second: null
+            second: null,
+            errors: []
         }
     },
     mounted: function() {
         this.init();
     },
     methods: {
+        undo: function() {
+            this.diagram.undoManager.undo();
+        },
+        redo: function () {
+            this.diagram.undoManager.redo();
+        },
         saveModel: function() {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+
+            body.append('model', {
+                nodes: this.nodes,
+                links: this.links
+            });
+
+            axios({
+                method: 'post',
+                url: '/validator/validate',
+                data: body,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then((response) => {
+                body.append('project', this.project_name);
+                body.append('model', this.model_name);
+                body.append('details', {
+                    nodes: this.nodes,
+                    links: this.links
+                });
+
+                axios({
+                    method: 'put',
+                    url: '/core/models',
+                    data: body,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then((response) => {
+                    this.init();
+                }).catch((error) => {});
+
+            }).catch((error) => {
+                this.errors = error.data.errors;
+            });
         },
         convertToArrow: function(r) {
             switch (r) {
@@ -315,7 +375,7 @@ export default {
                         loc: e.diagram.lastInput.documentPoint,
                         text: this.active_state.value === 'use_case' ? 'New Use Case' : 'New Actor',
                         category: this.active_state.value,
-                        img: "https://cdn.discordapp.com/attachments/558738094795522049/838866440282177566/44-444921_stick-man-fight-kungfu-side-stick-figure-kung.png"
+                        img: "https://cdn.discordapp.com/attachments/558738094795522049/839263865623019551/unknown.png"
                     });
                 });
 

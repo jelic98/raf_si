@@ -21,36 +21,39 @@ const routes = [
         component: Register
     },
     {
-        path: '/use_case',
-        component: UseCase
-    },
-    {
         path: '/projects',
         component: ManageProjects,
-        meta: {
-            requires_login: true
-        }
+        // meta: {
+        //     requires_login: true
+        // }
     },
     {
         path: '/projects/:project_name',
         component: Project,
         props: true,
-        meta: {
-            requires_login: true
-        }
+        // meta: {
+        //     requires_login: true
+        // }
     },
     {
-        path: '/projects/:project_name/models/:model_name',
+        path: '/projects/:project_name/models/:model_name/rqm',
         component: RequirementsModel,
         props: true,
-        meta: {
-            requires_login: true
-        }
+        // meta: {
+        //     requires_login: true
+        // }
     },
 	{
         path: '/projects/:project_name/models/:model_name/oom',
         component: ClassModel,
         props: true,
+        // meta: {
+        //     requires_login: true
+        // }
+    },
+    {
+        path: '/projects/:project_name/models/:model_name/use_case',
+        component: UseCase,
         // meta: {
         //     requires_login: true
         // }

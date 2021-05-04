@@ -9,8 +9,21 @@
                         <span>{{ `${state.value.charAt(0).toUpperCase()}${state.value.slice(1)}`  }}</span>
                     </b-radio-button>
 
-                    <b-button style="margin-left: auto" type='is-primary' @click='saveModel'>Save</b-button>
+                    <b-button style="margin-left: auto" type='is-light' @click='undo'>
+                        <span class="icon"><i class="fas fa-undo-alt"></i></span>
+                    </b-button>
+
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-redo-alt"></i></span>
+                    </b-button>
+
+                    <b-button style="margin-left: 10px" type='is-primary' @click='saveModel'>Save</b-button>
+
                 </b-field>
+
+                <b-message v-for="(error, key) in errors" :key="key" type="is-danger">
+                    {{ error }}
+                </b-message>
             </section>
         </div>
 
@@ -187,7 +200,8 @@ export default {
                     value: 'string',
                     display: 'String'
                 }
-            ]
+            ],
+            errors: []
         };
     },
     mounted: function() {
@@ -195,6 +209,12 @@ export default {
         this.initDiagram();
     },
     methods: {
+        undo: function() {
+            this.diagram.undoManager.undo();
+        },
+        redo: function () {
+            this.diagram.undoManager.redo();
+        },
         // getState: function() {
 		// 	console.log(this.states)
         //     for(let i = 0; i < this.states.length; i++) {
@@ -291,22 +311,40 @@ export default {
 
             let body = new FormData();
 
-            body.append('project', this.project_name);
-            body.append('model', this.model_name);
-            body.append('elements', this.nodes.concat(this.links));
+            body.append('model', {
+                nodes: this.nodes,
+                links: this.links
+            });
 
             axios({
-                method: 'put',
-                url: '/core/models',
+                method: 'post',
+                url: '/validator/validate',
                 data: body,
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             }).then((response) => {
-                this.loadModel();
-                this.initDiagram();
-            }).catch((error) => {
+                body.append('project', this.project_name);
+                body.append('model', this.model_name);
+                body.append('details', {
+                    nodes: this.nodes,
+                    links: this.links
+                });
 
+                axios({
+                    method: 'put',
+                    url: '/core/models',
+                    data: body,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then((response) => {
+                    this.loadModel();
+                    this.initDiagram();
+                }).catch((error) => {});
+
+            }).catch((error) => {
+                this.errors = error.data.errors;
             });
         },
         openModal: function(e) {

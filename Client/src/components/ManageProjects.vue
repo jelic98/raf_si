@@ -161,8 +161,7 @@ export default {
                 this.closeModal();
                 this.load();
             }).catch((error) => {
-            
-			});
+            });
         },
         editProject: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
