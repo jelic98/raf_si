@@ -1,5 +1,5 @@
 import re
-import src.rule_parser as rp
+import src.generator as gen
 
 
 class Writer:
@@ -38,8 +38,6 @@ class Writer:
 
     def _writeRules(self, rules):
         with open(self._rules, 'w') as f:
-            rp.build()
-            
             for rule in rules:
                 error = rule['error']
                 code = rule['code']
@@ -47,4 +45,4 @@ class Writer:
                 method = ''.join(x.capitalize() or ' ' for x in error.split(' '))
                 method = method[0].lower() + method[1:]
 
-                f.write(rp.parse(code))
+                f.write(gen.parse(code))
