@@ -5,17 +5,17 @@ from gen.rules import Rules
 
 class Validator:
 
-    def validate(self, diagram):
+    def validate(self, model):
         nodes = {}
-        diagram = json.loads(diagram)
+        model = json.loads(model)
 
-        for n in diagram['nodes']:
+        for n in model['nodes']:
             clazz = Class()
             clazz.name = n['name']
             nodes[clazz.name] = clazz
         
         for name, clazz in nodes.items():
-            for l in diagram['links']:
+            for l in model['links']:
                 if l['type'] == 'generalization' and l['from'] == name:
                     clazz.parentClass.append(nodes[l['to']])
         

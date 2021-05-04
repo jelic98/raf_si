@@ -1,4 +1,7 @@
 import os
+import sys
+import cgi
+import html
 import json
 import requests
 import argparse
@@ -20,10 +23,10 @@ def _register():
     requests.request('POST', f'http://{BROKER_HOST}:{BROKER_PORT}/services', data=data)
 
 
-def _validate(diagram):
+def _validate(model):
     models, rules = Reader(META_MODELS, META_RULES).read()
     Writer(GEN_MODELS, GEN_RULES).write(models, rules)
-    return Validator().validate(diagram)
+    return Validator().validate(model)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -33,8 +36,17 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            data = self.rfile.read(int(self.headers['Content-Length'])).decode('UTF-8')
-            response = {'errors': _validate(data)}
+            
+            form = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=self.headers,
+                environ={
+                    'REQUEST_METHOD': 'POST',
+                    'CONTENT_TYPE': self.headers['Content-Type']})
+            
+            model = html.unescape(form.getvalue('model'))
+            
+            response = {'errors': _validate(model)}
             self.wfile.write(bytes(json.dumps(response), 'utf8'))
         else:
             self.send_response(404)
@@ -52,10 +64,9 @@ def _main():
     arg_parser.add_argument('server_port')
     args = arg_parser.parse_args()
 
-    server_name = args.server_name
     SERVER_PORT = int(args.server_port)
 
-    os.chdir(server_name)
+    os.chdir(args.server_name)
 
     _register()
     
