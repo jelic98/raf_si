@@ -31,7 +31,7 @@ def t_error(t):
 
 def p_rule(p):
     'rule : FOR iter IF logic'
-    p[0] = f'\ndef {_m}(self, nodes):\n{p[2]}if {p[4]}:\nprint("<ERROR>")'
+    p[0] = f'\ndef {_m}(self, nodes):\n{p[2]}if {p[4]}:\nreturn "<ERROR>"'
 
 def p_iter(p):
     '''iter : var AS ID

@@ -12,6 +12,8 @@ readonly CORE_PORT=9003
 readonly CORE_DIR=Core
 readonly CLIENT_PORT=9004
 readonly CLIENT_DIR=Client
+readonly VALIDATOR_PORT=9005
+readonly VALIDATOR_DIR=Validator
 readonly DATE="date +'%d-%m-%Y %H:%M:%S'"
 
 # Extract global arguments
@@ -30,6 +32,8 @@ log() {
 start() {
 	if [ $ARG_N -eq 0 ] || [ $ARG_1 = $1 ]; then
 		log "Starting $1 on port $2"
+		mkdir -p "$PATH_LOG"
+		rm -rf "$PATH_LOG/$1.txt"
 		eval "nohup $3 2>&1 &"
 	fi
 }
@@ -58,11 +62,8 @@ waitforq() {
 	done
 }
 
-# Create log directory
-log "Setting up log directory"
-rm -rf "$PATH_LOG" && mkdir "$PATH_LOG"
-
 # Stop previously started service before restarting it
+stop $VALIDATOR_DIR $VALIDATOR_PORT
 stop $CLIENT_DIR $CLIENT_PORT
 stop $CORE_DIR $CORE_PORT
 stop $AUTH_DIR $AUTH_PORT
@@ -75,11 +76,13 @@ start $LOG_DIR $LOG_PORT "php -S 127.0.0.1:$LOG_PORT -t '$LOG_DIR' > '$PATH_LOG/
 start $AUTH_DIR $AUTH_PORT "mvn -f '$AUTH_DIR/pom.xml' spring-boot:run > '$PATH_LOG/$AUTH_DIR.txt'"
 start $CORE_DIR $CORE_PORT "mvn -f '$CORE_DIR/pom.xml' spring-boot:run > '$PATH_LOG/$CORE_DIR.txt'"
 start $CLIENT_DIR $CLIENT_PORT "npm run serve --prefix '$CLIENT_DIR' -- --port $CLIENT_PORT > '$PATH_LOG/$CLIENT_DIR.txt'"
+start $VALIDATOR_DIR $VALIDATOR_PORT "python3 '$VALIDATOR_DIR/main.py' $VALIDATOR_DIR $VALIDATOR_PORT > '$PATH_LOG/$VALIDATOR_DIR.txt'"
 
 # Wait for cancellation request by user
 waitforq
 
 # Stop service
+stop $VALIDATOR_DIR $VALIDATOR_PORT
 stop $CLIENT_DIR $CLIENT_PORT
 stop $CORE_DIR $CORE_PORT
 stop $AUTH_DIR $AUTH_PORT

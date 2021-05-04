@@ -25,7 +25,7 @@
 	}
 
 	$curl = curl_init();
-	
+
 	curl_setopt_array($curl, [
 		CURLOPT_URL => "$host:$port/$service_path",
 		CURLOPT_CUSTOMREQUEST => $method,
@@ -34,6 +34,7 @@
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_HTTPHEADER => [
+			'Content-Length: ' . getallheaders()['Content-Length'],
 			'Authorization: ' . getallheaders()['Authorization']
 		]
 	]);

@@ -22,5 +22,9 @@ class Validator:
         rules = Rules()
         attrs = [getattr(rules, name) for name in dir(rules)]
         methods = filter(inspect.ismethod, attrs)
-        for method in methods:
-            method(nodes.values())
+        errors = []
+        for m in methods:
+            e = m(nodes.values())
+            if e is not None:
+                errors.append(e)
+        return errors
