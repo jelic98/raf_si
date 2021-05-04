@@ -11,7 +11,7 @@ import src.generator as gen
 
 BROKER_HOST, BROKER_PORT = '127.0.0.1', 9000
 SERVER_HOST, SERVER_PORT = '127.0.0.1', None
-META_MODELS, META_RULES = 'meta/models.meta', 'meta/rules.meta'
+META_MODELS, META_RULES = 'res/models.meta', 'res/rules.meta'
 GEN_MODELS, GEN_RULES = 'gen/models.py', 'gen/rules.py'
 
 
