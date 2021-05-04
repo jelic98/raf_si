@@ -38,6 +38,9 @@ class Writer:
 
     def _writeRules(self, rules):
         with open(self._rules, 'w') as f:
+            f.write('from gen.models import *\n')
+            f.write('class Rules:\n')
+
             for rule in rules:
                 error = rule['error']
                 code = rule['code']
