@@ -1,6 +1,6 @@
 # for nodes as n and methods of n as m if n is type Interace and visibility of m not PUBLIC
 
-RULE : 'for' VAR 'as' ITER ( 'and' VAR 'as' ITER )* 'if' EXPR
+RULE : 'for' VAR 'as' ID ( 'and' VAR 'as' ID )* 'if' EXPR
 VAR: ID ( 'of' ID )*
 ID: ( a-z )*
 EXPR: ID ( 'eq' | 'neq' | 'gt' | 'lt' | ' gte' | 'lte' ) ( LITERAL | VAR | ( 'type' MODEL ) )

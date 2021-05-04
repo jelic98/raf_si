@@ -1,9 +1,11 @@
 import re
+import src.rule_parser as rp
+
 
 class Writer:
 
-    def __init__(self, parser, models, rules):
-        self._parser = parser
+
+    def __init__(self, models, rules):
         self._models = models
         self._rules = rules
 
@@ -36,8 +38,8 @@ class Writer:
 
     def _writeRules(self, rules):
         with open(self._rules, 'w') as f:
-            parser = Parser()
-
+            rp.build()
+            
             for rule in rules:
                 error = rule['error']
                 code = rule['code']
@@ -45,4 +47,4 @@ class Writer:
                 method = ''.join(x.capitalize() or ' ' for x in error.split(' '))
                 method = method[0].lower() + method[1:]
 
-                f.write(self._parser.parse(code))
+                f.write(rp.parse(code))
