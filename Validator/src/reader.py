@@ -44,7 +44,9 @@ class Reader:
         
         with open(self._rules, 'r') as f:
             for line in [x.strip() for x in f.readlines() if len(x) > 1]:
-                if line.startswith('rule'):
+                if line.startswith('#'):
+                    continue
+                elif line.startswith('rule'):
                     error = ' '.join(line.split()[1:])
                     rule = {}
                     rule['error'] = error

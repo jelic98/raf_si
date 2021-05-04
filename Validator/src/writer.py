@@ -45,4 +45,4 @@ class Writer:
                 method = ''.join(x.capitalize() or ' ' for x in error.split(' '))
                 method = method[0].lower() + method[1:]
 
-                f.write(gen.parse(code))
+                f.write(gen.parse(method, code, error))

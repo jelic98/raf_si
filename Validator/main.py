@@ -1,7 +1,7 @@
 from src.reader import Reader
 from src.writer import Writer
 from src.validator import Validator
-import src.rule_parser as rp
+import src.generator as gen
 
 
 META_MODELS, META_RULES = 'meta/models.meta', 'meta/rules.meta'
@@ -10,10 +10,9 @@ diagram = '{"nodes":[{"name":"1"}, {"name":"2"}], "links":[{"from":"1","to":"2",
 
 
 def main():
-    print(gen.parse('for nodes as n if n eq 3'))
-    #models, rules = Reader(META_MODELS, META_RULES).read()
-    #Writer(GEN_MODELS, GEN_RULES).write(models, rules)
-    #Validator().validate(diagram)
+    models, rules = Reader(META_MODELS, META_RULES).read()
+    Writer(GEN_MODELS, GEN_RULES).write(models, rules)
+    #Validator().validate(model)
 
 
 if __name__ == '__main__':

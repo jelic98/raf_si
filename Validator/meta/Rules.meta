@@ -1,29 +1,29 @@
 rule Name cannot be null
-for nodes as n if n.name is null
+for nodes as n if name of n eq null
 
 rule Name is already defined
-for nodes as n1 and nodes as n2 if name of n1 is name of n2
+for nodes as n1 and nodes as n2 if name of n1 eq name of n2
 
 rule Class can only extend classes
-for nodes as n if n is type Class and parentClass of n not type Class
+for nodes as n if type of n eq Class and type of parentClass of n neq Class
 
 rule Class can only implement interfaces
-for nodes as n if n is type Class and parentClass of n not type Interface
+for nodes as n if type of n eq Class and type of parentClass of n neq Interface
 
 rule Interface can only extend interfaces
-for nodes as n if n is type Interface and parentClass of n not type Class
+for nodes as n if type of n eq Interface and type of parentClass of n neq Class
 
 rule Final class cannot be extended
-for nodes as n1 and nodes as n2 if parentClass of n2 is n1 and final of n1
+for nodes as n1 and nodes as n2 if parentClass of n2 eq n1 and final of n1
 
 rule Child class cannot have multiple parent classes
 for nodes as n if length of parentClass of n gt 1
 
 rule All attributes of interface must be public
-for nodes as n and attributes of n as a if n is type Interace and visibility of a not PUBLIC
+for nodes as n and attributes of n as a if type of n eq Interace and visibility of a neq PUBLIC of Visibility
 
 rule All methods of interface must be public
-for nodes as n and methods of n as m if n is type Interace and visibility of m not PUBLIC
+for nodes as n and methods of n as m if type of n eq Interace and visibility of m neq PUBLIC of Visibility
 
 rule Conflicting attributes
-for nodes as n and attributes of n as a1 and attributes of n as a2 if name of a1 is name of a2
+for nodes as n and attributes of n as a1 and attributes of n as a2 if name of a1 eq name of a2

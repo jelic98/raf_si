@@ -1,5 +1,5 @@
 class Validator:
 
     
-    def validate(self, diagram):
+    def validate(self, model):
         pass

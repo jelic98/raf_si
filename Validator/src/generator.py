@@ -11,42 +11,75 @@ reserved = {
 	'gt': 'GT',
 	'lt': 'LT',
 	'gte': 'GTE',
-	'lte': 'LTE'}
+	'lte': 'LTE',
+    'and': 'AND'}
 
 tokens = ['ID', 'INT'] + list(reserved.values())
 
 t_INT = r'\d+'
 
 def t_ID(t):
-	r'[a-zA-Z_]+'
+	r'[a-zA-Z][a-zA-Z0-9]*'
 	t.type = reserved.get(t.value, 'ID')
 	return t
 
-t_ignore = ' \t'
+t_ignore = ' \t\n'
 
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 def p_rule(p):
-	'rule : FOR var AS ID IF expr'
-	p[0] = f'for {p[4]} in {p[2]}:\n\tif {p[6]}:\n\t\tprint("ERROR")'
+    'rule : FOR iter IF logic'
+    p[0] = f'def {_m}(nodes):\n{p[2]}if {p[4]}:\nprint("<ERROR>")\n'
+
+def p_iter(p):
+    '''iter : var AS ID
+            | iter AND iter'''
+    if p[2] == 'and':
+        p[0] = f'{p[1]}{p[3]}'
+    else:
+        p[0] = f'for {p[3]} in {p[1]}:\n'
 
 def p_var(p):
-	'var : ID'
-	p[0] = p[1]
+    '''var : ID
+            | ID OF var'''
+    if len(p) > 2:
+        if p[1] == 'length':
+            p[0] = f'len({p[3]})'
+        elif p[1] == 'type':
+            p[0] = f'type({p[3]})'
+        else:
+            p[0] = f'{p[3]}.{p[1]}'
+    else:
+        p[0] = p[1]
+
+def p_logic(p):
+    '''logic : expr
+            | expr AND expr'''
+    if len(p) > 2:
+        p[0] = f'{p[1]} {p[2]} {p[3]}'
+    else:
+        p[0] = p[1]
 
 def p_expr(p):
-	'expr : term oper term'
-	p[0] = f'{p[1]}{p[2]}{p[3]}'
+    '''expr : term
+            | term oper term'''
+    if len(p) > 2:
+        p[0] = f'{p[1]} {p[2]} {p[3]}'
+    else:
+        p[0] = p[1]
 
 def p_term(p):
-	'''term : ID
-			| INT'''
-	if p[1].isdigit():
-		p[0] = int(p[1])
-	else:
-		p[0] = p[1]
+    '''term : var
+            | INT'''
+    if p[1].isdigit():
+        p[0] = int(p[1])
+    else:
+        if p[1] == 'null':
+            p[0] = 'None'
+        else:
+            p[0] = p[1]
 
 def p_oper(p):
 	'''oper : EQ
@@ -71,10 +104,12 @@ def p_oper(p):
 def p_error(p):
     print("Syntax error at '%s'" % p.value)
 
-def parse(code):
-	lexer = lex.lex()
-	parser = yacc.yacc()
-	lexer.input(code)
-	for tok in lexer:
-		print(tok)
-	return parser.parse(code)
+def parse(method, code, error):
+    global _m
+    _m = method
+    lexer = lex.lex()
+    parser = yacc.yacc()
+    gen, out = '', parser.parse(code).replace('<ERROR>', error)
+    for i, line in enumerate(out.split('\n')):
+        gen += '\t'*i + line + '\n'
+    return gen
