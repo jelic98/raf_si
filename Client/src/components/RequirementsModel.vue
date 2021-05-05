@@ -517,7 +517,7 @@ export default {
             body.append('details', this.details);
 
             axios({
-                method: "delete",
+                method: "put",
                 url: "/core/models",
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
