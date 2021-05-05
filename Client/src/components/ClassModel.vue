@@ -206,7 +206,6 @@ export default {
     },
     mounted: function() {
         this.loadModel();
-        this.initDiagram();
     },
     methods: {
         undo: function() {
@@ -264,8 +263,6 @@ export default {
             }
         },
         loadModel: function() {
-            var json = '[{"key":0,"loc":{"x":125,"y":-178.09375,"s":true},"name":"Professor","properties":[{"name":"classes","type":"List<Course>","visibility":"public","__gohashid":629}],"methods":[{"name":"teach","parameters":[{"name":"class","type":"Course"}],"visibility":"private","__gohashid":651}],"__gohashid":567}]';
-
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
@@ -284,20 +281,13 @@ export default {
                     "Content-Type": "multipart/form-data"
                 },
             }).then((response) => {
-                this.name = response.data.name;
-                this.model.elements = response.data.elements;
-
                 this.nodes = [];
                 this.links = [];
 
-                this.model.elements.forEach((element) => {
-                    if (element.type === 'class') {
-                        this.nodes.push(element);
-                    } else if (element.type === 'link') {
-                        this.links.push(element);
-                    }
-                });
-                this.nodes = JSON.parse(json);
+                this.nodes = response.data.details.nodes;
+                this.links = response.data.details.links;
+
+                this.initDiagram();
             }).catch((error) => {
 
             });
@@ -390,7 +380,7 @@ export default {
                 loc: this.event.diagram.lastInput.documentPoint,
                 properties: this.form.properties,
                 methods: this.form.methods,
-                // category: this.form.type
+                type: this.form.type
             };
 
 
@@ -405,27 +395,7 @@ export default {
             } else {
                 this.active_state = null;
 
-                let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-                if (jwt) {
-                    axios.defaults.headers.common['Authorization'] = jwt;
-                }
-
                 this.event = null;
-                let body = new FormData();
-
-                body.append('project', this.project_name);
-                body.append('model', this.model_name);
-                body.append('elements', this.nodes.concat(this.links));
-
-                axios({
-                    method: 'put',
-                    url: '/core/models',
-                    data: body,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
 
                 // this.nodes.push(node);
                 this.diagram.commit((d) => {
@@ -472,36 +442,6 @@ export default {
                 fromLinkable: true,
                 toLinkable: true,
                 cursor: 'pointer'
-            });
-        },
-        deleteNode: function(e) {
-            let to_delete = { nodes: [], links: [] };
-
-            this.diagram.selection.each((part) => {
-                if (part instanceof go.Node) {
-                    let node = this.nodes.filter((node) => {
-                        return node.key === part.key;
-                    })[0];
-
-                    to_delete.nodes.push(node);
-                }
-            });
-
-            to_delete.nodes.forEach((node) => {
-                let body = new FormData();
-
-                body.append('project', this.project_name);
-                body.append('model', this.model_name);
-                body.append('elements', this.nodes.concat(this.links));
-
-                axios({
-                    method: 'put',
-                    url: '/core/models',
-                    data: body,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
             });
         },
         initDiagram: function() {
@@ -579,7 +519,6 @@ export default {
                     'draggingTool.dragsLink': true,
                     'draggingTool.isGridSnapEnabled': true,
                     'linkingTool.isUnconnectedLinkValid': true,
-                    'commandHandler.deleteSelection': this.deleteNode,
                     layout: $(go.TreeLayout, {
                         angle: 90,
                         path: go.TreeLayout.PathSource,

@@ -131,7 +131,7 @@ export default {
         }
     },
     mounted: function() {
-        this.init();
+        this.loadModel();
     },
     methods: {
         undo: function() {
@@ -200,7 +200,37 @@ export default {
                     return 'Black';
             }
         },
-        init: function() {
+        loadModel: function() {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+            body.append('project', this.project_name)
+            body.append('model', this.model_name)
+
+            axios({
+                method: "get",
+                url: "/core/models/",
+                data: body,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+            }).then((response) => {
+                this.nodes = [];
+                this.links = [];
+
+                this.nodes = response.data.details.nodes;
+                this.links = response.data.details.links;
+
+                this.initDiagram();
+            }).catch((error) => {
+
+            });
+        },
+        initDiagram: function() {
             this.diagram =
                 $(go.Diagram, "diagramDiv",
                     {
@@ -385,127 +415,6 @@ export default {
             this.diagram.model.setDataProperty(e.subject.data, 'category', this.active_state.category);
             this.diagram.model.setDataProperty(e.subject.data, 'text', this.active_state.text);
             this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.active_state.value);
-        },
-        addUseCase: function() {
-            let use_case = {
-                type: 'use-case',
-                model: this.model,
-                details: {
-                    text: 'New Use Case',
-                    pos_x: null,
-                    pos_y: null,
-                    relations: []
-                }
-            };
-
-            axios.post('/core/elements', use_case).then((response) => {
-                use_case.id = response.data.new_use_case.id;
-
-                this.use_cases.push(use_case);
-
-                axios.put('/core/models', {
-                    elements: this.use_cases,
-                    model: this.model,
-                    project: this.project
-                });
-            });
-        },
-        updatePosition: function(data) {
-            const $scope = this;
-
-            let draggable = $scope.use_cases.filter((use_case) => {
-                return use_case.id === data.id;
-            })[0];
-
-            draggable.details.pos_x = data.event.clientX;
-            draggable.details.pos_y = data.event.clientY;
-
-            $scope.clearCanvas();
-            $scope.drawRelations();
-        },
-        setFirst: function(data) {
-            const $scope = this;
-            $scope.first = data;
-        },
-        setSecond: function(data) {
-            const $scope = this;
-            let second = null;
-
-            $scope.use_cases.forEach((use_case) => {
-                if (data.clientX > use_case.details.pos_x - 50 &&
-                    data.clientX < use_case.details.pos_x + 50 &&
-                    data.clientY > use_case.details.pos_y - 50 &&
-                    data.clientY < use_case.details.pos_y + 50) {
-                    second = use_case;
-                }
-            });
-
-            if (second) {
-                $scope.second = second;
-            }
-
-            $scope.first.details.relations.push({
-                type: $scope.relation_type,
-                use_case: $scope.second
-            });
-
-            axios.put('/core/details');
-
-            $scope.first            = null;
-            $scope.second           = null;
-            $scope.relation_active  = false;
-            $scope.relation_type    = null;
-
-            $scope.clearCanvas();
-            $scope.drawRelations();
-        },
-        clearCanvas: function() {
-            const canvas = document.querySelector('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        },
-        drawRelations: function() {
-            const $scope = this;
-
-            const canvas = document.querySelector('canvas');
-            const ctx = canvas.getContext('2d');
-
-            $scope.use_cases.forEach((use_case) => {
-                use_case.details.relations.forEach((relation) => {
-                    ctx.beginPath();
-                    ctx.moveTo(use_case.details.pos_x, use_case.details.pos_y);
-                    ctx.lineTo(relation.use_case.details.pos_x, relation.use_case.details.pos_y);
-
-                    ctx.font = "10px Comic Sans MS";
-                    ctx.textAlign = "center";
-                    ctx.fillText(relation.type, (use_case.details.pos_x + relation.use_case.details.pos_x) / 2, (use_case.details.pos_y + relation.use_case.details.pos_y) / 2);
-
-                    ctx.stroke();
-                });
-            });
-        },
-        saveUseCase: function(data) {
-            const $scope = this;
-
-            let use_case = $scope.use_cases.filter((use_case) => {
-                return use_case.id === data.use_case.id;
-            })[0];
-
-            use_case.details.text = data.data.details.text;
-        },
-        destroyUseCase: function(data) {
-            const $scope = this;
-
-            $scope.use_cases = $scope.use_cases.filter((use_case) => {
-                return use_case.id !== data.id;
-            });
-        },
-        saveDiagram: function() {
-            this.use_cases.forEach((use_case) => {
-                axios.put('/core/details', use_case).then((response) => {
-
-                });
-            });
         }
     }
 }

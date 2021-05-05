@@ -488,19 +488,19 @@ export default {
                     return child.id !== requirement.id;
                 });
             } else {
-//                let body = new FormData();
-//                body.append('element', requirement.id);
-//
-//                axios({
-//                    method: "delete",
-//                    url: "/core/elements",
-//                    data: body,
-//                    headers: { "Content-Type": "multipart/form-data" },
-//                }).then((response) => {
-//                    this.load();
-//                }).catch((error) => {
-//
-//                });
+                let body = new FormData();
+                body.append('element', requirement.id);
+
+                // axios({
+                //     method: "delete",
+                //     url: "/core/elements",
+                //     data: body,
+                //     headers: { "Content-Type": "multipart/form-data" },
+                // }).then((response) => {
+                //     this.load();
+                // }).catch((error) => {
+                //
+                // });
             }
         },
         saveModel: function() {
