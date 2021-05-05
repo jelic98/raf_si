@@ -3,12 +3,9 @@ package com.core.domain;
 import com.core.domain.dto.ModelReqDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,16 +28,16 @@ public class Model {
 
     private String type;
 
-    private Object elements;
+    private Object details;
 
     public Model(ModelReqDto dto){
         this._id = new PrimaryKey(dto.getName(), dto.getProject());
         this.type = dto.getType();
     }
 
-    public Model(String name, String project, String type, Object elements)  {
+    public Model(String name, String project, String type, Object details)  {
         _id = new PrimaryKey(name, project);
         this.type = type;
-        this.elements = elements;
+        this.details = details;
     }
 }

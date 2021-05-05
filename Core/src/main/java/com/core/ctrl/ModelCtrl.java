@@ -42,14 +42,10 @@ public class ModelCtrl {
     public ModelResDto getModel(@ModelAttribute ModelGetReqDto dto){
         Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
         System.out.println(m);
-        List<Object> elems = new ArrayList<>();
-        if(m.getElements() != null)
-            for(Object o : ((List<Object>) m.getElements())) {
-                Element e = elementDao.findAllBy_id((String) o);
-                if(e != null)
-                    elems.add(e);
-            }
-        return new ModelResDto(m, elems);
+        List<Object> details = new ArrayList<>();
+        if(m.getDetails() != null)
+            details = ((List<Object>) m.getDetails());
+        return new ModelResDto(m, details);
     }
 
     @PostMapping("")
@@ -64,7 +60,7 @@ public class ModelCtrl {
         Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
         if(m == null)
             return modelDao.findOneBy_id(dto.getName(), dto.getProject());
-        m.setElements(dto.getElements());
+        m.setDetails(dto.getDetails());
         modelDao.save(m);
         return m;
     }

@@ -15,12 +15,12 @@ public class ModelResDto {
     private String name;
     private String project;
     private String type;
-    private List<Object> elements;
+    private List<Object> details;
 
-    public ModelResDto(Model m, List<Object> elems){
+    public ModelResDto(Model m, List<Object> details){
         this.name = m.get_id().getName();
         this.project = m.get_id().getProject();
         this.type = m.getType();
-        this.elements = elems;
+        this.details = details;
     }
 }

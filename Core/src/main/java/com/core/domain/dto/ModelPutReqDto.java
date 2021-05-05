@@ -12,5 +12,5 @@ import java.util.List;
 public class ModelPutReqDto {
     private String name;
     private String project;
-    private List<Object> elements;
+    private List<Object> details;
 }
