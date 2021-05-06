@@ -1,7 +1,5 @@
-# for nodes as n and methods of n as m if n is type Interace and visibility of m not PUBLIC
-
 RULE : 'for' VAR 'as' ID ( 'and' VAR 'as' ID )* 'if' EXPR
 VAR: ID ( 'of' ID )*
-ID: ( a-z )*
+ID: ( a-z A-Z ) ( a-z A-Z 0-9 )*
 EXPR: ID ( 'eq' | 'neq' | 'gt' | 'lt' | ' gte' | 'lte' ) ( LITERAL | VAR | ( 'type' MODEL ) )
 MODEL: ( 'Class' | 'Interface' | 'Method' | 'Attribute' | 'Parameter' | 'Visibility' )

@@ -6,21 +6,21 @@ class Class:
 		self.name = None
 		self.attributes = []
 		self.methods = []
-		self.parentClass = []
+		self.parent = []
 
 class Interface:
 	def __init__(self):
 		self.name = None
 		self.methods = []
 		self.attributes = []
-		self.parentInterfaces = []
+		self.parent = []
 
 class Method:
 	def __init__(self):
 		self.name = None
 		self.type = None
 		self.visibility = None
-		self.enclosingClass = None
+		self.enclosing = None
 		self.parameters = []
 
 class Attribute:
@@ -28,13 +28,13 @@ class Attribute:
 		self.name = None
 		self.type = None
 		self.visibility = None
-		self.enclosingClass = None
+		self.enclosing = None
 
 class Parameter:
 	def __init__(self):
 		self.name = None
 		self.type = None
-		self.enclosingMethod = None
+		self.enclosing = None
 
 class Visibility(Enum):
 	PUBLIC = auto()

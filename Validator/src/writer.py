@@ -5,9 +5,10 @@ import src.generator as gen
 class Writer:
 
 
-    def __init__(self, models, rules):
+    def __init__(self, models, crules, frules):
         self._models = models
-        self._rules = rules
+        self._crules = crules
+        self._frules = frules
 
 
     def write(self, models, rules):
@@ -37,9 +38,14 @@ class Writer:
 
 
     def _writeRules(self, rules):
-        with open(self._rules, 'w') as f:
-            f.write('from gen.models import *\n')
-            f.write('class Rules:\n')
+        with open(self._crules, 'w') as fc, open(self._frules, 'w') as ff:
+            fc.write('from gen.models import *\n')
+            fc.write('class ClassRules:\n')
+            fc_write = False
+
+            ff.write('from gen.models import *\n')
+            ff.write('class FunctionalRules:\n')
+            ff_write = False
 
             for rule in rules:
                 error = rule['error']
@@ -48,4 +54,15 @@ class Writer:
                 method = ''.join(x.capitalize() or ' ' for x in error.split(' '))
                 method = method[0].lower() + method[1:]
 
-                f.write(gen.parse(method, code, error))
+                if rule['type'] == 'class':
+                    fc.write(gen.parse(method, code, error))
+                    fc_write = True
+                elif rule['type'] == 'functional':
+                    ff.write(gen.parse(method, code, error))
+                    ff_write = True
+
+            if not fc_write:
+                fc.write('\tpass\n');
+
+            if not ff_write:
+                ff.write('\tpass\n');
