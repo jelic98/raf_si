@@ -99,7 +99,7 @@ export default {
     mounted: function() {
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
 
-        this.load();
+        // this.load();
     },
     methods: {
         load: function () {
@@ -136,13 +136,16 @@ export default {
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.projects.push(response.data.project);
+                this.closeModal();
             }).catch((error) => {
-
+                this.closeModal();
             });
+
         },
         closeModal() {
             this.form = {
-                name: null
+                name: null,
+                type: null
             };
 
             this.modal_open = false;

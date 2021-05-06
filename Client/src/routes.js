@@ -54,6 +54,7 @@ const routes = [
     {
         path: '/projects/:project_name/models/:model_name/functional',
         component: UseCase,
+        props: true,
         // meta: {
         //     requires_login: true
         // }

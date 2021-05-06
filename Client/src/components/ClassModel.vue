@@ -269,17 +269,11 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            let body = new FormData();
-            body.append('project', this.project_name)
-            body.append('model', this.model_name)
-
-            axios({
-                method: "get",
-                url: "/core/models/",
-                data: body,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
             }).then((response) => {
                 this.nodes = [];
                 this.links = [];
@@ -289,7 +283,7 @@ export default {
 
                 this.initDiagram();
             }).catch((error) => {
-
+                this.initDiagram();
             });
         },
         saveModel: function() {
@@ -301,7 +295,10 @@ export default {
 
             let body = new FormData();
 
-            body.append('model', {
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('type', 'class');
+            body.append('details', {
                 nodes: this.nodes,
                 links: this.links
             });
@@ -314,6 +311,8 @@ export default {
                     "Content-Type": "multipart/form-data"
                 }
             }).then((response) => {
+                body = new FormData();
+
                 body.append('project', this.project_name);
                 body.append('model', this.model_name);
                 body.append('details', {
@@ -332,7 +331,6 @@ export default {
                     this.loadModel();
                     this.initDiagram();
                 }).catch((error) => {});
-
             }).catch((error) => {
                 this.errors = error.data.errors;
             });

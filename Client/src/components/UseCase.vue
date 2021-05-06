@@ -40,12 +40,12 @@ export default {
     name: "UseCase",
     components: {Navbar},
     props: {
-        // model: {
-        //     required: true
-        // },
-        // project: {
-        //     required: true
-        // }
+        project_name: {
+            required: true
+        },
+        model_name: {
+            required: true
+        }
     },
     data: function() {
         return {
@@ -140,6 +140,46 @@ export default {
         redo: function () {
             this.diagram.undoManager.redo();
         },
+        convertToArrow: function(r) {
+            switch (r) {
+                case 'association':
+                    return '';
+                default:
+                    return 'Triangle';
+            }
+        },
+        convertFill: function(r) {
+            switch (r) {
+                case 'generalization':
+                    return 'white';
+                default:
+                    return 'Black';
+            }
+        },
+        loadModel: function() {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
+            }).then((response) => {
+                this.nodes = [];
+                this.links = [];
+
+                this.nodes = response.data.details.nodes;
+                this.links = response.data.details.links;
+
+                this.initDiagram();
+            }).catch((error) => {
+                this.initDiagram();
+            });
+        },
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
@@ -165,6 +205,8 @@ export default {
                     "Content-Type": "multipart/form-data"
                 }
             }).then((response) => {
+                body = new FormData();
+
                 body.append('project', this.project_name);
                 body.append('model', this.model_name);
                 body.append('details', {
@@ -185,52 +227,6 @@ export default {
 
             }).catch((error) => {
                 this.errors = error.data.errors;
-            });
-        },
-        convertToArrow: function(r) {
-            switch (r) {
-                case 'association':
-                    return '';
-                default:
-                    return 'Triangle';
-            }
-        },
-        convertFill: function(r) {
-            switch (r) {
-                case 'generalization':
-                    return 'white';
-                default:
-                    return 'Black';
-            }
-        },
-        loadModel: function() {
-            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
-            }
-
-            let body = new FormData();
-            body.append('project', this.project_name)
-            body.append('model', this.model_name)
-
-            axios({
-                method: "get",
-                url: "/core/models/",
-                data: body,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
-            }).then((response) => {
-                this.nodes = [];
-                this.links = [];
-
-                this.nodes = response.data.details.nodes;
-                this.links = response.data.details.links;
-
-                this.initDiagram();
-            }).catch((error) => {
-
             });
         },
         initDiagram: function() {
