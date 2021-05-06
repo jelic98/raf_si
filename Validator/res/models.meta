@@ -33,3 +33,17 @@ PUBLIC
 PRIVATE
 PACKAGE
 PROTECTED
+
+node UseCase
+name
+parent list
+extends list
+includes list
+associations list
+
+node Actor
+name
+parent list
+extends list
+includes list
+associations list

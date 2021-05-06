@@ -41,3 +41,19 @@ class Visibility(Enum):
 	PRIVATE = auto()
 	PACKAGE = auto()
 	PROTECTED = auto()
+
+class UseCase:
+	def __init__(self):
+		self.name = None
+		self.parent = []
+		self.extends = []
+		self.includes = []
+		self.associations = []
+
+class Actor:
+	def __init__(self):
+		self.name = None
+		self.parent = []
+		self.extends = []
+		self.includes = []
+		self.associations = []

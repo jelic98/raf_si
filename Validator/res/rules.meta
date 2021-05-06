@@ -24,3 +24,18 @@ for nodes as n and methods of n as m if type of n eq Interface and visibility of
 
 rule class Conflicting attributes
 for nodes as n and attributes of n as a1 and attributes of n as a2 if a1 neq a2 and name of a1 eq name of a2
+
+rule functional Actor can only realize actors
+for nodes as n and parent of n as p if type of n eq Actor and type of p neq Actor
+
+rule functional Actor cannot include anything
+for nodes as n if type of n eq Actor and length of includes of n gt 0
+
+rule functional Actor cannot extend anything
+for nodes as n if type of n eq Actor and length of extends of n gt 0
+
+rule functional Actor cannot be associated with actors
+for nodes as n and associations of n as a if type of n eq Actor and type of a eq Actors
+
+rule functional Use case can only realize use cases
+for nodes as n and parent of n as p if type of n eq UseCase and type of p neq UseCase

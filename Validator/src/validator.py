@@ -8,6 +8,7 @@ class Validator:
 
     def validate(self, model):
         nodes = {}
+        keys = {}
         model = json.loads(model)
 
         if model['type'] == 'class':
@@ -45,6 +46,24 @@ class Validator:
 
             rules = ClassRules()
         elif model['type'] == 'functional':
+            for n in model['details']['nodes']:
+                node = Actor() if n['category'] == 'actor' else UseCase()
+                node.name = n['text']
+                nodes[node.name] = node
+                keys[n['key']] = node
+
+            for name, n in nodes.items():
+                for l in model['details']['links']:
+                    if keys[l['from']].name == name:
+                        if l['relationship'] == 'generalization':
+                            n.parent.append(keys[l['to']])
+                        elif l['relationship'] == 'extends':
+                            n.exnteds.append(keys[l['to']])
+                        elif l['relationship'] == 'includes':
+                            n.includes.append(keys[l['to']])
+                        elif l['relationship'] == 'associations':
+                            n.associations.append(keys[l['to']])
+            
             rules = FunctionalRules()
         
         attrs = [getattr(rules, name) for name in dir(rules)]
