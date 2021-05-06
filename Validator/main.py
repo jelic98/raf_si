@@ -35,7 +35,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == '/validate':
             self.send_response(200)
-            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Headers', '*')
+            self.send_header('Access-Control-Allow-Methods', '*')
+            self.send_header('Content-Type', '*')
             self.end_headers()
             
             form = cgi.FieldStorage(
@@ -47,6 +50,7 @@ class Handler(BaseHTTPRequestHandler):
             
             model = html.unescape(form.getvalue('model'))
             
+            #self.wfile.write(bytes(model, 'utf8'))
             response = {'errors': _validate(model)}
             self.wfile.write(bytes(json.dumps(response), 'utf8'))
         else:
@@ -56,6 +60,13 @@ class Handler(BaseHTTPRequestHandler):
             response = {"code": 405, "message": "Not Found"}
             self.wfile.write(bytes(json.dumps(response), 'utf8'))
 
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.send_header('Access-Control-Allow-Methods', '*')
+        self.send_header('Content-Type', '*')
+        self.end_headers()
 
 def _main():
     global SERVER_PORT
