@@ -18,7 +18,7 @@
                         <p class="card-header-title">
                             {{ model._id.name }}
                         </p>
-                        <router-link class="button" :to="`/projects/${project_name}/models/${model._id.name}`"
+                        <router-link class="button" :to="`/projects/${project_name}/models/${model._id.name}/${model.type}`"
                                   type="is-light"
                                   style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                             <span class="icon"><i class="fas fa-door-open"></i></span>
