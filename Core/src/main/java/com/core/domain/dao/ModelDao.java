@@ -15,12 +15,13 @@ public interface ModelDao extends MongoRepository<Model, String> {
     Model insert(Model m);
     void deleteBy_id(PrimaryKey _id);
 
-    default Model findOneBy_id(String student, String group) {
-        PrimaryKey _id = new PrimaryKey(student, group);
+    default Model findOneBy_id(String model, String project) {
+        PrimaryKey _id = new PrimaryKey(model, project);
+        System.out.println(model + " " + project);
         return findOneBy_id(_id);
     }
-    default void deleteBy_id(String student, String group){
-        PrimaryKey id = new PrimaryKey(student, group);
+    default void deleteBy_id(String model, String project){
+        PrimaryKey id = new PrimaryKey(model, project);
         deleteBy_id(id);
     }
 }

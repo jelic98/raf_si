@@ -31,6 +31,7 @@ public class ModelCtrl {
 
     @GetMapping("/all")
     public List<Model> getModel(/*@PathVariable("id") String id*/){
+        System.out.println("TU SAM");
         List<Model> models = modelDao.findAll();
         /*for(Model m : models){
             if(!m.get_id().getProject().equals(id))
@@ -39,13 +40,13 @@ public class ModelCtrl {
         return models;
     }
     @GetMapping("")
-    public ModelResDto getModel(@ModelAttribute ModelGetReqDto dto){
+    public Model getModel(@ModelAttribute ModelGetReqDto dto){
         Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
         System.out.println(m);
         List<Object> details = new ArrayList<>();
         if(m.getDetails() != null)
             details = ((List<Object>) m.getDetails());
-        return new ModelResDto(m, details);
+        return m;
     }
 
     @PostMapping("")
@@ -58,6 +59,7 @@ public class ModelCtrl {
     @PutMapping("")
     public Model updateModel(@ModelAttribute ModelPutReqDto dto){
         Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
+        System.out.println(dto + "\n" + m);
         if(m == null)
             return modelDao.findOneBy_id(dto.getName(), dto.getProject());
         m.setDetails(dto.getDetails());
