@@ -149,7 +149,10 @@ export default {
 
             let body = new FormData();
 
-            body.append('model', {
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('type', 'functional');
+            body.append('details', {
                 nodes: this.nodes,
                 links: this.links
             });
