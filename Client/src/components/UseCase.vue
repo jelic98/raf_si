@@ -40,12 +40,12 @@ export default {
     name: "UseCase",
     components: {Navbar},
     props: {
-        // model: {
-        //     required: true
-        // },
-        // project: {
-        //     required: true
-        // }
+        project_name: {
+            required: true
+        },
+        model_name: {
+            required: true
+        }
     },
     data: function() {
         return {
@@ -140,50 +140,6 @@ export default {
         redo: function () {
             this.diagram.undoManager.redo();
         },
-        saveModel: function() {
-            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
-
-            if (jwt) {
-                axios.defaults.headers.common['Authorization'] = jwt;
-            }
-
-            let body = new FormData();
-
-            body.append('model', {
-                nodes: this.nodes,
-                links: this.links
-            });
-
-            axios({
-                method: 'post',
-                url: '/validator/validate',
-                data: body,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            }).then((response) => {
-                body.append('project', this.project_name);
-                body.append('model', this.model_name);
-                body.append('details', {
-                    nodes: this.nodes,
-                    links: this.links
-                });
-
-                axios({
-                    method: 'put',
-                    url: '/core/models',
-                    data: body,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then((response) => {
-                    this.init();
-                }).catch((error) => {});
-
-            }).catch((error) => {
-                this.errors = error.data.errors;
-            });
-        },
         convertToArrow: function(r) {
             switch (r) {
                 case 'association':
@@ -207,17 +163,11 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            let body = new FormData();
-            body.append('project', this.project_name)
-            body.append('model', this.model_name)
-
-            axios({
-                method: "get",
-                url: "/core/models/",
-                data: body,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
             }).then((response) => {
                 this.nodes = [];
                 this.links = [];
@@ -227,7 +177,56 @@ export default {
 
                 this.initDiagram();
             }).catch((error) => {
+                this.initDiagram();
+            });
+        },
+        saveModel: function() {
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('type', 'functional');
+            body.append('details', {
+                nodes: this.nodes,
+                links: this.links
+            });
+
+            axios({
+                method: 'post',
+                url: '/validator/validate',
+                data: body,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then((response) => {
+                body = new FormData();
+
+                body.append('project', this.project_name);
+                body.append('model', this.model_name);
+                body.append('details', {
+                    nodes: this.nodes,
+                    links: this.links
+                });
+
+                axios({
+                    method: 'put',
+                    url: '/core/models',
+                    data: body,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then((response) => {
+                    this.init();
+                }).catch((error) => {});
+
+            }).catch((error) => {
+                this.errors = error.data.errors;
             });
         },
         initDiagram: function() {

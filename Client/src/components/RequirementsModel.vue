@@ -14,7 +14,15 @@
                             <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Root Requirement</span>
                         </b-button>
 
-                        <b-button style="margin-left: auto" type='is-primary' @click="saveModel">Save</b-button>
+                        <b-button style="margin-left: auto" type='is-light' @click='undo' :disabled="undo_stack.length < 1">
+                            <span class="icon"><i class="fas fa-undo-alt"></i></span>
+                        </b-button>
+
+                        <b-button style="margin-left: 10px" type='is-light' @click='redo' :disabled="redo_stack.length < 1">
+                            <span class="icon"><i class="fas fa-redo-alt"></i></span>
+                        </b-button>
+
+                        <b-button style="margin-left: 10px" type='is-primary' @click="saveModel">Save</b-button>
                     </b-field>
 
 
@@ -315,14 +323,35 @@ export default {
             details: {
                 requirements: [],
                 actors: []
-            }
+            },
+            undo_stack: [
+                {
+                    requirements: [],
+                    actors: []
+                }
+            ],
+            redo_stack: []
         };
     },
     mounted: function() {
-        this.render('', this.requirements);
+        this.render('', this.details.requirements);
         this.load();
     },
     methods: {
+        undo: function() {
+            this.redo_stack.push(this.undo_stack.pop());
+            this.details = JSON.parse(JSON.stringify(this.undo_stack[this.undo_stack.length - 1]));
+
+            this.requirements_no_depth = [];
+            this.render('', this.details.requirements);
+        },
+        redo: function() {
+            this.details = JSON.parse(JSON.stringify(this.redo_stack[this.redo_stack.length - 1]));
+            this.undo_stack.push(this.redo_stack.pop());
+
+            this.requirements_no_depth = [];
+            this.render('', this.details.requirements);
+        },
         render: function(base, requirements) {
             requirements.forEach((requirement, index) => {
                 this.requirements_no_depth.push(requirement);
@@ -343,22 +372,17 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            let body = new FormData();
-            body.append('project', this.project_name)
-            body.append('model', this.model_name)
-
-            axios({
-                method: "get",
-                url: "/core/models",
-                data: body,
-                headers: { "Content-Type": "multipart/form-data" },
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
             }).then((response) => {
                 this.name = response.data.name;
                 this.details = response.data.details;
+                this.undo_stack.push(this.details);
                 this.render('', this.details.requirements);
-            }).catch((error) => {
-
-            });
+            }).catch((error) => {});
         },
         addRequirement: function() {
             if (this.parent_requirement) {
@@ -384,7 +408,6 @@ export default {
                 current.children.push({
                     project_name: this.project_name,
                     model_name: this.model_name,
-                    parent_id: current.id,
                     title: this.form.title,
                     description: this.form.description,
                     requirement_type: this.form.requirement_type,
@@ -427,6 +450,9 @@ export default {
                 risk: null,
                 actor_name: null
             };
+
+            this.undo_stack.push(JSON.parse(JSON.stringify(this.details)));
+            this.redo_stack = [];
         },
         editRequirement: function() {
             let split = this.editing_requirement.code.split('.');
@@ -456,6 +482,9 @@ export default {
             this.edit_modal_open = false;
             this.requirements_no_depth = [];
             this.render('', this.details.requirements);
+
+            this.undo_stack.push(JSON.parse(JSON.stringify(this.details)));
+            this.redo_stack = [];
         },
         deleteRequirement: function(requirement) {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -464,44 +493,40 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            if (requirement.parent_id) {
-                let split = requirement.details.code.split('.');
+            if (requirement.code.split('.').length > 1) {
+                let split = requirement.code.split('.');
                 let current = null;
                 let root_req = null;
 
-                this.requirements.forEach((root) => {
-                    if (root.details.code == split[0]) {
+                this.details.requirements.forEach((root) => {
+                    if (root.code == split[0]) {
                         current     = root;
                         root_req    = root;
                     }
                 });
 
-                for (let i = 1; i < split.length; i++) {
+                for (let i = 1; i < split.length - 1; i++) {
                     current.children.forEach((child) => {
-                        if (child.details.code.split('.')[child.details.code.split('.').length - 1] == split[i]) {
+                        if (child.code.split('.')[child.code.split('.').length - 1] == split[i]) {
                             current = child;
                         }
-                    })
+                    });
                 }
 
                 current.children = current.children.filter((child) => {
-                    return child.id !== requirement.id;
+                    return child.code !== requirement.code;
                 });
             } else {
-                let body = new FormData();
-                body.append('element', requirement.id);
-
-                // axios({
-                //     method: "delete",
-                //     url: "/core/elements",
-                //     data: body,
-                //     headers: { "Content-Type": "multipart/form-data" },
-                // }).then((response) => {
-                //     this.load();
-                // }).catch((error) => {
-                //
-                // });
+                this.details.requirements = this.details.requirements.filter((root) => {
+                    return root.code !== requirement.code
+                });
             }
+
+            this.requirements_no_depth = [];
+            this.render('', this.details.requirements);
+
+            this.undo_stack.push(JSON.parse(JSON.stringify(this.details)));
+            this.redo_stack = [];
         },
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -523,9 +548,7 @@ export default {
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
-            }).catch((error) => {
-
-            });
+            }).catch((error) => {});
         },
         addActor: function() {
             this.details.actors.push({
@@ -536,6 +559,8 @@ export default {
             this.actor_form = {
                 name: null
             };
+
+            this.stack.push(this.details);
         },
         closeModal: function() {
             this.form = {

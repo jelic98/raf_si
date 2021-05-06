@@ -18,7 +18,7 @@
                         <p class="card-header-title">
                             {{ model._id.name }}
                         </p>
-                        <router-link class="button" :to="`/projects/${project_name}/models/${model._id.name}`"
+                        <router-link class="button" :to="`/projects/${project_name}/models/${model._id.name}/${model.type}`"
                                   type="is-light"
                                   style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                             <span class="icon"><i class="fas fa-door-open"></i></span>
@@ -53,13 +53,13 @@
                         </b-radio-button>
 
                         <b-radio-button v-model="form.type"
-                                        native-value="functional" expanded>
-                            <span>Functional</span>
+                                        native-value="class" expanded>
+                            <span>Class</span>
                         </b-radio-button>
 
                         <b-radio-button v-model="form.type"
-                                        native-value="use_case" expanded>
-                            <span>Use Case</span>
+                                        native-value="functional" expanded>
+                            <span>Functional</span>
                         </b-radio-button>
                     </b-field>
                 </section>
@@ -99,7 +99,7 @@ export default {
     mounted: function() {
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
 
-        this.load();
+        // this.load();
     },
     methods: {
         load: function () {
@@ -136,13 +136,16 @@ export default {
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.projects.push(response.data.project);
+                this.closeModal();
             }).catch((error) => {
-
+                this.closeModal();
             });
+
         },
         closeModal() {
             this.form = {
-                name: null
+                name: null,
+                type: null
             };
 
             this.modal_open = false;

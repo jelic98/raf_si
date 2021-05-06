@@ -130,16 +130,12 @@ export default {
 			axios.get('/auth/projects/all')
 			.then((projects) => {
                 this.projects   = projects.data;
-            }).catch((error) => {
-
-            });
+            }).catch((error) => {});
            
             axios.get('/auth/teams/all')
 			.then((teams) => {
                 this.teams   = teams.data;
-            }).catch((error) => {
-
-            });
+            }).catch((error) => {});
         },
         saveProject: function () {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -152,10 +148,10 @@ export default {
 			body.append('name', this.form.title);
 
 			axios({
-					method: "post",
-					url: "/auth/projects/",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "post",
+                url: "/auth/projects/",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" }
             }).then((response) => {
                 this.projects.push(response.data.name);
                 this.closeModal();
@@ -175,10 +171,10 @@ export default {
 			body.append('teams', this.form.teams);
 
 			axios({
-					method: "put",
-					url: "/auth/projects",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "put",
+                url: "/auth/projects",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
                 this.modal_open = false;

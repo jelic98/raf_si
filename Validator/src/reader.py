@@ -47,9 +47,10 @@ class Reader:
                 if line.startswith('#'):
                     continue
                 elif line.startswith('rule'):
-                    error = ' '.join(line.split()[1:])
+                    tokens = line.split()
                     rule = {}
-                    rule['error'] = error
+                    rule['type'] = tokens[1]
+                    rule['error'] = ' '.join(tokens[2:])
                 else:
                     rule['code'] = line
                     rules.append(rule)

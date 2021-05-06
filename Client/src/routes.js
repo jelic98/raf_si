@@ -36,7 +36,7 @@ const routes = [
         // }
     },
     {
-        path: '/projects/:project_name/models/:model_name/rqm',
+        path: '/projects/:project_name/models/:model_name/requirements',
         component: RequirementsModel,
         props: true,
         // meta: {
@@ -44,7 +44,7 @@ const routes = [
         // }
     },
 	{
-        path: '/projects/:project_name/models/:model_name/oom',
+        path: '/projects/:project_name/models/:model_name/class',
         component: ClassModel,
         props: true,
         // meta: {
@@ -52,8 +52,9 @@ const routes = [
         // }
     },
     {
-        path: '/projects/:project_name/models/:model_name/use_case',
+        path: '/projects/:project_name/models/:model_name/functional',
         component: UseCase,
+        props: true,
         // meta: {
         //     requires_login: true
         // }

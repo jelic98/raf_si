@@ -2,34 +2,48 @@ node Class
 name
 attributes list
 methods list
-parentClass list
+parent list
 
 node Interface
 name
 methods list
 attributes list
-parentInterfaces list
+parent list
 
 node Method
 name
 type
 visibility
-enclosingClass
+enclosing
 parameters list
 
 node Attribute
 name
 type
 visibility
-enclosingClass
+enclosing
 
 node Parameter
 name
 type
-enclosingMethod
+enclosing
 
 node Visibility
 PUBLIC
 PRIVATE
 PACKAGE
 PROTECTED
+
+node UseCase
+name
+parent list
+extends list
+includes list
+associations list
+
+node Actor
+name
+parent list
+extends list
+includes list
+associations list
