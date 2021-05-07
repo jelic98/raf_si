@@ -104,12 +104,7 @@ export default {
                 title: null,
                 teams: []
             },
-            projects: [
-                {
-                    name: 'project 1',
-                    teams: []
-                }
-            ],
+            projects: [],
             teams: []
         }
     },
