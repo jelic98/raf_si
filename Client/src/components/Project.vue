@@ -99,7 +99,7 @@ export default {
     mounted: function() {
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
 
-        // this.load();
+        this.load();
     },
     methods: {
         load: function () {
@@ -110,9 +110,11 @@ export default {
             }
 
             axios.get('/core/models/all', {
-                project: this.project_name
+                params: {
+                    project: this.project_name
+                }
             }).then((response) => {
-                this.models = response.data
+                this.models = response.data;
             }).catch((error) => {
 
             })

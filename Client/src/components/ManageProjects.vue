@@ -13,7 +13,7 @@
         <div v-for="project in projects" :key="project.name"  class="columns" style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
             <div class="column" style="margin: 0 30px;">
 
-                <router-link v-if="user && user.role === 'user'" :to="`/projects/${slugify(project.name)}`">
+                <router-link v-if="user && user.role === 'engineer'" :to="`/projects/${slugify(project.name)}`">
                     <div class="card">
                         <header class="card-header">
                             <p class="card-header-title">
@@ -29,7 +29,7 @@
                     </div>
                 </router-link>
 
-                <div v-else class="card">
+                <router-link v-else class="card" :to="`/projects/${slugify(project.name)}`">
                     <header class="card-header">
                         <p class="card-header-title">
                             {{ project.name }}
@@ -47,9 +47,11 @@
                     </header>
 
                     <section class="card-content" style="padding: 50px">
-                        
+                        <p>
+                            Teams: {{ toString(project.teams) }}
+                        </p>
                     </section>
-                </div>
+                </router-link>
             </div>
         </div>
 

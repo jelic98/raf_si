@@ -210,10 +210,10 @@ export default {
 
                 body.append('project', this.project_name);
                 body.append('model', this.model_name);
-                body.append('details', {
+                body.append('details', JSON.stringify({
                     nodes: this.nodes,
                     links: this.links
-                });
+                }));
 
                 axios({
                     method: 'put',

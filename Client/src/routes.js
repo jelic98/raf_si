@@ -62,9 +62,9 @@ const routes = [
     {
         path: '/teams',
         component: ManageTeams,
-        meta: {
-            requires_login: true
-        }
+        // meta: {
+        //     requires_login: true
+        // }
     },
     {
         path: '/profile',
