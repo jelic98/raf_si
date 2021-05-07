@@ -36,3 +36,7 @@ PUT core/models [project, model, elements] - Update model
 DELETE core/models [project, model] - Delete model
 GET core/models [project, model] - Fetch model
 GET core/models/all [project] - Fetch models
+
+Service: Validator
+
+POST validator/validate [model] - Validate model

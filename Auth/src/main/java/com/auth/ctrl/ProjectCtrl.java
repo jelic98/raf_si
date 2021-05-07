@@ -40,6 +40,9 @@ public class ProjectCtrl {
             if(!dto.getCreator().equals(username))
                 projects.remove(dto);
         }
+		// for each project
+		// for each team in project
+		// if team contains nikola
         System.out.println(projects);
         return projects;
     }

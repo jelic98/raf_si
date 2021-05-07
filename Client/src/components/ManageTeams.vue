@@ -129,50 +129,7 @@ export default {
                 name: null,
                 users: []
             },
-            teams: [
-                {
-                    id: 1,
-                    name: 'Team 1',
-                    users: [
-                        {
-                            username: 'user1'
-                        },
-                        {
-                            username: 'user2'
-                        },
-                        {
-                            username: 'user3'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    name: 'Team 2',
-                    users: [
-                        {
-                            username: 'user1'
-                        },
-                        {
-                            username: 'user2'
-                        },
-                        {
-                            username: 'user3'
-                        }
-                    ]
-                },
-                {
-                    id: 3,
-                    name: 'Team 3',
-                    users: [
-                        {
-                            username: 'user1'
-                        },
-                        {
-                            username: 'user2'
-                        }
-                    ]
-                }
-            ]
+            teams: []
         }
     },
     mounted: function() {
@@ -193,11 +150,11 @@ export default {
 
 			axios({
 					method: "get",
-					url: "/auth/projects/all",
+					url: "/auth/teams/all",
 					data: body,
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.tems = response.data.teams;
+                this.teams = response.data.teams;
             }).catch((error) => {
             
 			});

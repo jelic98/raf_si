@@ -54,10 +54,9 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            axios.get('/auth/user', {
-                params: {
-                    user: jwt
-                }
+			axios({
+                method: "get",
+                url: "/auth/users/"
             }).then((response) => {
                 this.user = response.data.user;
             }).catch((error) => {
@@ -72,15 +71,11 @@ export default {
             }
 
             let body = new FormData();
-            body.append('user', jwt);
-            body.append('email', this.form.email);
-            body.append('username', this.form.username);
             body.append('password', this.form.password);
-            body.append('passwordOld', this.user.password);
 
             axios({
-                method: "post",
-                url: "/auth/user",
+                method: "put",
+                url: "/auth/users/",
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
