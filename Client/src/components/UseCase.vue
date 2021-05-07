@@ -2,7 +2,7 @@
     <div>
         <Navbar></Navbar>
 
-        <div class="card">
+        <div v-if="user && (user.role === 'admin' || user.role === 'project_manager')" class="card">
             <section class="card-content" style="padding: 50px">
                 <b-field>
                     <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state">
@@ -56,6 +56,7 @@ export default {
             relation_active: false,
             relation_type: null,
             diagram: null,
+            user: [],
             states: [
                 {
                     display: 'Use Case',
@@ -131,6 +132,7 @@ export default {
         }
     },
     mounted: function() {
+        this.user = JSON.parse(sessionStorage.getItem('auth-user'));
         this.loadModel();
     },
     methods: {
@@ -172,8 +174,12 @@ export default {
                 this.nodes = [];
                 this.links = [];
 
-                this.nodes = response.data.details.nodes;
-                this.links = response.data.details.links;
+                if (response.data) {
+                    this.nodes = response.data.details.nodes;
+                    this.links = response.data.details.links;
+                } else {
+                    this.$router.push('/projects');
+                }
 
                 this.initDiagram();
             }).catch((error) => {
@@ -206,29 +212,30 @@ export default {
                     "Content-Type": "multipart/form-data"
                 }
             }).then((response) => {
-                body = new FormData();
+                if (response.data.errors && response.data.errors.length > 0) {
+                    this.errors = response.data.errors;
+                } else {
+                    body = new FormData();
 
-                body.append('project', this.project_name);
-                body.append('model', this.model_name);
-                body.append('details', JSON.stringify({
-                    nodes: this.nodes,
-                    links: this.links
-                }));
+                    body.append('project', this.project_name);
+                    body.append('model', this.model_name);
+                    body.append('details', JSON.stringify({
+                        nodes: this.nodes,
+                        links: this.links
+                    }));
 
-                axios({
-                    method: 'put',
-                    url: '/core/models',
-                    data: body,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then((response) => {
-                    this.init();
-                }).catch((error) => {});
-
-            }).catch((error) => {
-                this.errors = error.data.errors;
-            });
+                    axios({
+                        method: 'put',
+                        url: '/core/models',
+                        data: body,
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    }).then((response) => {
+                        this.init();
+                    }).catch((error) => {});
+                }
+            }).catch((error) => {});
         },
         initDiagram: function() {
             this.diagram =

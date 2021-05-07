@@ -9,7 +9,7 @@
 
             <b-tabs>
                 <b-tab-item label="Model">
-                    <b-field>
+                    <b-field v-if="user && (user.role === 'admin' || user.role === 'project_manager')">
                         <b-button @click="() => { this.form.parent_id = null; this.modal_open = true}" type="is-success">
                             <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Root Requirement</span>
                         </b-button>
@@ -57,7 +57,7 @@
                             {{ props.row.actor_name }}
                         </b-table-column>
 
-                        <b-table-column label="Manage" v-slot="props">
+                        <b-table-column v-if="user && (user.role === 'admin' || user.role === 'project_manager')" label="Manage" v-slot="props">
                             <b-button @click="() => { parent_requirement = props.row; modal_open = true}" type="is-success" style="margin-right: 5px">
                                 <span class="icon"><i class="fas fa-plus"></i></span>
                             </b-button>
@@ -74,10 +74,20 @@
                 </b-tab-item>
 
                 <b-tab-item label="Actors">
-                    <b-field>
+                    <b-field v-if="user && (user.role === 'admin' || user.role === 'project_manager')">
                         <b-button @click="actor_modal_open = true" type="is-success">
                             <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Actor</span>
                         </b-button>
+
+                        <b-button style="margin-left: auto" type='is-light' @click='undo' :disabled="undo_stack.length < 1">
+                            <span class="icon"><i class="fas fa-undo-alt"></i></span>
+                        </b-button>
+
+                        <b-button style="margin-left: 10px" type='is-light' @click='redo' :disabled="redo_stack.length < 1">
+                            <span class="icon"><i class="fas fa-redo-alt"></i></span>
+                        </b-button>
+
+                        <b-button style="margin-left: 10px" type='is-primary' @click="saveModel">Save</b-button>
                     </b-field>
 
                     <b-table :data="details.actors">
@@ -330,10 +340,12 @@ export default {
                     actors: []
                 }
             ],
-            redo_stack: []
+            redo_stack: [],
+            user: null
         };
     },
     mounted: function() {
+        this.user = JSON.parse(sessionStorage.getItem('auth-user'));
         this.render('', this.details.requirements);
         this.load();
     },
@@ -378,10 +390,14 @@ export default {
                     model: this.model_name
                 }
             }).then((response) => {
-                this.name = response.data.name;
-                this.details = response.data.details;
-                this.undo_stack.push(this.details);
-                this.render('', this.details.requirements);
+                if (response.data) {
+                    this.name = response.data.name;
+                    this.details = response.data.details;
+                    this.undo_stack.push(this.details);
+                    this.render('', this.details.requirements);
+                } else {
+                    this.$router.push('/projects');
+                }
             }).catch((error) => {});
         },
         addRequirement: function() {

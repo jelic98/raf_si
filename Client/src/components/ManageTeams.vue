@@ -9,8 +9,8 @@
                 </b-button>
             </b-field>
             <b-field>
-                <b-button @click="modal_open = true" type="is-light">
-                    <span class="icon"><i class="fas fa-trash"></i></span> <span>Delete users</span>
+                <b-button @click="delet_modal_open = true" type="is-light">
+                    <span class="icon"><i class="fas fa-trash"></i></span> <span>Delete Users</span>
                 </b-button>
             </b-field>
         </div>
@@ -93,7 +93,7 @@
         <b-modal :active.sync="delet_modal_open" @close="closeModal">
             <div class="modal-card" style="width: auto">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">Edit Team</p>
+                    <p class="modal-card-title">Delete User</p>
                 </header>
 
                 <section class="modal-card-body">
@@ -133,9 +133,7 @@ export default {
         }
     },
     mounted: function() {
-
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
-
         this.load();
     },
     methods: {
@@ -149,10 +147,10 @@ export default {
             let body = new FormData();
 
 			axios({
-					method: "get",
-					url: "/auth/teams/all",
-					data: body,
-					headers: { "Content-Type": "multipart/form-data" },
+                method: "get",
+                url: "/auth/teams/all",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.teams = response.data.teams;
             }).catch((error) => {
@@ -175,7 +173,8 @@ export default {
 					data: body,
 					headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.load()
+                this.load();
+                this.closeModal();
             }).catch((error) => {
                 this.$buefy.toast.open({
                     duration: 5000,
@@ -203,6 +202,7 @@ export default {
             }).then((response) => {
 
                 this.load();
+                this.closeModal();
 
             }).catch((error) => {
                 this.$buefy.toast.open({
@@ -210,10 +210,7 @@ export default {
                     message: `Invalid username`,
                     type: 'is-danger'
                 })
-            
 			});
-
-        
         },
         deletUser: function() {
             this.$buefy.dialog.confirm({
@@ -237,7 +234,7 @@ export default {
                     }).then((response) => {
 
                         this.load();
-                        this.modal_open = false
+                        this.closeModal();
 
                     }).catch((error) => {
                         this.$buefy.toast.open({

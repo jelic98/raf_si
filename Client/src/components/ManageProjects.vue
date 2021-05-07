@@ -12,34 +12,26 @@
 
         <div v-for="project in projects" :key="project.name"  class="columns" style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
             <div class="column" style="margin: 0 30px;">
-
-                <router-link v-if="user && user.role === 'engineer'" :to="`/projects/${slugify(project.name)}`">
-                    <div class="card">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                {{ project.name }}
-                            </p>
-                        </header>
-
-                        <section class="card-content" style="padding: 50px">
-                            <p>
-                                Teams: {{ toString(project.teams) }}
-                            </p>
-                        </section>
-                    </div>
-                </router-link>
-
-                <router-link v-else class="card" :to="`/projects/${slugify(project.name)}`">
+                <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">
                             {{ project.name }}
                         </p>
-                        <b-button @click="() => { editing_project_name = project.name; edit_modal_open = true; }"
+                        <router-link :to="`/projects/${slugify(project.name)}`">
+                            <b-button v-if="user && user.role === 'admin'" @click="openEditModal(project)"
+                                      type="is-light"
+                                      style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
+                                <span class="icon"><i class="fas fa-door-open"></i></span>
+                            </b-button>
+                        </router-link>
+
+                        <b-button v-if="user && user.role === 'admin'" @click="openEditModal(project)"
                                   type="is-light"
                                   style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                             <span class="icon"><i class="fas fa-edit"></i></span>
                         </b-button>
-                        <b-button @click="deleteProject(project.name)"
+
+                        <b-button v-if="user && user.role === 'admin'" @click="deleteProject(project.name)"
                                   type="is-light"
                                   style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                             <span class="icon"><i class="fas fa-trash"></i></span>
@@ -51,7 +43,7 @@
                             Teams: {{ toString(project.teams) }}
                         </p>
                     </section>
-                </router-link>
+                </div>
             </div>
         </div>
 
@@ -112,7 +104,12 @@ export default {
                 title: null,
                 teams: []
             },
-            projects: [],
+            projects: [
+                {
+                    name: 'project 1',
+                    teams: []
+                }
+            ],
             teams: []
         }
     },
@@ -160,6 +157,10 @@ export default {
                 this.load();
             }).catch((error) => {
             });
+        },
+        openEditModal: function(project) {
+            this.editing_project_name = project.name;
+            this.edit_modal_open = true;
         },
         editProject: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));

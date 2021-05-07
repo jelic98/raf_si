@@ -30,12 +30,12 @@
 
                             <b-radio-button v-model="form.role"
                                             native-value="engineer" expanded>
-                                <span>User</span>
+                                <span>Engineer</span>
                             </b-radio-button>
 
                             <b-radio-button v-model="form.role"
                                             native-value="project_manager" expanded>
-                                <span>User</span>
+                                <span>Project Manager</span>
                             </b-radio-button>
                         </b-field>
 

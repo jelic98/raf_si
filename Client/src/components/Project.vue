@@ -114,10 +114,12 @@ export default {
                     project: this.project_name
                 }
             }).then((response) => {
-                this.models = response.data;
-            }).catch((error) => {
-
-            })
+                if (response.data) {
+                    this.models = response.data;
+                } else {
+                    this.$router.push('/projects');
+                }
+            }).catch((error) => {});
         },
         saveModel: function () {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
