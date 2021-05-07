@@ -223,7 +223,7 @@ export default {
             let string = '';
 
             array.forEach((element) => {
-                string += `${element.name}, `
+                string += `${element}, `
             });
 
             return string.slice(0, string.length - 2);
