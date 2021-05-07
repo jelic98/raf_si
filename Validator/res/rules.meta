@@ -35,7 +35,7 @@ rule functional Actor cannot extend anything
 for nodes as n if type of n eq Actor and length of extends of n gt 0
 
 rule functional Actor cannot be associated with actors
-for nodes as n and associations of n as a if type of n eq Actor and type of a eq Actors
+for nodes as n and associations of n as a if type of n eq Actor and type of a eq Actor
 
 rule functional Use case can only realize use cases
 for nodes as n and parent of n as p if type of n eq UseCase and type of p neq UseCase
