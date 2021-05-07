@@ -2,7 +2,7 @@
     <div>
         <Navbar></Navbar>
 
-        <div class="card">
+        <div v-if="user.role === 'admin' || user.role === 'project_manager'" class="card">
             <section class="card-content" style="padding: 50px">
                 <b-field>
                     <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state.value">
@@ -201,10 +201,13 @@ export default {
                     display: 'String'
                 }
             ],
-            errors: []
+            errors: [],
+            user: null
         };
     },
     mounted: function() {
+        this.user = JSON.parse(sessionStorage.getItem('auth-user'));
+
         this.loadModel();
     },
     methods: {
@@ -269,6 +272,31 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
+            // TODO: Ne radi
+            // var axios = require('axios');
+            // var FormData = require('form-data');
+            // var data = new FormData();
+            // data.append('name', 'asd');
+            // data.append('project', 'MojProjekat');
+            // data.append('details', 'a');
+            //
+            // var config = {
+            //     method: 'get',
+            //     url: '/core/models',
+            //     headers: {
+            //         'Authorization': 'bla bla bla'
+            //     },
+            //     data : data
+            // };
+            //
+            // axios(config)
+            //     .then(function (response) {
+            //         console.log(JSON.stringify(response.data));
+            //     })
+            //     .catch(function (error) {
+            //         console.log(error);
+            //     });
+
             axios.get('/core/models', {
                 params: {
                     project: this.project_name,
@@ -294,14 +322,15 @@ export default {
             }
 
             let body = new FormData();
-
-            body.append('project', this.project_name);
-            body.append('model', this.model_name);
-            body.append('type', 'class');
-            body.append('details', {
-                nodes: this.nodes,
-                links: this.links
-            });
+            body.append('model', JSON.stringify({
+                'project': this.project_name,
+                'model': this.model_name,
+                'type': 'class',
+                'details': {
+                    nodes: this.nodes,
+                    links: this.links
+                }
+            }));
 
             axios({
                 method: 'post',
@@ -315,10 +344,10 @@ export default {
 
                 body.append('project', this.project_name);
                 body.append('model', this.model_name);
-                body.append('details', {
+                body.append('details', JSON.stringify({
                     nodes: this.nodes,
                     links: this.links
-                });
+                }));
 
                 axios({
                     method: 'put',

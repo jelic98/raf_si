@@ -539,7 +539,7 @@ export default {
 
             body.append('project', this.project_name);
             body.append('model', this.model_name);
-            body.append('details', this.details);
+            body.append('details', JSON.stringify(this.details));
 
             axios({
                 method: "put",
