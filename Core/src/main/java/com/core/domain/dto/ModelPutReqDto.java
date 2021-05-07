@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ModelPutReqDto {
-    private String name;
+    private String model;
     private String project;
-    private List<Object> details;
+    private Object details;
 }

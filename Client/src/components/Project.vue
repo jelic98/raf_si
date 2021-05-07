@@ -139,7 +139,7 @@ export default {
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.projects.push(response.data.project);
+                this.models.push(response.data);
                 this.closeModal();
             }).catch((error) => {
                 this.closeModal();

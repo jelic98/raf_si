@@ -3,10 +3,7 @@ package com.auth.ctrl;
 import com.auth.domain.Project;
 import com.auth.domain.User;
 import com.auth.domain.dao.ProjectDao;
-import com.auth.domain.dto.ProjectReqCreateDto;
-import com.auth.domain.dto.ProjectReqDto;
-import com.auth.domain.dto.ProjectResDto;
-import com.auth.domain.dto.TeamReqCreateDto;
+import com.auth.domain.dto.*;
 import com.auth.service.ProjectService;
 import com.auth.service.TokenHandlerService;
 import com.auth.service.UserService;
@@ -34,17 +31,31 @@ public class ProjectCtrl {
     public List<ProjectResDto> getElements(@RequestHeader String authorization) {
         String username = tokenHandlerService.getUsernameByToken(authorization);
         List<ProjectResDto> projects = projectService.findAllProjects();
-        if(projects == null)
-            projects = new ArrayList<>();
-        for(ProjectResDto dto : projects){
-            if(!dto.getCreator().equals(username))
-                projects.remove(dto);
+        List<ProjectResDto> projectsRet = new ArrayList<>();
+        UserResDto user = userService.findByUsername(username);
+        if(user.getRole().equals("admin")){
+            for(ProjectResDto dto : projects){
+                if(dto.getCreator() == null) continue;
+                if(dto.getCreator().equals(username))
+                    projectsRet.add(dto);
+            }
+        }else{
+            List<String> teams = user.getTeams();
+            for(ProjectResDto p : projects){
+                for(String t : p.getTeams()){
+                    for(String myT : teams){
+                        if(myT.equals(t))
+                            projectsRet.add(p);
+                    }
+                }
+            }
         }
+
+
 		// for each project
 		// for each team in project
-		// if team contains nikola
-        System.out.println(projects);
-        return projects;
+		System.out.println(projectsRet);
+        return projectsRet;
     }
 
     @GetMapping("/{id}")

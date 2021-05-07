@@ -30,22 +30,29 @@ public class ModelCtrl {
     private ElementDao elementDao;
 
     @GetMapping("/all")
-    public List<Model> getModel(/*@PathVariable("id") String id*/){
-        System.out.println("TU SAM");
+    public List<Model> getModel(@RequestParam String project){
+        String proj = project.substring(0, project.indexOf(','));
+        System.out.println(proj);
         List<Model> models = modelDao.findAll();
-        /*for(Model m : models){
-            if(!m.get_id().getProject().equals(id))
-                models.remove(m);
-        }*/
-        return models;
+        List<Model> modelsRet = new ArrayList<>();
+
+        for(Model m : models){
+            if(m.get_id().getProject() == null) continue;
+            if(m.get_id().getProject().equals(proj))
+                modelsRet.add(m);
+        }
+        return modelsRet;
     }
     @GetMapping("")
-    public Model getModel(@ModelAttribute ModelGetReqDto dto){
-        Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
-        System.out.println(m);
-        List<Object> details = new ArrayList<>();
+    public Model getModel(@RequestParam String project, @RequestParam String model){
+        System.out.println(project + " " + model);
+        String name = model;
+        Model m = modelDao.findOneBy_id(name.substring(0, name.indexOf(',')), project.substring(0, project.indexOf(',')));
+        //System.out.println(m);
+        /*List<Object> details = new ArrayList<>();
         if(m.getDetails() != null)
-            details = ((List<Object>) m.getDetails());
+            details = ((List<Object>) m.getDetails());*/
+        System.out.println(m);
         return m;
     }
 
@@ -58,10 +65,11 @@ public class ModelCtrl {
 
     @PutMapping("")
     public Model updateModel(@ModelAttribute ModelPutReqDto dto){
-        Model m = modelDao.findOneBy_id(dto.getName(), dto.getProject());
+        Model m = modelDao.findOneBy_id(dto.getModel(), dto.getProject());
         System.out.println(dto + "\n" + m);
+        System.out.println(dto.getDetails());
         if(m == null)
-            return modelDao.findOneBy_id(dto.getName(), dto.getProject());
+            return modelDao.findOneBy_id(dto.getModel(), dto.getProject());
         m.setDetails(dto.getDetails());
         modelDao.save(m);
         return m;

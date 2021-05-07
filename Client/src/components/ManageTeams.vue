@@ -152,7 +152,7 @@ export default {
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-                this.teams = response.data.teams;
+                this.teams = response.data;
             }).catch((error) => {
             
 			});
@@ -224,7 +224,7 @@ export default {
                     }
 
                     let body = new FormData();
-                    body.append('user', this.del_user);
+                    body.append('username', this.del_user);
 
                     axios({
                         method: "delete",

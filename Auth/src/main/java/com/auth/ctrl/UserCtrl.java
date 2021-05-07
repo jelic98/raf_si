@@ -54,8 +54,7 @@ public class UserCtrl {
 
     @DeleteMapping("")
     //@Transactional
-    public void deleteElement(@RequestHeader String authorization){
-        String username = tokenHandlerService.getUsernameByToken(authorization);
+    public void deleteElement(@ModelAttribute String username){
         userService.deleteUserByUsername(username);
     }
 

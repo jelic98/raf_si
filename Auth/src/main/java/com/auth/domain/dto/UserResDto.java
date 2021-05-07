@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,18 +22,18 @@ public class UserResDto {
     private String username;
     private String email;
     private String password;
-    private List<Team> teams;
+    private List<String> teams;
     private Role role;
-    private List<String> projects;
 
     public UserResDto(User user){
         username = user.getUsername();
         email = user.getEmail();
         password = user.getPassword();
         role = user.getRole();
-        /*if(user.getProjects() != null)
-            projects = user.getProjects();*/
-        if(user.getTeam() != null)
-            teams = user.getTeam();
+        teams = new ArrayList<>();
+        if(user.getTeam() != null) {
+            for(Team t : user.getTeam())
+                teams.add(t.getName());
+        }
     }
 }

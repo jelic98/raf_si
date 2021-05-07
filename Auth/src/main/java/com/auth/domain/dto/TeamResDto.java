@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.ManyToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,14 +19,20 @@ import java.util.List;
 public class TeamResDto {
 
     private String name;
-    private List<User> users;
-    private List<Project> projects;
+    private List<String> users;
+    private List<String> projects;
     private String creator;
 
     public TeamResDto(Team team){
         name = team.getName();
-        users = team.getUser();
-        projects = team.getProject();
+        users = new ArrayList<>();
+        for(User u : team.getUser()){
+            users.add(u.getUsername());
+        }
+        projects = new ArrayList<>();
+        for(Project u : team.getProject()){
+            users.add(u.getName());
+        };
         creator = team.getCreator().getUsername();
     }
 }

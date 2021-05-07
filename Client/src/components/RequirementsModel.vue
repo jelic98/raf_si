@@ -391,8 +391,8 @@ export default {
                 }
             }).then((response) => {
                 if (response.data) {
-                    this.name = response.data.name;
-                    this.details = response.data.details;
+                    this.name = response.data._id.name;
+                    this.details = JSON.parse(response.data.details);
                     this.undo_stack.push(this.details);
                     this.render('', this.details.requirements);
                 } else {
