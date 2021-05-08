@@ -175,6 +175,7 @@ export default {
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
                 this.load();
+                this.closeModal();
                 this.modal_open = false;
             }).catch((error) => {
             
@@ -193,7 +194,7 @@ export default {
                     }
 
                     let body = new FormData();
-                    body.append('name', this.form.title);
+                    body.append('name', project_name);
 
                     axios({
                         method: "delete",
@@ -202,6 +203,7 @@ export default {
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then((response) => {
                         this.load();
+                        this.closeModal();
                     }).catch((error) => {
 
                     });

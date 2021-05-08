@@ -23,6 +23,11 @@
                                   style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                             <span class="icon"><i class="fas fa-door-open"></i></span>
                         </router-link>
+                        <b-button v-if="user && user.role === 'admin'" @click="deleteModel(model._id.name)"
+                                  
+                                  style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
+                            <span class="icon"><i class="fas fa-trash"></i></span>
+                        </b-button>
                     </header>
 
                     <section class="card-content" style="padding: 50px">
@@ -93,7 +98,12 @@ export default {
                 name: null,
                 type: null
             },
-            models: []
+            models: [
+                {
+                    _id:{name:"name"},
+                    type: "requirements"
+                }
+            ]
         }
     },
     mounted: function() {
@@ -145,6 +155,34 @@ export default {
                 this.closeModal();
             });
 
+        },
+        deleteModel: function(model_name) {
+            this.$buefy.dialog.confirm({
+                title: 'Are you sure?',
+                message: 'Are you sure you would like to delete this model?',
+                onConfirm: () => {
+                    let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+                    if (jwt) {
+                        axios.defaults.headers.common['Authorization'] = jwt;
+                    }
+
+                    let body = new FormData();
+                    body.append('name', model_name);
+
+                    axios({
+                        method: "delete",
+                        url: "/auth/models/",
+                        data: body,
+                        headers: { "Content-Type": "multipart/form-data" }
+                    }).then((response) => {
+                        this.load();
+                        this.closeModal();
+                    }).catch((error) => {
+
+                    });
+                }
+            });
         },
         closeModal() {
             this.form = {

@@ -268,6 +268,7 @@ export default {
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then((response) => {
                         this.load();
+                        this.closeModal();
                     }).catch((error) => {
 
                     });
