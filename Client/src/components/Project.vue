@@ -98,12 +98,7 @@ export default {
                 name: null,
                 type: null
             },
-            models: [
-                {
-                    _id:{name:"name"},
-                    type: "requirements"
-                }
-            ]
+            models: []
         }
     },
     mounted: function() {

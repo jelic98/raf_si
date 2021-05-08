@@ -551,7 +551,7 @@ export default {
                     'undoManager.isEnabled': true,
                     'draggingTool.dragsLink': true,
                     'draggingTool.isGridSnapEnabled': true,
-                    'linkingTool.isUnconnectedLinkValid': true,
+                    'linkingTool.isUnconnectedLinkValid': false,
                     layout: $(go.TreeLayout, {
                         angle: 90,
                         path: go.TreeLayout.PathSource,
@@ -567,7 +567,7 @@ export default {
                         },
                         new go.Binding('location', 'loc').makeTwoWay(),
                         $(go.Shape, {
-                            fill: 'lightyellow'
+                            fill: 'white'
                         }),
                         $(go.Panel, 'Table', {
                                 defaultRowSeparatorStroke: 'black'
@@ -598,7 +598,7 @@ export default {
                                     margin: 3,
                                     stretch: go.GraphObject.Fill,
                                     defaultAlignment: go.Spot.Left,
-                                    background: 'lightyellow',
+                                    background: 'white',
                                     itemTemplate: propertyTemplate
                                 }
                             ),
@@ -626,7 +626,7 @@ export default {
                                     margin: 3,
                                     stretch: go.GraphObject.Fill,
                                     defaultAlignment: go.Spot.Left,
-                                    background: 'lightyellow',
+                                    background: 'white',
                                     itemTemplate: methodTemplate
                                 }
                             ),

@@ -258,7 +258,7 @@ export default {
                     { locationSpot: go.Spot.Center },
                     new go.Binding('location', 'loc').makeTwoWay(),
                     $(go.Picture,
-                        { maxSize: new go.Size(50, 50) },
+                        { maxSize: new go.Size(60, 60) },
                         new go.Binding("source", "img")),
                     $(go.TextBlock,
                         {
@@ -286,10 +286,10 @@ export default {
                     { locationSpot: go.Spot.Center },
                     new go.Binding('location', 'loc').makeTwoWay(),
                     // define the node's outer shape, which will surround the TextBlock
-                    $(go.Shape, "Rectangle",
-                        { fill: $(go.Brush, "Linear", { 0: "rgb(254, 201, 0)", 1: "rgb(254, 162, 0)" }), stroke: "black" }),
+                    $(go.Shape, "Ellipse",
+                        { fill: "rgba(245, 246, 247)", stroke: "black" }),
                     $(go.TextBlock,
-                        { editable: true, font: "bold 10pt helvetica, bold arial, sans-serif", margin: 4 },
+                        { editable: true, font: "bold 11pt helvetica, bold arial, sans-serif", margin: 13 },
                         new go.Binding("text", "text")),
                     this.makePort('T', go.Spot.Top),
                     this.makePort('R', go.Spot.Right),
@@ -422,6 +422,7 @@ export default {
             this.diagram.model.setDataProperty(e.subject.data, 'category', this.active_state.category);
             this.diagram.model.setDataProperty(e.subject.data, 'text', this.active_state.text);
             this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.active_state.value);
+            this.active_state = null;
         }
     }
 }
