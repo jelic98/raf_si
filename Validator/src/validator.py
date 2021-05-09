@@ -16,6 +16,7 @@ class Validator:
                 node = Interface() if n['type'] == 'interface' else Class()
                 node.name = n['name']
                 nodes[node.name] = node
+                keys[n['key']] = node
                 for m in n['methods']:
                     method = Method()
                     method.name = m['name']
@@ -35,9 +36,9 @@ class Validator:
             for name, n in nodes.items():
                 link += 1
                 for l in model['details']['links']:
-                    if l['from']['name'] == name:
+                    if keys[l['from']].name == name:
                         if l['type'] == 'generalization':
-                            n.parent.append(nodes[l['to']['name']])
+                            n.parent.append(keys[l['to']])
                         elif l['type'] == 'aggregation' or l['type'] == 'composition':
                             attribute = Attribute()
                             attribute.name = f'Link_{link}'

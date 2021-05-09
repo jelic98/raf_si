@@ -11,7 +11,7 @@ from src.writer import Writer
 import src.generator as gen
 
 
-START_SERVER = True
+START_SERVER = False
 BROKER_HOST, BROKER_PORT = '127.0.0.1', 9000
 SERVER_HOST, SERVER_PORT = '127.0.0.1', None
 META_MODELS, META_RULES = 'res/models.meta', 'res/rules.meta'
@@ -33,40 +33,45 @@ def _validate(model):
 class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
-        if self.path == '/validate':
+        try:
+            if self.path == '/validate':
+                self.send_response(200)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Access-Control-Allow-Headers', '*')
+                self.send_header('Access-Control-Allow-Methods', '*')
+                self.send_header('Content-Type', '*')
+                self.end_headers()
+                
+                form = cgi.FieldStorage(
+                    fp=self.rfile,
+                    headers=self.headers,
+                    environ={
+                        'REQUEST_METHOD': 'POST',
+                        'CONTENT_TYPE': self.headers['Content-Type']})
+                
+                model = html.unescape(form.getvalue('model'))
+                
+                response = {'errors': _validate(model)}
+                self.wfile.write(bytes(json.dumps(response), 'utf8'))
+            else:
+                self.send_response(404)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {"code": 405, "message": "Not Found"}
+                self.wfile.write(bytes(json.dumps(response), 'utf8'))
+        except Exception as a:
+            print(e)
+
+    def do_OPTIONS(self):
+        try:
             self.send_response(200)
             self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Access-Control-Allow-Headers', '*')
             self.send_header('Access-Control-Allow-Methods', '*')
             self.send_header('Content-Type', '*')
             self.end_headers()
-            
-            form = cgi.FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={
-                    'REQUEST_METHOD': 'POST',
-                    'CONTENT_TYPE': self.headers['Content-Type']})
-            
-            model = html.unescape(form.getvalue('model'))
-            
-            #self.wfile.write(bytes(model, 'utf8'))
-            response = {'errors': _validate(model)}
-            self.wfile.write(bytes(json.dumps(response), 'utf8'))
-        else:
-            self.send_response(404)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            response = {"code": 405, "message": "Not Found"}
-            self.wfile.write(bytes(json.dumps(response), 'utf8'))
-
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Headers', '*')
-        self.send_header('Access-Control-Allow-Methods', '*')
-        self.send_header('Content-Type', '*')
-        self.end_headers()
+        except Exception as a:
+            print(e)
 
 def _main():
     global SERVER_PORT
