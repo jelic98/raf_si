@@ -2,7 +2,7 @@
     <div>
         <Navbar></Navbar>
 
-        <div v-if="user && (user.role === 'admin' || user.role === 'project_manager')" class="card">
+        <div  v-if="user && (user.role === 'admin' || user.role === 'project_manager')" class="card">
             <section class="card-content" style="padding: 50px">
                 <b-field>
                     <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state.value">
