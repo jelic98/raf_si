@@ -157,7 +157,7 @@ export default {
             this.editing_project_name = project.name;
             this.edit_modal_open = true;
         },
-        editProject: function() { //fix
+        editProject: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {

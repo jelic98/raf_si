@@ -232,7 +232,7 @@ export default {
                             "Content-Type": "multipart/form-data"
                         }
                     }).then((response) => {
-                        this.init();
+                        this.initDiagram();
                     }).catch((error) => {});
                 }
             }).catch((error) => {});
@@ -241,8 +241,6 @@ export default {
             this.diagram =
                 $(go.Diagram, "diagramDiv",
                     {
-                        initialAutoScale: go.Diagram.Uniform,
-                        contentAlignment: go.Spot.Center,
                         layout: $(go.TreeLayout, {
                             angle: 90,
                             path: go.TreeLayout.PathSource,
@@ -291,10 +289,10 @@ export default {
                     $(go.TextBlock,
                         { editable: true, font: "bold 11pt helvetica, bold arial, sans-serif", margin: 13 },
                         new go.Binding("text", "text")),
-                    this.makePort('T', go.Spot.Top),
-                    this.makePort('R', go.Spot.Right),
-                    this.makePort('B', go.Spot.Bottom),
-                    this.makePort('L', go.Spot.Left), {
+                        this.makePort('T', go.Spot.Top),
+                        this.makePort('R', go.Spot.Right),
+                        this.makePort('B', go.Spot.Bottom),
+                        this.makePort('L', go.Spot.Left), {
                         mouseEnter: function(e, node) {
                             node.ports.each(function(p) {
                                 p.fill = 'rgba(0,0,0,.3)';

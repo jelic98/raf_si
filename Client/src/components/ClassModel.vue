@@ -82,25 +82,62 @@
 
                     <p class="subtitle">
                         Methods
-                        <b-button @click="form.methods.push({ name: null, visibility: null, type: null})" class="is-pulled-right is-small" type="is-primary">
+                        <b-button @click="form.methods.push({ name: null, visibility: null, type: null, parameters: []})" class="is-pulled-right is-small" type="is-primary">
                             <span class="icon"><i class="fas fa-plus"></i></span>
                         </b-button>
                     </p>
 
                     <b-table :data="form.methods">
-                        <b-table-column placeholder="Enter a Name" label="Name" v-slot="props">
-                            <b-input v-model="props.row.name"></b-input>
+                        <b-table-column label="Name" v-slot="props">
+                            <b-input placeholder="Enter a Name" v-model="props.row.name"></b-input>
                         </b-table-column>
 
-                        <b-table-column placeholder="Select a Visbility" label="Visibility" v-slot="props">
-                            <b-select v-model="props.row.visibility">
+                        <b-table-column label="Visibility" v-slot="props">
+                            <b-select placeholder="Select a Visbility" v-model="props.row.visibility">
                                 <option value="private">Public</option>
                                 <option value="public">Private</option>
                             </b-select>
                         </b-table-column>
 
-                        <b-table-column placeholder="Select a Type" label="Type" v-slot="props">
-                            <b-select v-model="props.row.type">
+                        <b-table-column label="Type" v-slot="props">
+                            <b-select placeholder="Select a Type" v-model="props.row.type">
+                                <option v-for="(type, index) in nodeTypes" :key="index" :value="type.value">{{ type.display }}</option>
+                            </b-select>
+                        </b-table-column>
+
+                        <b-table-column label="Parameters" v-slot="props">
+                            <b-button @click="openParameterModal(props.row)">
+                                Open
+                            </b-button>
+                        </b-table-column>
+                    </b-table>
+                </section>
+
+                <footer class="modal-card-foot">
+                    <b-button style="margin-left: 10px" type='is-success' @click="() => { editing_node === true ? saveEditNode() : createNode()}" expanded>Save</b-button>
+                </footer>
+            </div>
+        </b-modal>
+
+        <b-modal :active.sync="parameter_modal_open" has-modal-card @close="modalClose" :can-cancel="false">
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Parameters</p>
+                </header>
+
+                <section class="modal-card-body">
+
+                    <b-button @click="parameters_temp.push({ name: null, type: null })" class="is-small" type="is-primary">
+                        <span class="icon"><i class="fas fa-plus"></i></span>
+                    </b-button>
+
+                    <b-table :data="active_method.parameters.concat(parameters_temp)">
+                        <b-table-column label="Name" v-slot="props">
+                            <b-input placeholder="Enter a Name" v-model="props.row.name"></b-input>
+                        </b-table-column>
+
+                        <b-table-column label="Type" v-slot="props">
+                            <b-select placeholder="Select a Type" v-model="props.row.type">
                                 <option v-for="(type, index) in nodeTypes" :key="index" :value="type.value">{{ type.display }}</option>
                             </b-select>
                         </b-table-column>
@@ -108,7 +145,8 @@
                 </section>
 
                 <footer class="modal-card-foot">
-                    <b-button style="margin-left: 10px" type='is-success' @click="createNode" expanded>Save</b-button>
+                    <b-button style="margin-left: 10px" type='is-light' @click="() => { parameter_modal_open = false; active_method = {parameters: []}; parameters_temp = []; }" expanded>Cancel</b-button>
+                    <b-button style="margin-left: 10px" type='is-success' @click="saveParameters" expanded>Save</b-button>
                 </footer>
             </div>
         </b-modal>
@@ -202,7 +240,14 @@ export default {
                 }
             ],
             errors: [],
-            user: null
+            user: null,
+            parameter_modal_open: false,
+            active_method: {
+                parameters: []
+            },
+            parameters_temp: [],
+            editing_node: false,
+            editing_node_key: null
         };
     },
     mounted: function() {
@@ -211,6 +256,22 @@ export default {
         this.loadModel();
     },
     methods: {
+        saveParameters: function() {
+            this.parameters_temp.forEach((param) => {
+                this.active_method.parameters.push(param);
+            });
+
+            this.active_method = {
+                parameters: []
+            };
+
+            this.parameters_temp = [];
+            this.parameter_modal_open = false;
+        },
+        openParameterModal: function(method) {
+            this.parameter_modal_open = true;
+            this.active_method = method;
+        },
         undo: function() {
             this.diagram.undoManager.undo();
         },
@@ -379,35 +440,6 @@ export default {
             }
         },
         createNode: function() {
-            // var node = {
-            //     key: this.nodeKey++,
-            //     loc: this.event.diagram.lastInput.documentPoint,
-            //     name: 'Professor',
-            //     properties: [{
-            //         name: 'classes',
-            //         type: 'List<Course>',
-            //         visibility: 'public'
-            //     }, {
-            //         name: 'classes2',
-            //         type: 'List<Course>',
-            //         visibility: 'public'
-            //     }],
-            //     methods: [{
-            //         name: 'teach',
-            //         parameters: [{
-            //             name: 'class',
-            //             type: 'Course'
-            //         }],
-            //         visibility: 'private'
-            //     }, {
-            //         name: 'teach2',
-            //         parameters: [{
-            //             name: 'class',
-            //             type: 'Course'
-            //         }],
-            //         visibility: 'private'
-            //     }]
-            // };
             let node = {
                 key: this.nodeKey++,
                 loc: this.event.diagram.lastInput.documentPoint,
@@ -415,7 +447,6 @@ export default {
                 methods: this.form.methods,
                 type: this.form.type
             };
-
 
             if (this.form.type === 'interface') {
                 node.name = `<<Interface>>\n${this.form.name}`;
@@ -443,6 +474,20 @@ export default {
                 this.modalClose();
             }
         },
+        saveEditNode: function() {
+            let data = this.diagram.model.findNodeDataForKey(this.editing_node_key);
+            console.log(this.form);
+            console.log(data);
+            this.diagram.model.set(data, 'type', this.form.type);
+            this.diagram.model.set(data, 'name', this.form.name);
+            this.diagram.model.set(data, 'properties', this.form.properties);
+            this.diagram.model.set(data, 'methods', this.form.methods);
+
+            this.editing_node = false;
+            this.editing_node_key = null;
+            this.modal_open = false;
+            this.initDiagram();
+        },
         createLink: function(e) {
             let from = this.nodes.filter((node) => {
                 return node.key === e.subject.data.from;
@@ -452,13 +497,15 @@ export default {
                 return node.key === e.subject.data.to;
             })[0];
 
-            this.links.push({
-                from: from,
-                to: to,
-                type: this.active_state
-            });
+            // this.links.push({
+            //     from: from,
+            //     to: to,
+            //     type: this.active_state
+            // });
 
             this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.active_state);
+            // this.diagram.model.setDataProperty(e.subject.data, 'from_node', from);
+            // this.diagram.model.setDataProperty(e.subject.data, 'to_node', to);
 
             this.active_state = null;
         },
@@ -551,7 +598,6 @@ export default {
                     'undoManager.isEnabled': true,
                     'draggingTool.dragsLink': true,
                     'draggingTool.isGridSnapEnabled': true,
-                    'linkingTool.isUnconnectedLinkValid': false,
                     layout: $(go.TreeLayout, {
                         angle: 90,
                         path: go.TreeLayout.PathSource,
@@ -563,7 +609,8 @@ export default {
                     nodeTemplate: $(go.Node, 'Auto', {
                             locationSpot: go.Spot.Center,
                             fromSpot: go.Spot.AllSides,
-                            toSpot: go.Spot.AllSides
+                            toSpot: go.Spot.AllSides,
+                            doubleClick: this.editNode
                         },
                         new go.Binding('location', 'loc').makeTwoWay(),
                         $(go.Shape, {
@@ -590,7 +637,8 @@ export default {
                                 new go.Binding('visible', 'visible', function(v) {
                                     return !v;
                                 }).ofObject('PROPERTIES')),
-                            $(go.Panel, 'Vertical', {
+                            $(go.Panel, 'Vertical', 
+                            {
                                     name: 'PROPERTIES'
                                 },
                                 new go.Binding('itemArray', 'properties'), {
@@ -618,7 +666,8 @@ export default {
                                 new go.Binding('visible', 'visible', function(v) {
                                     return !v;
                                 }).ofObject('METHODS')),
-                            $(go.Panel, 'Vertical', {
+                            $(go.Panel, 'Vertical', 
+                            {
                                     name: 'METHODS'
                                 },
                                 new go.Binding('itemArray', 'methods'), {
@@ -666,8 +715,9 @@ export default {
                             new go.Binding("fill", "relationship", this.convertFill))
                     )
                 });
-            this.diagram.model = $(go.GraphLinksModel);
-            this.diagram.model.nodeDataArray = this.nodes;
+            this.diagram.model = new go.GraphLinksModel(this.nodes, this.links);
+            //this.diagram.model = $(go.GraphLinksModel);
+            //this.diagram.model.nodeDataArray = this.nodes;
             this.diagram.addDiagramListener('BackgroundSingleClicked', this.openModal);
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
         },
@@ -681,6 +731,19 @@ export default {
                 properties: [],
                 methods: []
             };
+        },
+        editNode: function(e, node) {
+            this.editing_node = true;
+            this.editing_node_key = node.data.key;
+
+            this.form = {
+                type: node.data.type,
+                name: node.data.name,
+                properties: node.data.properties,
+                methods: node.data.methods,
+            }
+
+            this.modal_open = true;
         }
     }
 }
