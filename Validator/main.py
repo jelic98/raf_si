@@ -11,7 +11,7 @@ from src.writer import Writer
 import src.generator as gen
 
 
-START_SERVER = False
+START_SERVER = True
 BROKER_HOST, BROKER_PORT = '127.0.0.1', 9000
 SERVER_HOST, SERVER_PORT = '127.0.0.1', None
 META_MODELS, META_RULES = 'res/models.meta', 'res/rules.meta'
