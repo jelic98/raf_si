@@ -33,7 +33,8 @@ public class ProjectCtrl {
         List<ProjectResDto> projects = projectService.findAllProjects();
         List<ProjectResDto> projectsRet = new ArrayList<>();
         UserResDto user = userService.findByUsername(username);
-        if(user.getRole().equals("admin")){
+        System.out.println(user);
+        if(user.getRole().getName().equals("admin")){
             for(ProjectResDto dto : projects){
                 if(dto.getCreator() == null) continue;
                 if(dto.getCreator().equals(username))
