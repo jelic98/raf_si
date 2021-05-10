@@ -138,6 +138,7 @@ export default {
     methods: {
         undo: function() {
             this.diagram.undoManager.undo();
+            //this.diagram.updateAllTargetBindings();
         },
         redo: function () {
             this.diagram.undoManager.redo();

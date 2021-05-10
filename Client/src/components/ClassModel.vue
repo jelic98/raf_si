@@ -482,9 +482,9 @@ export default {
             this.diagram.model.set(data, 'name', this.form.name);
             this.diagram.model.set(data, 'properties', this.form.properties);
             this.diagram.model.set(data, 'methods', this.form.methods);
+            
+            this.diagram.updateAllTargetBindings();
 
-	    	this.diagram.updateAllTargetBindings();
-		
             this.editing_node = false;
             this.editing_node_key = null;
             this.modal_open = false;

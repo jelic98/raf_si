@@ -37,12 +37,12 @@ class Validator:
                 link += 1
                 for l in model['details']['links']:
                     if keys[l['from']].name == name:
-                        if l['type'] == 'generalization':
+                        if l['relationship'] == 'generalization':
                             n.parent.append(keys[l['to']])
-                        elif l['type'] == 'aggregation' or l['type'] == 'composition':
+                        elif l['relationship'] == 'aggregation' or l['type'] == 'composition':
                             attribute = Attribute()
                             attribute.name = f'Link_{link}'
-                            attribute.type = l['to']['name']
+                            attribute.type = keys[l['to']].name
                             node.attributes.append(attribute)
 
             rules = ClassRules()
