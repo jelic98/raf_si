@@ -164,6 +164,7 @@ export default {
 
                     let body = new FormData();
                     body.append('name', model_name);
+                    body.append('project', this.project_name);
 
                     axios({
                         method: "delete",
