@@ -18,7 +18,7 @@
                             {{ project.name }}
                         </p>
                         <router-link :to="`/projects/${slugify(project.name)}`">
-                            <b-button>
+                            <b-button
                                       type="is-light"
                                       style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px;">
                                 <span class="icon"><i class="fas fa-door-open"></i></span>
