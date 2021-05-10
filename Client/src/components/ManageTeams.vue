@@ -291,7 +291,7 @@ export default {
             let string = '';
 
             users.forEach((user) => {
-                string += `${user.username}, `
+                string += `${user}, `
             });
 
             return string.slice(0, string.length - 2);
