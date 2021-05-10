@@ -26,13 +26,15 @@ public class TeamResDto {
     public TeamResDto(Team team){
         name = team.getName();
         users = new ArrayList<>();
-        for(User u : team.getUser()){
-            users.add(u.getUsername());
-        }
+        if(team.getUser() != null)
+            for(User u : team.getUser()){
+                users.add(u.getUsername());
+            }
         projects = new ArrayList<>();
-        for(Project u : team.getProject()){
-            users.add(u.getName());
-        };
+        if(team.getProject() != null)
+            for(Project u : team.getProject()){
+                users.add(u.getName());
+            };
         creator = team.getCreator().getUsername();
     }
 }

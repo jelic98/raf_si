@@ -5,8 +5,7 @@ import com.auth.domain.Team;
 import com.auth.domain.User;
 import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dao.TeamDao;
-import com.auth.domain.dto.TeamReqCreateDto;
-import com.auth.domain.dto.TeamResDto;
+import com.auth.domain.dto.*;
 import com.auth.service.TeamService;
 import com.auth.service.TokenHandlerService;
 import com.auth.service.UserService;
@@ -44,6 +43,12 @@ public class TeamCtrl {
         String username = tokenHandlerService.getUsernameByToken(authorization);
         User creator = new User(userService.findByUsername(username));
         return teamService.createNewTeam(dto.getName(), creator);
+    }
+
+    @PutMapping("")
+    public TeamResDto updateElement(@ModelAttribute TeamPutReqDto dto){
+
+        return teamService.saveExistingTeam(dto);
     }
 
     @GetMapping("/all")

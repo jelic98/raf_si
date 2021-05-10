@@ -1,11 +1,13 @@
 package com.auth.service.impl;
 
+import com.auth.domain.Project;
 import com.auth.domain.Team;
 import com.auth.domain.User;
+import com.auth.domain.dao.ProjectDao;
 import com.auth.domain.dao.TeamDao;
-import com.auth.domain.dto.TeamReqDto;
+import com.auth.domain.dao.UserDao;
+import com.auth.domain.dto.TeamPutReqDto;
 import com.auth.domain.dto.TeamResDto;
-import com.auth.domain.dto.UserResDto;
 import com.auth.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,21 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private TeamDao teamDao;
 
+    @Autowired
+    private ProjectDao projectDao;
+
+    @Autowired
+    private UserDao userDao;
+
     @Override
-    public TeamResDto saveExistingTeam(TeamReqDto teamReqDto) {
-        return null;
+    public TeamResDto saveExistingTeam(TeamPutReqDto dto) {
+        Team team = teamDao.findByName(dto.getTeam());
+        String users[] = dto.getUsers().split(",");
+        for(int i = 0; i < users.length; i++){
+            User u =userDao.findByUsername(users[i]);
+            team.getUser().add(u);
+        }
+            return saveAndReturnDTO(team);
     }
 
     @Override

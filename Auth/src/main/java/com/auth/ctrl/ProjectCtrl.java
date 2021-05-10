@@ -52,9 +52,6 @@ public class ProjectCtrl {
             }
         }
 
-
-		// for each project
-		// for each team in project
 		System.out.println(projectsRet);
         return projectsRet;
     }

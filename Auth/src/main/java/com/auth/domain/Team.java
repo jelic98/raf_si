@@ -1,6 +1,7 @@
 package com.auth.domain;
 
 import com.auth.domain.dto.TeamReqDto;
+import com.auth.domain.dto.TeamResDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
