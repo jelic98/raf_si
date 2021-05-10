@@ -367,9 +367,9 @@ export default {
                 this.nodes = [];
                 this.links = [];
 
-                if (response.data) {
-                    this.nodes = response.data.details.nodes;
-                    this.links = response.data.details.links;
+                if (response.data) {let detalji = JSON.parse(response.data.details);
+                    this.nodes = detalji.nodes;
+                    this.links = detalji.links;
                 } else {
                     this.$router.push('/projects');
                 }
