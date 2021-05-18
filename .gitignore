@@ -1,5 +1,6 @@
 .DS_Store
 .github/
+.gradle/
 logs/
 */secret/
 token.txt

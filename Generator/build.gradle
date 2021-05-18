@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'rs.raf.generator'
+version '0.0.1'
+
+sourceCompatibility = 1.8
+
+sourceSets.main.java.srcDirs = ['src']
+mainClassName = 'rs.raf.generator.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+}
