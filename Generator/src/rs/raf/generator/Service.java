@@ -1,7 +1,7 @@
 package rs.raf.generator;
 
-import com.squareup.okhttp.*;
 import com.sun.net.httpserver.HttpServer;
+import okhttp3.*;
 import rs.raf.generator.request.DefaultHandler;
 import rs.raf.generator.request.RequestHandler;
 import rs.raf.generator.request.Routes;
@@ -33,17 +33,18 @@ public class Service {
     }
 
     private void registerService() throws IOException {
-        RequestBody body = new MultipartBuilder()
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
                 .addFormDataPart("name", SERVICE_NAME)
                 .addFormDataPart("host", SERVICE_HOST)
                 .addFormDataPart("port", SERVICE_PORT)
                 .build();
         Request request = new Request.Builder()
                 .url(BROKER_URL)
-                .method("POST", body)
+                .post(body)
                 .build();
         Response response = new OkHttpClient().newCall(request).execute();
-        Log.print(response.message());
+        Log.print(response.body().string());
     }
 
     private void startService() throws IOException {
