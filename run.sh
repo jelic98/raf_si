@@ -18,6 +18,8 @@ readonly STORAGE_PORT=9006
 readonly STORAGE_DIR=Storage
 readonly GENERATOR_PORT=9007
 readonly GENERATOR_DIR=Generator
+readonly TRANSFORMER_PORT=9008
+readonly TRANSFORMER_DIR=Transformer
 readonly DATE="date +'%d-%m-%Y %H:%M:%S'"
 
 # Extract global arguments
@@ -67,6 +69,7 @@ waitforq() {
 }
 
 # Stop previously started service before restarting it
+stop $TRANSFORMER_DIR $TRANSFORMER_PORT
 stop $GENERATOR_DIR $GENERATOR_PORT
 stop $STORAGE_DIR $STORAGE_PORT
 stop $VALIDATOR_DIR $VALIDATOR_PORT
@@ -85,11 +88,13 @@ start $CLIENT_DIR $CLIENT_PORT "npm run serve --prefix '$CLIENT_DIR' -- --port $
 start $VALIDATOR_DIR $VALIDATOR_PORT "python3 '$VALIDATOR_DIR/main.py' $VALIDATOR_DIR $VALIDATOR_PORT > '$PATH_LOG/$VALIDATOR_DIR.txt'"
 start $STORAGE_DIR $STORAGE_PORT "php -S 127.0.0.1:$STORAGE_PORT -t '$STORAGE_DIR' > '$PATH_LOG/$STORAGE_DIR.txt'"
 start $GENERATOR_DIR $GENERATOR_PORT "gradle run -p '$GENERATOR_DIR' --args='$GENERATOR_PORT' > '$PATH_LOG/$GENERATOR_DIR.txt'"
+start $TRANSFORMER_DIR $TRANSFORMER_PORT "gradle run -p '$TRANSFORMER_DIR' --args='$TRANSFORMER_PORT' > '$PATH_LOG/$TRANSFORMER_DIR.txt'"
 
 # Wait for cancellation request by user
 waitforq
 
 # Stop service
+stop $TRANSFORMER_DIR $TRANSFORMER_PORT
 stop $GENERATOR_DIR $GENERATOR_PORT
 stop $STORAGE_DIR $STORAGE_PORT
 stop $VALIDATOR_DIR $VALIDATOR_PORT
