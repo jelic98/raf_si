@@ -1,6 +1,6 @@
-package rs.raf.generator.request;
+package rs.raf.request;
 
-import rs.raf.generator.response.Response;
+import rs.raf.response.Response;
 
 public interface RequestHandler {
 

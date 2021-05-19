@@ -1,6 +1,6 @@
-package rs.raf.generator;
+package rs.raf;
 
-import rs.raf.generator.util.Log;
+import rs.raf.util.Log;
 
 public class Main {
 

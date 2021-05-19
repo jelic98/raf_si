@@ -1,4 +1,4 @@
-package rs.raf.generator.request;
+package rs.raf.request;
 
 public class Routes {
 

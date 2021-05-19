@@ -1,4 +1,4 @@
-package rs.raf.generator.util;
+package rs.raf.util;
 
 import java.io.PrintStream;
 import java.text.DateFormat;

@@ -1,4 +1,4 @@
-package rs.raf.generator.response;
+package rs.raf.response;
 
 public class MethodNotAllowedResponse extends Response {
 

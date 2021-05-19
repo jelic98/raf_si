@@ -1,4 +1,4 @@
-package rs.raf.generator.response;
+package rs.raf.response;
 
 import java.util.Objects;
 

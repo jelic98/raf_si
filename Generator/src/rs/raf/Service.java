@@ -1,11 +1,11 @@
-package rs.raf.generator;
+package rs.raf;
 
 import com.sun.net.httpserver.HttpServer;
 import okhttp3.*;
-import rs.raf.generator.request.DefaultHandler;
-import rs.raf.generator.request.RequestHandler;
-import rs.raf.generator.request.Routes;
-import rs.raf.generator.util.Log;
+import rs.raf.request.DefaultHandler;
+import rs.raf.request.RequestHandler;
+import rs.raf.request.Routes;
+import rs.raf.util.Log;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 

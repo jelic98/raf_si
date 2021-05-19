@@ -1,9 +1,9 @@
-package rs.raf.generator.request;
+package rs.raf.request;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import rs.raf.generator.response.Response;
-import rs.raf.generator.util.Log;
+import rs.raf.response.Response;
+import rs.raf.util.Log;
 
 import java.io.*;
 
