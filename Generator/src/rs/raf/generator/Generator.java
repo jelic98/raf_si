@@ -3,39 +3,50 @@ package rs.raf.generator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Generator {
 
-     public String generate(String request) {
-        JSONObject model = new JSONObject(request).getJSONObject("model").getJSONObject("details");
-        JSONArray nodes = model.getJSONArray("nodes");
-        JSONArray links = model.getJSONArray("links");
+     public String generate(String model) {
+        JSONObject details = new JSONObject(model).getJSONObject("details");
+        JSONArray nodes = details.getJSONArray("nodes");
+        JSONArray links = details.getJSONArray("links");
 
         StringBuilder nodeBuild = new StringBuilder();
+
+        Map<Integer, String> keys = new HashMap<>();
+
+        for (int i = 0; i < nodes.length(); i++) {
+            JSONObject node = nodes.getJSONObject(i);
+            String nodeName = node.getString("name");
+            int nodeKey = node.getInt("key");
+
+            keys.put(nodeKey, nodeName);
+        }
 
         for (int i = 0; i < nodes.length(); i++) {
             JSONObject node = nodes.getJSONObject(i);
             JSONArray methods = node.getJSONArray("methods");
             JSONArray properties = node.getJSONArray("properties");
-            String nodeName = node.get("name").toString();
+            int nodeKey = node.getInt("key");
 
             for (int j = 0; j < links.length(); j++) {
                 JSONObject link = links.getJSONObject(j);
-                JSONObject from = link.getJSONObject("from");
-                JSONObject to = link.getJSONObject("to");
-                String relationship = link.get("relationship").toString();
-                String fromName = from.get("name").toString();
-                String toName = to.get("name").toString();
+                int from = link.getInt("from");
+                int to = link.getInt("to");
+                String relationship = link.getString("relationship");
 
                 if (relationship.equals("generalization")) {
-                    if (fromName.equals(nodeName)) {
+                    if (from == nodeKey) {
                         node.put("link", "extends");
-                        node.put("parent", toName);
+                        node.put("parent", keys.get(to));
                     }
                 }else if (relationship.equals("aggregation") || relationship.equals("composition")) {
-                    if (fromName.equals(nodeName)) {
+                    if (from == nodeKey) {
                         JSONObject property = new JSONObject();
                         property.put("name", "Link_" + j++);
-                        property.put("type", toName);
+                        property.put("type", keys.get(to));
                         property.put("visibility", "private");
                         properties.put(property);
                     }
@@ -55,7 +66,7 @@ public class Generator {
                 StringBuilder parameterBuild = new StringBuilder();
 
                 for (int k = 0; k < parameters.length(); k++) {
-                    JSONObject parameter = methods.getJSONObject(k);
+                    JSONObject parameter = parameters.getJSONObject(k);
 
                     String parameterGen = getParameter(parameter);
 
@@ -75,7 +86,7 @@ public class Generator {
             StringBuilder propertyBuild = new StringBuilder();
 
             for (int j = 0; j < properties.length(); j++) {
-                JSONObject property = methods.getJSONObject(j);
+                JSONObject property = properties.getJSONObject(j);
 
                 String propertyGen = getProperty(property);
 
@@ -94,11 +105,11 @@ public class Generator {
     }
 
     private String getNode(JSONObject node) {
-        String name = node.get("name").toString();
-        String type = node.get("type").toString();
-        String visibility = node.get("visibility").toString();
-        String link = node.get("link").toString();
-        String parent = node.get("parent").toString();
+        String name = node.getString("name");
+        String type = node.getString("type");
+        String visibility = node.has("visibility") ? node.getString("visibility") : "";
+        String link = node.has("link") ? node.getString("link") : "";
+        String parent = node.has("parent") ? node.getString("parent") : "";
 
         return Template.NODE
                 .replace("{{name}}", name)
@@ -109,9 +120,9 @@ public class Generator {
     }
 
     private String getMethod(JSONObject method) {
-        String name = method.get("name").toString();
-        String type = method.get("type").toString();
-        String visibility = method.get("visibility").toString();
+        String name = method.getString("name");
+        String type = method.getString("type");
+        String visibility = method.getString("visibility");
 
         return Template.METHOD
                 .replace("{{name}}", name)
@@ -120,9 +131,9 @@ public class Generator {
     }
 
     private String getProperty(JSONObject property) {
-        String name = property.get("name").toString();
-        String type = property.get("type").toString();
-        String visibility = property.get("visibility").toString();
+        String name = property.getString("name");
+        String type = property.getString("type");
+        String visibility = property.getString("visibility");
 
         return Template.PROPERTY
                 .replace("{{name}}", name)
@@ -131,8 +142,8 @@ public class Generator {
     }
 
     private String getParameter(JSONObject property) {
-        String name = property.get("name").toString();
-        String type = property.get("type").toString();
+        String name = property.getString("name");
+        String type = property.getString("type");
 
         return Template.PARAMETER
                 .replace("{{name}}", name)

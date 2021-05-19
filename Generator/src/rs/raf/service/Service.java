@@ -1,13 +1,14 @@
-package rs.raf;
+package rs.raf.service;
 
-import com.sun.net.httpserver.HttpServer;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import okhttp3.*;
-import rs.raf.request.DefaultHandler;
-import rs.raf.request.RequestHandler;
-import rs.raf.request.Routes;
+import org.apache.commons.text.StringEscapeUtils;
+import org.jetbrains.annotations.NotNull;
+import rs.raf.generator.Generator;
 import rs.raf.util.Log;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 public class Service {
 
@@ -43,19 +44,17 @@ public class Service {
                 .url(BROKER_URL)
                 .post(body)
                 .build();
-        Response response = new OkHttpClient().newCall(request).execute();
-        Log.print(response.body().string());
+        new OkHttpClient().newCall(request).execute();
     }
 
-    private void startService() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-
-        for (RequestHandler handler : Routes.get()) {
-            server.createContext(handler.getPath(), new DefaultHandler(handler));
-        }
-
-        server.setExecutor(null);
-        server.start();
+    private void startService() {
+        Javalin server = Javalin.create().start(port);
+        server.post("/generate", new Handler() {
+            @Override
+            public void handle(@NotNull Context ctx) {
+                ctx.result(new Generator().generate(StringEscapeUtils.unescapeHtml4(ctx.formParam("model"))));
+            }
+        });
     }
 }
 

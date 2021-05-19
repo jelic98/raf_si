@@ -9,7 +9,7 @@ version '0.0.1'
 sourceCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = ['src']
-mainClassName = 'rs.raf.generator.Main'
+mainClassName = 'rs.raf.Main'
 
 repositories {
     mavenCentral()
@@ -17,5 +17,8 @@ repositories {
 
 dependencies {
     implementation group: 'org.json', name: 'json', version: '20210307'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'io.javalin:javalin:3.13.7'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
 }
