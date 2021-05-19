@@ -4,7 +4,8 @@
 			check_request(['hash', 'files'], 'files', 'post');
 
 			$hash = $_REQUEST['hash'];
-			$files = html_entity_decode($_REQUEST['files']);
+			$files = htmlspecialchars_decode(htmlspecialchars_decode($_REQUEST['files']));
+			// because broker and storage services are both escaping special characters
 
 			$files_arr = json_decode($files, true);
 

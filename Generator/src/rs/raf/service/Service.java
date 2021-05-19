@@ -95,7 +95,8 @@ public class Service {
                 .post(body.build())
                 .build();
 
-        new OkHttpClient().newCall(request).execute();
+        Response response = new OkHttpClient().newCall(request).execute();
+        System.out.println(response);
     }
 }
 
