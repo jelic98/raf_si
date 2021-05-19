@@ -4,7 +4,7 @@
 			check_request(['hash', 'files'], 'files', 'post');
 
 			$hash = $_REQUEST['hash'];
-			$files = htmlspecialchars_decode(htmlspecialchars_decode($_REQUEST['files']));
+			$files = stripcslashes(htmlspecialchars_decode(htmlspecialchars_decode($_REQUEST['files'])));
 			// because broker and storage services are both escaping special characters
 
 			$files_arr = json_decode($files, true);
@@ -34,7 +34,6 @@
 			header('Content-Disposition: attachment; filename="' . $file . '"');
 			
 			readfile('gen/' . $file);
-			unlink('gen/' . $file);
 
 			break;
 		default:
