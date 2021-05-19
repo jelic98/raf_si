@@ -25,6 +25,12 @@
 		$sep = strpos($route, '/', 1);
 		$route = substr($route, 0, $sep === false ? strlen($route) : $sep);
 
+		if(strpos($route, '?') !== false) {
+			$tokens = explode('?', $route);
+			$route = $tokens[0];
+			parse_str($tokens[1], $_GET);
+		}
+		
 		return $route;
 	}
 

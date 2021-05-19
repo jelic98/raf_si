@@ -1,0 +1,10 @@
+[
+	{
+		"name": "hash",
+		"type": "string"
+	},
+	{
+		"name": "files",
+		"type": "array"
+	}
+]

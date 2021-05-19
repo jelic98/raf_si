@@ -6,16 +6,21 @@ import io.javalin.http.Handler;
 import okhttp3.*;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import rs.raf.generator.Generator;
-import rs.raf.util.Log;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Service {
 
     private static final String BROKER_URL = "http://127.0.0.1:9000/services";
+    private static final String STORAGE_URL = "http://127.0.0.1:9000/storage/files";
     private static final String SERVICE_NAME = "generator";
     private static final String SERVICE_HOST = "127.0.0.1";
-    private static final String SERVICE_PORT = "9006";
+    private static final String SERVICE_PORT = "9007";
 
     private final int port;
 
@@ -28,23 +33,17 @@ public class Service {
             registerService();
             startService();
         } catch (Exception e) {
-            Log.error(String.format("Cannot start service on port %s (%s)", port, e.getMessage()));
             e.printStackTrace();
         }
     }
 
     private void registerService() throws IOException {
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("name", SERVICE_NAME)
-                .addFormDataPart("host", SERVICE_HOST)
-                .addFormDataPart("port", SERVICE_PORT)
-                .build();
-        Request request = new Request.Builder()
-                .url(BROKER_URL)
-                .post(body)
-                .build();
-        new OkHttpClient().newCall(request).execute();
+        Map<String, String> form = new HashMap<>();
+        form.put("name", SERVICE_NAME);
+        form.put("host", SERVICE_HOST);
+        form.put("port", SERVICE_PORT);
+
+        makeRequest(BROKER_URL, form);
     }
 
     private void startService() {
@@ -52,9 +51,51 @@ public class Service {
         server.post("/generate", new Handler() {
             @Override
             public void handle(@NotNull Context ctx) {
-                ctx.result(new Generator().generate(StringEscapeUtils.unescapeHtml4(ctx.formParam("model"))));
+                JSONObject response = new JSONObject();
+
+                try {
+                    String model = StringEscapeUtils.unescapeHtml4(ctx.formParam("model"));
+
+                    JSONArray files = new Generator().generate(model);
+                    String hash = UUID.randomUUID().toString();
+                    storeFiles(hash, files);
+
+                    response.put("code", 200);
+                    response.put("hash", hash);
+                }catch(Exception e) {
+                    response.put("code", 500);
+                    response.put("message", e.getMessage());
+
+                    e.printStackTrace();
+                }
+
+                ctx.status(response.getInt("code"));
+                ctx.result(response.toString());
             }
         });
+    }
+
+    private void storeFiles(String hash, JSONArray files) throws IOException {
+        Map<String, String> form = new HashMap<>();
+        form.put("hash", hash);
+        form.put("files", files.toString());
+
+        makeRequest(STORAGE_URL, form);
+    }
+
+    private void makeRequest(String url, Map<String, String> form) throws IOException {
+        MultipartBody.Builder body = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (Map.Entry<String, String> e : form.entrySet()) {
+            body.addFormDataPart(e.getKey(), e.getValue());
+        }
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body.build())
+                .build();
+
+        new OkHttpClient().newCall(request).execute();
     }
 }
 

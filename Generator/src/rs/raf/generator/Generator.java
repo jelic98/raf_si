@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class Generator {
 
-     public String generate(String model) {
+    public JSONArray generate(String model) {
+        JSONArray files = new JSONArray();
+
         JSONObject details = new JSONObject(model).getJSONObject("details");
         JSONArray nodes = details.getJSONArray("nodes");
         JSONArray links = details.getJSONArray("links");
-
-        StringBuilder nodeBuild = new StringBuilder();
 
         Map<Integer, String> keys = new HashMap<>();
 
@@ -29,6 +29,7 @@ public class Generator {
             JSONObject node = nodes.getJSONObject(i);
             JSONArray methods = node.getJSONArray("methods");
             JSONArray properties = node.getJSONArray("properties");
+            String nodeName = node.getString("name");
             int nodeKey = node.getInt("key");
 
             for (int j = 0; j < links.length(); j++) {
@@ -42,7 +43,7 @@ public class Generator {
                         node.put("link", "extends");
                         node.put("parent", keys.get(to));
                     }
-                }else if (relationship.equals("aggregation") || relationship.equals("composition")) {
+                } else if (relationship.equals("aggregation") || relationship.equals("composition")) {
                     if (from == nodeKey) {
                         JSONObject property = new JSONObject();
                         property.put("name", "Link_" + j++);
@@ -70,17 +71,19 @@ public class Generator {
 
                     String parameterGen = getParameter(parameter);
 
-                    parameterBuild.append(parameterGen);
-
-                    if(k < parameter.length() - 1) {
+                    if (k > 0) {
                         parameterBuild.append(Template.Separator.PARAMETER);
                     }
+
+                    parameterBuild.append(parameterGen);
                 }
 
-                methodGen = methodGen
-                        .replace("{{parameters}}", parameterBuild.toString());
-                methodBuild.append(methodGen);
-                methodBuild.append(Template.Separator.METHOD);
+                if (j > 0) {
+                    methodBuild.append(Template.Separator.METHOD);
+                }
+
+                methodBuild.append(methodGen
+                        .replace("{{parameters}}", parameterBuild.toString()));
             }
 
             StringBuilder propertyBuild = new StringBuilder();
@@ -90,18 +93,22 @@ public class Generator {
 
                 String propertyGen = getProperty(property);
 
+                if (j > 0) {
+                    propertyBuild.append(Template.Separator.PROPERTY);
+                }
+
                 propertyBuild.append(propertyGen);
-                propertyBuild.append(Template.Separator.PROPERTY);
             }
 
-            nodeGen = nodeGen
+            JSONObject file = new JSONObject();
+            file.put("name", nodeName + ".java");
+            file.put("content", nodeGen
                     .replace("{{methods}}", methodBuild.toString())
-                    .replace("{{properties}}", propertyBuild.toString());
-            nodeBuild.append(nodeGen);
-            nodeBuild.append(Template.Separator.NODE);
+                    .replace("{{properties}}", propertyBuild.toString()));
+            files.put(file);
         }
 
-        return nodeBuild.toString();
+        return files;
     }
 
     private String getNode(JSONObject node) {
