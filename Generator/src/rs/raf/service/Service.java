@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Service {
 
     private static final String BROKER_URL = "http://127.0.0.1:9000/services";
-    private static final String STORAGE_URL = "http://127.0.0.1:9000/storage/files";
+    private static final String STORAGE_URL = "http://127.0.0.1:9006/files";
     private static final String SERVICE_NAME = "generator";
     private static final String SERVICE_HOST = "127.0.0.1";
     private static final String SERVICE_PORT = "9007";
