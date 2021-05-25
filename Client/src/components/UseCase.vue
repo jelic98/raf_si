@@ -9,13 +9,23 @@
                         <span>{{ state.display  }}</span>
                     </b-radio-button>
 
-                    <b-button style="margin-left: auto" type='is-light' @click='undo'>
+                    <b-tooltip label="Undo" style="margin-left: auto">
+                    <b-button  type='is-light' @click='undo'>
                         <span class="icon"><i class="fas fa-undo-alt"></i></span>
                     </b-button>
+                    </b-tooltip>
 
+                    <b-tooltip label="Redo">
                     <b-button style="margin-left: 10px" type='is-light' @click='redo'>
                         <span class="icon"><i class="fas fa-redo-alt"></i></span>
                     </b-button>
+                    </b-tooltip>
+
+                    <b-tooltip label="Revision history">
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                    </b-button>
+                    </b-tooltip>
 
                     <b-button style="margin-left: 10px" type='is-primary' @click='saveModel'>Save</b-button>
                 </b-field>

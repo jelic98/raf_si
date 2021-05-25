@@ -2,27 +2,68 @@
     <div>
         <Navbar></Navbar>
 
-        <div style="margin-left: 200px; margin-right: 200px; margin-top: 30px">
-             <p class="title">
+        <div style="margin-left: 200px; margin-right: 200px; margin-top: 50px; padding-top:35px">
+             <p class="title" syle="margin-bottom: 30px">
                  {{ model_name }}
+
+                 <b-dropdown class="is-pulled-right">
+            <template #trigger>
+                <b-button
+                    label="Active users"
+                    type="is-white"
+                    style="border: 1px solid lightgray"
+                    icon-left="users"
+                    icon-right="caret-down" />
+            </template>
+
+
+            <b-dropdown-item
+                v-for="(menu, index) in users"
+                :key="index"
+                :value="menu" aria-role="listitem">
+                <div class="media">
+                    <b-icon class="media-left" icon="user"></b-icon>
+                    <div class="media-content">
+                        <h3>{{menu}}</h3>
+                    </div>
+                </div>
+            </b-dropdown-item>
+        </b-dropdown>
              </p>
 
             <b-tabs>
                 <b-tab-item label="Model">
-                    <b-field v-if="user && (user.role === 'admin' || user.role === 'project_manager')">
+                    <b-field >
+                    <!--v-if="user && (user.role === 'admin' || user.role === 'project_manager')-->
                         <b-button @click="() => { this.form.parent_id = null; this.modal_open = true}" type="is-success">
                             <span class="icon"><i class="fas fa-plus"></i></span> <span>Add Root Requirement</span>
                         </b-button>
 
-                        <b-button style="margin-left: auto" type='is-light' @click='undo' :disabled="undo_stack.length < 1">
-                            <span class="icon"><i class="fas fa-undo-alt"></i></span>
-                        </b-button>
+                       <b-tooltip label="Undo" style="margin-left: auto">
+                    <b-button  type='is-light' @click='undo'>
+                        <span class="icon"><i class="fas fa-undo-alt"></i></span>
+                    </b-button>
+                    </b-tooltip>
 
-                        <b-button style="margin-left: 10px" type='is-light' @click='redo' :disabled="redo_stack.length < 1">
-                            <span class="icon"><i class="fas fa-redo-alt"></i></span>
-                        </b-button>
+                    <b-tooltip label="Redo">
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-redo-alt"></i></span>
+                    </b-button>
+                    </b-tooltip>
 
-                        <b-button style="margin-left: 10px" type='is-primary' @click="saveModel">Save</b-button>
+                    <b-tooltip label="Revision history">
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                    </b-button>
+                    </b-tooltip>
+
+                    <b-tooltip label="Transform to functional model">
+                    <b-button style="margin-left: 10px" type='is-light' @click='tranform'>
+                        <span class="icon"><i class="fas fa-exchange-alt"></i></span>
+                    </b-button>
+                    </b-tooltip>
+
+                    <b-button style="margin-left: 10px" type='is-primary' @click='saveModel'>Save</b-button>
                     </b-field>
 
 
@@ -312,6 +353,7 @@ export default {
     },
     data() {
         return {
+            users: [],
             modal_open: false,
             edit_modal_open: false,
             actor_modal_open: false,
@@ -560,6 +602,30 @@ export default {
             axios({
                 method: "put",
                 url: "/core/models",
+                data: body,
+                headers: { "Content-Type": "multipart/form-data" },
+            }).then((response) => {
+                this.load();
+            }).catch((error) => {});
+        },
+        transform: function() {
+
+        //TODO
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            let body = new FormData();
+
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('details', JSON.stringify(this.details));
+
+            axios({
+                method: "post",
+                url: "/transformer/transform",
                 data: body,
                 headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {

@@ -17,7 +17,7 @@ import "@fortawesome/fontawesome-free/css/fontawesome.css";
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
-Vue.use(Buefy);
+Vue.use(Buefy, {defaultIconPack: "fas"});
 
 let router = new VueRouter({
     mode: 'history',

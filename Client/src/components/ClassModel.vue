@@ -2,20 +2,65 @@
     <div>
         <Navbar></Navbar>
 
-        <div  v-if="user && (user.role === 'admin' || user.role === 'project_manager')" class="card">
-            <section class="card-content" style="padding: 50px">
+        <p class="title" style="padding-left: 50px; padding-top: 50px; padding-right: 50px">
+            {{ model_name }}
+
+            <b-dropdown class="is-pulled-right">
+            <template #trigger>
+                <b-button
+                    label="Active users"
+                    type="is-white"
+                    style="border: 1px solid lightgray"
+                    icon-left="users"
+                    icon-right="caret-down" />
+            </template>
+
+
+            <b-dropdown-item
+                v-for="(menu, index) in users"
+                :key="index"
+                :value="menu" aria-role="listitem">
+                <div class="media">
+                    <b-icon class="media-left" icon="user"></b-icon>
+                    <div class="media-content">
+                        <h3>{{menu}}</h3>
+                    </div>
+                </div>
+            </b-dropdown-item>
+        </b-dropdown>
+
+        </p>
+        <div   class="card">
+        <!--v-if="user && (user.role === 'admin' || user.role === 'project_manager')"-->
+            <section class="card-content" style="padding-left: 50px; padding-top: 25px; padding-right:50px; padding-bottom:50px">
                 <b-field>
                     <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state.value">
                         <span>{{ `${state.value.charAt(0).toUpperCase()}${state.value.slice(1)}`  }}</span>
                     </b-radio-button>
 
-                    <b-button style="margin-left: auto" type='is-light' @click='undo'>
+                    <b-tooltip label="Undo" style="margin-left: auto">
+                    <b-button  type='is-light' @click='undo'>
                         <span class="icon"><i class="fas fa-undo-alt"></i></span>
                     </b-button>
+                    </b-tooltip>
 
+                    <b-tooltip label="Redo">
                     <b-button style="margin-left: 10px" type='is-light' @click='redo'>
                         <span class="icon"><i class="fas fa-redo-alt"></i></span>
                     </b-button>
+                    </b-tooltip>
+
+                    <b-tooltip label="Revision history">
+                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                    </b-button>
+                    </b-tooltip>
+
+                    <b-tooltip label="Generate code">
+                    <b-button style="margin-left: 10px" type='is-light' @click='generate'>
+                        <span class="icon"><i class="fas fa-code"></i></span>
+                    </b-button>
+                    </b-tooltip>
 
                     <b-button style="margin-left: 10px" type='is-primary' @click='saveModel'>Save</b-button>
 
@@ -181,6 +226,7 @@ export default {
                 properties: [],
                 methods: []
             },
+            users: ["user1", "user2"],
             // properties: [
             //     {
             //         name: 'Property 1',
@@ -377,6 +423,48 @@ export default {
                 this.initDiagram();
             }).catch((error) => {
                 this.initDiagram();
+            });
+        },
+        generate: function(){
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+            let body = new FormData();
+            body.append('model', JSON.stringify({
+                '_id':{
+                    'project': this.project_name,
+                    'model': this.model_name 
+                },
+                'type': 'class',
+                'details': {
+                    nodes: this.nodes,
+                    links: this.links
+                }
+            }));
+             axios({
+                method: 'post',
+                url: '/generator/generate',
+                data: body,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then((response) => {
+                return axios.get('/storage/files', {
+                    params: {
+                        hash: response.data
+                    },
+                    reponseType: "blob"
+                });
+
+            }).then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'file.zip'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
             });
         },
         saveModel: function() {
