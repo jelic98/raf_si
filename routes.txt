@@ -39,4 +39,16 @@ GET core/models/all [project] - Fetch models
 
 Service: Validator
 
-POST validator/validate [model] - Validate model
+POST validator/validate [model] - Validate functional or class model
+
+Service: Generator
+
+POST generator/generate [model] - Generate source code from class model
+
+Service: Transformer
+
+POST transformer/transform [model] - Transform requirement model to functional model
+
+Service: Storage
+
+GET storage/files [hash] - Download generated source code
