@@ -65,7 +65,12 @@
 			405 => 'Method Not Allowed',
 			500 => 'Internal Server Error'
 		];
-		
+
+		if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+			http_response_code(200);
+			return;
+		}
+
 		$response = [];
 		$response['code'] = $code;
 		$response['message'] = is_null($message) ? $messages[$code] : $message;

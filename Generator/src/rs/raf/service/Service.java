@@ -1,6 +1,7 @@
 package rs.raf.service;
 
 import io.javalin.Javalin;
+import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import okhttp3.*;
@@ -46,7 +47,7 @@ public class Service {
     }
 
     private void startService() {
-        Javalin server = Javalin.create().start(port);
+        Javalin server = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(port);
         server.post("/generate", new Handler() {
             @Override
             public void handle(@NotNull Context ctx) {
