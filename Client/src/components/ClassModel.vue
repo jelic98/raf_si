@@ -5,7 +5,7 @@
         <p class="title" style="padding-left: 50px; padding-top: 50px; padding-right: 50px">
             {{ model_name }}
 
-            <b-dropdown class="is-pulled-right">
+            <b-dropdown class="is-pulled-right" @click='loadUsers'>
             <template #trigger>
                 <b-button
                     label="Active users"
@@ -51,7 +51,7 @@
                     </b-tooltip>
 
                     <b-tooltip label="Revision history">
-                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                    <b-button style="margin-left: 10px" type='is-light' @click='historyModal = true'>
                         <span class="icon"><i class="fas fa-clock"></i></span>
                     </b-button>
                     </b-tooltip>
@@ -196,6 +196,35 @@
             </div>
         </b-modal>
 
+         <b-modal :active.sync="historyModal" has-modal-card @close="modalClose">
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Revision history</p>
+                </header>
+
+                <section class="modal-card-body" style="padding: 40px">
+
+                    <b-table :data="revisions">
+                        <b-table-column label="id" v-slot="props">
+                            {{props.row.id}}
+                        </b-table-column>
+                        <b-table-column label="Date" v-slot="props">
+                            {{props.row.date}}
+                        </b-table-column>
+                        <b-table-column label="Author" v-slot="props">
+                            {{props.row.author}}
+                        </b-table-column>
+
+                        <b-table-column label=" " v-slot="props">
+                            <b-button @click="history(props.row.id)" class="is-small" type="is-primary">
+                                Restore
+                            </b-button>
+                        </b-table-column>
+                    </b-table>
+                </section>
+            </div>
+        </b-modal>
+
         <div id='diagramDiv' style='width: 100vw; height: 75vh;'></div>
     </div>
 </template>
@@ -226,7 +255,20 @@ export default {
                 properties: [],
                 methods: []
             },
+            historyModal: false,
             users: ["user1", "user2"],
+            revisions: [
+                {
+                    author: "user1",
+                    date:"1/1/1111",
+                    id:"1234"
+                },
+                {
+                    author: "user2",
+                    date:"1/1/1112",
+                    id:"1235"
+                }
+            ],
             // properties: [
             //     {
             //         name: 'Property 1',
@@ -379,7 +421,7 @@ export default {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
 
-            // TODO: Ne radi
+            // Ne radi
             // var axios = require('axios');
             // var FormData = require('form-data');
             // var data = new FormData();
@@ -424,6 +466,35 @@ export default {
             }).catch((error) => {
                 this.initDiagram();
             });
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.revisions = response.data
+                //saljes mi id, date i autora, vidi liniju 260
+
+            }).catch((error) => {
+            });
+
+        },
+        loadUsers: function(){
+
+            //TODO get request za aktivne usere
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.users = response.data
+                //saljes mi listu usernames
+
+            }).catch((error) => {
+            });
+
+
         },
         generate: function(){
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -453,7 +524,7 @@ export default {
             }).then((response) => {
                 return axios.get('/storage/files', {
                     params: {
-                        hash: response.data
+                        hash: response.data.hash
                     },
                     reponseType: "blob"
                 });
@@ -466,6 +537,11 @@ export default {
                 document.body.appendChild(link);
                 link.click();
             });
+        },
+        history: function(id) {
+            //TODO request kojim se podesava verzija, prosledju je joj se parametar id 
+
+            this.load()
         },
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -810,6 +886,26 @@ export default {
             //this.diagram.model.nodeDataArray = this.nodes;
             this.diagram.addDiagramListener('BackgroundSingleClicked', this.openModal);
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
+            this.diagram.addDiagramListener('ChangedSelection', this.selected);
+        },
+        selected: function(e){
+
+
+            if(e.diagram.selection.size<=0){
+                //TODO request kada se deselektuje cvor
+            }
+            else{
+                let selected = null;
+                e.diagram.selection.each((node) => {
+                if (!(node instanceof go.Node)) {
+                    return;
+                }
+
+                selected = node.data;
+            });
+            //TODO request za selektovan cvor, liniju iznad imas sve iz node-a, vidi sta ti treba za request pa promeni liniju
+            }
+            
         },
         modalClose: function() {
             this.name_error = false;

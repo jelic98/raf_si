@@ -6,7 +6,7 @@
              <p class="title" syle="margin-bottom: 30px">
                  {{ model_name }}
 
-                 <b-dropdown class="is-pulled-right">
+                 <b-dropdown class="is-pulled-right" @click='loadUsers'>
             <template #trigger>
                 <b-button
                     label="Active users"
@@ -52,13 +52,13 @@
                     </b-tooltip>
 
                     <b-tooltip label="Revision history">
-                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                    <b-button style="margin-left: 10px" type='is-light' @click='historyModal=true'>
                         <span class="icon"><i class="fas fa-clock"></i></span>
                     </b-button>
                     </b-tooltip>
 
                     <b-tooltip label="Transform to functional model">
-                    <b-button style="margin-left: 10px" type='is-light' @click='tranform'>
+                    <b-button style="margin-left: 10px" type='is-light' @click='transform'>
                         <span class="icon"><i class="fas fa-exchange-alt"></i></span>
                     </b-button>
                     </b-tooltip>
@@ -139,6 +139,35 @@
                 </b-tab-item>
             </b-tabs>
         </div>
+
+        <b-modal :active.sync="historyModal" has-modal-card>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Revision history</p>
+                </header>
+
+                <section class="modal-card-body" style="padding: 40px">
+
+                    <b-table :data="revisions">
+                        <b-table-column label="id" v-slot="props">
+                            {{props.row.id}}
+                        </b-table-column>
+                        <b-table-column label="Date" v-slot="props">
+                            {{props.row.date}}
+                        </b-table-column>
+                        <b-table-column label="Author" v-slot="props">
+                            {{props.row.author}}
+                        </b-table-column>
+
+                        <b-table-column label=" " v-slot="props">
+                            <b-button @click="history(props.row.id)" class="is-small" type="is-primary">
+                                Restore
+                            </b-button>
+                        </b-table-column>
+                    </b-table>
+                </section>
+            </div>
+        </b-modal>
 
         <b-modal :active.sync="modal_open" @close="closeModal">
             <div class="modal-card" style="width: auto">
@@ -353,6 +382,8 @@ export default {
     },
     data() {
         return {
+            revisions: [],
+            historyModal: false,
             users: [],
             modal_open: false,
             edit_modal_open: false,
@@ -419,6 +450,12 @@ export default {
                 }
             });
         },
+
+        history: function(id) {
+            //TODO request kojim se podesava verzija, prosledju je joj se parametar id 
+
+            this.load()
+        },
         load: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
@@ -441,6 +478,17 @@ export default {
                     this.$router.push('/projects');
                 }
             }).catch((error) => {});
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.revisions = response.data
+                //saljes mi id, date i autora
+
+            }).catch((error) => {
+            });
         },
         addRequirement: function() {
             if (this.parent_requirement) {
@@ -586,6 +634,24 @@ export default {
             this.undo_stack.push(JSON.parse(JSON.stringify(this.details)));
             this.redo_stack = [];
         },
+        loadUsers: function(){
+
+            //TODO get request za aktivne usere
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.users = response.data
+                //saljes mi listu usernames
+
+            }).catch((error) => {
+            });
+
+
+        },
+
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 

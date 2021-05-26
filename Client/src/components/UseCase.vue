@@ -2,7 +2,37 @@
     <div>
         <Navbar></Navbar>
 
-        <div v-if="user && (user.role === 'admin' || user.role === 'project_manager')" class="card">
+        <p class="title" style="padding-left: 50px; padding-top: 50px; padding-right: 50px">
+            {{ model_name }}
+
+            <b-dropdown class="is-pulled-right" @click = 'loadUsers'>
+            <template #trigger>
+                <b-button
+                    label="Active users"
+                    type="is-white"
+                    style="border: 1px solid lightgray"
+                    icon-left="users"
+                    icon-right="caret-down" />
+            </template>
+
+
+            <b-dropdown-item
+                v-for="(menu, index) in users"
+                :key="index"
+                :value="menu" aria-role="listitem">
+                <div class="media">
+                    <b-icon class="media-left" icon="user"></b-icon>
+                    <div class="media-content">
+                        <h3>{{menu}}</h3>
+                    </div>
+                </div>
+            </b-dropdown-item>
+        </b-dropdown>
+
+        </p>
+
+        <div class="card">
+        <!--  v-if="user && (user.role === 'admin' || user.role === 'project_manager')" -->
             <section class="card-content" style="padding: 50px">
                 <b-field>
                     <b-radio-button v-for="state in states" :key="state.value" v-model="active_state" :native-value="state">
@@ -22,7 +52,7 @@
                     </b-tooltip>
 
                     <b-tooltip label="Revision history">
-                    <b-button style="margin-left: 10px" type='is-light' @click='redo'>
+                    <b-button style="margin-left: 10px" type='is-light' @click='historyModal=true'>
                         <span class="icon"><i class="fas fa-clock"></i></span>
                     </b-button>
                     </b-tooltip>
@@ -35,6 +65,35 @@
                 </b-message>
             </section>
         </div>
+
+        <b-modal :active.sync="historyModal" has-modal-card>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Revision history</p>
+                </header>
+
+                <section class="modal-card-body" style="padding: 40px">
+
+                    <b-table :data="revisions">
+                        <b-table-column label="id" v-slot="props">
+                            {{props.row.id}}
+                        </b-table-column>
+                        <b-table-column label="Date" v-slot="props">
+                            {{props.row.date}}
+                        </b-table-column>
+                        <b-table-column label="Author" v-slot="props">
+                            {{props.row.author}}
+                        </b-table-column>
+
+                        <b-table-column label=" " v-slot="props">
+                            <b-button @click="history(props.row.id)" class="is-small" type="is-primary">
+                                Restore
+                            </b-button>
+                        </b-table-column>
+                    </b-table>
+                </section>
+            </div>
+        </b-modal>
 
         <div id='diagramDiv' style='width: 100vw; height: 75vh;'></div>
     </div>
@@ -67,6 +126,9 @@ export default {
             relation_type: null,
             diagram: null,
             user: [],
+            users: [],
+            historyModal: false,
+            revisions: [],
             states: [
                 {
                     display: 'Use Case',
@@ -146,6 +208,28 @@ export default {
         this.loadModel();
     },
     methods: {
+        loadUsers: function(){
+
+            //TODO get request za aktivne usere
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.users = response.data
+                //saljes mi listu usernames
+
+            }).catch((error) => {
+            });
+
+
+        },
+        history: function(id) {
+            //TODO request kojim se podesava verzija, prosledju je joj se parametar id 
+
+            this.load()
+        },
         undo: function() {
             this.diagram.undoManager.undo();
             //this.diagram.updateAllTargetBindings();
@@ -196,6 +280,19 @@ export default {
             }).catch((error) => {
                 this.initDiagram();
             });
+
+            //TODO load history 
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.revisions = response.data
+                //saljes mi id, date i autora
+
+            }).catch((error) => {
+            });
+
+            //TODO da li treba periodicno da se loaduje?
         },
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -394,8 +491,28 @@ export default {
             });
 
             this.diagram.addDiagramListener('BackgroundSingleClicked', this.createNode);
-
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
+            this.diagram.addDiagramListener('ChangedSelection', this.selected);
+        },
+        selected: function(e){
+
+            if(e.diagram.selection.size<=0){
+                //TODO request kada se deselektuje cvor
+                //console.log("deselektovano")
+            }
+            else{
+                let selected = null;
+                e.diagram.selection.each((node) => {
+                if (!(node instanceof go.Node)) {
+                    return;
+                }
+
+                selected = node.data;
+                //console.log(node.data)
+            });
+            //TODO request za selektovan cvor, liniju iznad imas sve iz node-a, vidi sta ti treba za request pa promeni liniju
+            }
+            
         },
         makePort: function(name, spot) {
             return $(go.Shape, 'Rectangle', {
