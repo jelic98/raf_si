@@ -61,7 +61,7 @@ public class ModelCtrl {
 
     @PostMapping("")
     public Model postModel(@ModelAttribute ModelReqDto dto){
-        Model m = new Model(dto);
+        Model m = new Model(dto.getName(), dto.getProject(), dto.getType(), dto.getDetails());
         modelDao.insert(m);
         return m;
     }
