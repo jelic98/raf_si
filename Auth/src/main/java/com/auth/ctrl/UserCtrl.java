@@ -42,6 +42,13 @@ public class UserCtrl {
         return userService.findByUsername(username);
     }
 
+    @GetMapping("/username")
+    public String getUsername(@RequestHeader String authorization) {
+        String token = authorization;
+        String username = tokenHandlerService.getUsernameByToken(token);
+        return username;
+    }
+
     @PutMapping("")
     public UserResDto updateElement(@RequestHeader String authorization, @ModelAttribute UserReqDto dto) {
         String token = authorization;
