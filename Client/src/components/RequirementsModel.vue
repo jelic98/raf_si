@@ -675,28 +675,34 @@ export default {
             }).catch((error) => {});
         },
         transform: function() {
-
-        //TODO
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
-
             let body = new FormData();
-
-            body.append('project', this.project_name);
-            body.append('model', this.model_name);
-            body.append('details', JSON.stringify(this.details));
-
-            axios({
-                method: "post",
-                url: "/transformer/transform",
+            body.append('model', JSON.stringify({
+                '_id':{
+                    'project': this.project_name,
+                    'model': this.model_name 
+                },
+                'type': 'requirements',
+				'details': JSON.stringify(this.details)
+            }));
+			axios({
+                method: 'post',
+                url: '/transformer/transform',
                 data: body,
-                headers: { "Content-Type": "multipart/form-data" },
+                headers: {
+					"Content-Type": "multipart/form-data"
+				}
             }).then((response) => {
-                this.load();
-            }).catch((error) => {});
+				const mName = response.data.name;
+				const mProject = response.data.project;
+				const mType = response.data.type;
+				const url = 'http://127.0.0.1:9004/projects/' + mProject + '/models/' + mName + '/' + mType;
+				window.open(url, '_blank');
+			});
         },
         addActor: function() {
             this.details.actors.push({
