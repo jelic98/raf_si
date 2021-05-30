@@ -16,7 +16,7 @@ import java.util.Map;
 public class Service {
 
     private static final String BROKER_URL = "http://127.0.0.1:9000/services";
-    private static final String CORE_URL = "http://127.0.0.1:9000/core/models";
+    private static final String CORE_URL = "http://127.0.0.1:9003/models";
     private static final String SERVICE_NAME = "transformer";
     private static final String SERVICE_HOST = "127.0.0.1";
 
