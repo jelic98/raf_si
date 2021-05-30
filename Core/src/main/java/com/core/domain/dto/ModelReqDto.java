@@ -13,5 +13,5 @@ public class ModelReqDto {
     private String name;
     private String project;
     private String type;
-    private Object elements;
+    private Object details;
 }
