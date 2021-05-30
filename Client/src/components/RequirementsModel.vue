@@ -593,6 +593,16 @@ export default {
             this.redo_stack = [];
         },
         deleteRequirement: function(requirement) {
+
+
+            //TODO dodaj request, cela ova metoda ide u if ako prodje, 
+            // u else ide ovo:
+            // this.$buefy.toast.open({
+            //         duration: 5000,
+            //         message: `Another user is editing this requirement`,
+            //         type: 'is-danger'
+            //     })
+
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
@@ -675,34 +685,28 @@ export default {
             }).catch((error) => {});
         },
         transform: function() {
+
+        //TODO
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
 
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
+
             let body = new FormData();
-            body.append('model', JSON.stringify({
-                '_id':{
-                    'project': this.project_name,
-                    'model': this.model_name 
-                },
-                'type': 'requirements',
-				'details': JSON.stringify(this.details)
-            }));
-			axios({
-                method: 'post',
-                url: '/transformer/transform',
+
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('details', JSON.stringify(this.details));
+
+            axios({
+                method: "post",
+                url: "/transformer/transform",
                 data: body,
-                headers: {
-					"Content-Type": "multipart/form-data"
-				}
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-				const mName = response.data.name;
-				const mProject = response.data.project;
-				const mType = response.data.type;
-				const url = 'http://127.0.0.1:9004/projects/' + mProject + '/models/' + mName + '/' + mType;
-				window.open(url, '_blank');
-			});
+                this.load();
+            }).catch((error) => {});
         },
         addActor: function() {
             this.details.actors.push({
@@ -730,19 +734,37 @@ export default {
             this.edit_modal_open = false;
         },
         openEditModal: function(requirement) {
-            this.editing_requirement = requirement;
 
-            this.form = {
-                parent_id: requirement.parent_id,
-                title: requirement.title,
-                description: requirement.description,
-                requirement_type: requirement.requirement_type,
-                priority: parseInt(requirement.priority),
-                risk: requirement.risk,
-                actor_name: requirement.actor_name
-            };
+            //TODO mozda nije error nego response.data = false ili slicno
+            axios.get('/', {
+               
+            }).then((response) => {
+                
+                this.editing_requirement = requirement;
+                this.form = {
+                    parent_id: requirement.parent_id,
+                    title: requirement.title,
+                    description: requirement.description,
+                    requirement_type: requirement.requirement_type,
+                    priority: parseInt(requirement.priority),
+                    risk: requirement.risk,
+                    actor_name: requirement.actor_name
+                };
 
-            this.edit_modal_open = true;
+                this.edit_modal_open = true;
+
+            }).catch((error) => {
+
+                this.$buefy.toast.open({
+                    duration: 5000,
+                    message: `Another user is editing this requirement`,
+                    type: 'is-danger'
+                })
+
+            });
+            
+
+            
         }
     }
 }
