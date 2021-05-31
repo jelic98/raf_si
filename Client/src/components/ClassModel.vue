@@ -269,40 +269,6 @@ export default {
                     id:"1235"
                 }
             ],
-            // properties: [
-            //     {
-            //         name: 'Property 1',
-            //         visibility: 'public',
-            //         type: 'string'
-            //     },
-            //     {
-            //         name: 'Property 2',
-            //         visibility: 'public',
-            //         type: 'int'
-            //     },
-            //     {
-            //         name: 'Property 3',
-            //         visibility: 'private',
-            //         type: 'string'
-            //     }
-            // ],
-            // methods: [
-            //     {
-            //         name: 'Method 1',
-            //         visibility: 'public',
-            //         type: 'string'
-            //     },
-            //     {
-            //         name: 'Method 2',
-            //         visibility: 'public',
-            //         type: 'int'
-            //     },
-            //     {
-            //         name: 'Method 3',
-            //         visibility: 'private',
-            //         type: 'string'
-            //     }
-            // ],
             modal_open: false,
             active_state: null,
             nodes: [],
@@ -323,7 +289,7 @@ export default {
                     display: 'Integer'
                 },
                 {
-                    value: 'string',
+                    value: 'String',
                     display: 'String'
                 }
             ],
@@ -420,31 +386,6 @@ export default {
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
-
-            // Ne radi
-            // var axios = require('axios');
-            // var FormData = require('form-data');
-            // var data = new FormData();
-            // data.append('name', 'asd');
-            // data.append('project', 'MojProjekat');
-            // data.append('details', 'a');
-            //
-            // var config = {
-            //     method: 'get',
-            //     url: '/core/models',
-            //     headers: {
-            //         'Authorization': 'bla bla bla'
-            //     },
-            //     data : data
-            // };
-            //
-            // axios(config)
-            //     .then(function (response) {
-            //         console.log(JSON.stringify(response.data));
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error);
-            //     });
 
             axios.get('/core/models', {
                 params: {
