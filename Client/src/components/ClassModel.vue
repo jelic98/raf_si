@@ -463,20 +463,19 @@ export default {
                     "Content-Type": "multipart/form-data"
                 }
             }).then((response) => {
-                return axios.get('/storage/files', {
-                    params: {
-                        hash: response.data.hash
-                    },
-                    reponseType: "blob"
-                });
-
-            }).then((response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'file.zip'); //or any other extension
-                document.body.appendChild(link);
-                link.click();
+				let hash = response.data.hash;
+				axios({
+					url: 'http://127.0.0.1:9000/storage/files?hash=' + hash,
+					method: 'GET',
+					responseType: 'blob',
+				}).then((response) => {
+					var link = document.createElement('a');
+					link.href = window.URL.createObjectURL(new Blob([response.data]));
+					link.download = 'gen.zip';
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+				});
             });
         },
         history: function(id) {
