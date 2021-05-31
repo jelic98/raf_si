@@ -44,22 +44,21 @@ public class Transformer {
     private void addRequirements(JSONArray requirements, JSONArray nodes, int key) {
         for (int i = 0; i < requirements.length(); i++) {
             JSONObject requirement = requirements.getJSONObject(i);
+			System.out.println(requirement.getString("title"));
 
             boolean functional = requirement.getString("requirement_type").equals("functional");
 
-            if (!functional) {
-                continue;
+            if (functional) {
+				JSONObject node = new JSONObject();
+				node.put("img", "https://cdn.discordapp.com/attachments/558738094795522049/839263865623019551/unknown.png");
+				node.put("category", "use_case");
+				node.put("key", key++);
+				node.put("text", requirement.getString("title"));
+            	
+				nodes.put(node);
             }
 
-            JSONObject node = new JSONObject();
-            node.put("img", "https://cdn.discordapp.com/attachments/558738094795522049/839263865623019551/unknown.png");
-            node.put("category", "use_case");
-            node.put("key", key++);
-            node.put("text", requirement.getString("title"));
-
             addRequirements(requirement.getJSONArray("children"), nodes, key);
-
-            nodes.put(node);
         }
     }
 }

@@ -506,7 +506,7 @@ export default {
             body.append('model', JSON.stringify({
                 '_id':{
                     'project': this.project_name,
-                    'model': this.model_name 
+                    'name': this.model_name 
                 },
                 'type': 'class',
                 'details': {
