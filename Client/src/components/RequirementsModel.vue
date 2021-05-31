@@ -6,9 +6,10 @@
              <p class="title" syle="margin-bottom: 30px">
                  {{ model_name }}
 
-                 <b-dropdown class="is-pulled-right" @click='loadUsers'>
+                 <b-dropdown class="is-pulled-right" >
             <template #trigger>
                 <b-button
+                @click='loadUsers'
                     label="Active users"
                     type="is-white"
                     style="border: 1px solid lightgray"
@@ -140,6 +141,60 @@
             </b-tabs>
         </div>
 
+        <b-modal :active.sync="viewModal" has-modal-card full-screen :can-cancel="false">
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{currentRevision}}</p>
+                    <button
+                            type="button"
+                            class="delete"
+                            @click="()=>{viewModal=false; historyModal=true;}"/>
+                </header>
+
+                <section class="modal-card-body" style="padding: 40px">
+                    <b-table
+                        :data="requirements_no_depth1">
+
+                        <b-table-column label="#" v-slot="props">
+                            {{ props.row.code }}
+                        </b-table-column>
+
+                        <b-table-column label="Title" v-slot="props">
+                            {{ props.row.title }}
+                        </b-table-column>
+
+                        <b-table-column label="Description" v-slot="props">
+                            {{ props.row.description }}
+                        </b-table-column>
+
+                        <b-table-column label="Type" v-slot="props">
+                            {{ props.row.requirement_type }}
+                        </b-table-column>
+
+                        <b-table-column label="Priority" v-slot="props">
+                            {{ props.row.priority }}
+                        </b-table-column>
+
+                        <b-table-column label="Risk" v-slot="props">
+                            {{ props.row.risk }}
+                        </b-table-column>
+
+                        <b-table-column label="Actor" v-slot="props">
+                            {{ props.row.actor_name }}
+                        </b-table-column>
+
+                    </b-table>
+                </section>
+                <footer class="modal-card-foot">
+                <div style="width:100%; text-align:center">
+                    <b-button @click="history(props.row.id)" type="is-primary">
+                                Restore
+                            </b-button>
+                </div>
+                </footer>
+            </div>
+        </b-modal>
+
         <b-modal :active.sync="historyModal" has-modal-card>
             <div class="modal-card">
                 <header class="modal-card-head">
@@ -160,8 +215,8 @@
                         </b-table-column>
 
                         <b-table-column label=" " v-slot="props">
-                            <b-button @click="history(props.row.id)" class="is-small" type="is-primary">
-                                Restore
+                            <b-button @click="view(props.row.id)" class="is-small" type="is-primary">
+                                View
                             </b-button>
                         </b-table-column>
                     </b-table>
@@ -382,8 +437,9 @@ export default {
     },
     data() {
         return {
-            revisions: [],
             historyModal: false,
+            currentRevision: null,
+            viewModal: false,
             users: [],
             modal_open: false,
             edit_modal_open: false,
@@ -403,6 +459,7 @@ export default {
             },
             model: {},
             requirements_no_depth: [],
+            requirements_no_depth1: [],
             details: {
                 requirements: [],
                 actors: []
@@ -413,8 +470,24 @@ export default {
                     actors: []
                 }
             ],
+            details1: {
+                requirements: [],
+                actors: []
+            },
             redo_stack: [],
-            user: null
+            user: null,
+            revisions: [
+                               {
+                    author: "user1",
+                    date:"1/1/1111",
+                    id:"1234"
+                },
+                {
+                    author: "user2",
+                    date:"1/1/1112",
+                    id:"1235"
+                }
+            ],
         };
     },
     mounted: function() {
@@ -423,6 +496,55 @@ export default {
         this.load();
     },
     methods: {
+        loadUsers: function () {
+
+                //TODO get request za aktivne usere
+                console.log("AAAAAAAAAAAAAAA");
+                //TODO load history
+                axios.get('/core/models/activeUsers', {
+                    params: {
+                        project: this.project_name,
+                        model: this.model_name
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    this.users = response.data;
+                    //saljes mi listu usernames
+                    console.log(this.users)
+                }).catch((error) => {
+                });
+
+
+            },
+        view: function(id){
+
+            
+
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            this.currentRevision=id;
+            //TODO ovaj id treba da se prosledi u request
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
+            }).then((response) => {
+                this.historyModal = false;
+                this.viewModal=true;
+                this.details1 = JSON.parse(response.data.details);
+                this.renderView('', this.details1.requirements);
+
+                
+            }).catch((error) => {
+
+            });
+
+        },
         undo: function() {
             this.redo_stack.push(this.undo_stack.pop());
             this.details = JSON.parse(JSON.stringify(this.undo_stack[this.undo_stack.length - 1]));
@@ -447,6 +569,19 @@ export default {
                 } else {
                     requirement.code = `${base}.${index + 1}`;
                     this.render(`${base}.${index + 1}`, requirement.children);
+                }
+            });
+        },
+        renderView: function(base, requirements) {
+            requirements.forEach((requirement, index) => {
+                this.requirements_no_depth1.push(requirement);
+
+                if (base == '') {
+                    requirement.code = `${index + 1}`;
+                    this.renderView(`${index + 1}`, requirement.children);
+                } else {
+                    requirement.code = `${base}.${index + 1}`;
+                    this.renderView(`${base}.${index + 1}`, requirement.children);
                 }
             });
         },
@@ -644,23 +779,6 @@ export default {
             this.undo_stack.push(JSON.parse(JSON.stringify(this.details)));
             this.redo_stack = [];
         },
-        loadUsers: function(){
-
-            //TODO get request za aktivne usere
-
-            //TODO load history 
-            axios.get('/', {
-               
-            }).then((response) => {
-                
-                this.users = response.data
-                //saljes mi listu usernames
-
-            }).catch((error) => {
-            });
-
-
-        },
 
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -685,32 +803,28 @@ export default {
             }).catch((error) => {});
         },
         transform: function() {
+
+        //TODO
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
             if (jwt) {
                 axios.defaults.headers.common['Authorization'] = jwt;
             }
+
             let body = new FormData();
-            body.append('model', JSON.stringify({
-                '_id':{
-                    'project': this.project_name,
-                    'name': this.model_name 
-                },
-                'type': 'requirements',
-				'details': this.details
-            }));
-			axios({
-                method: 'post',
-                url: '/transformer/transform',
+
+            body.append('project', this.project_name);
+            body.append('model', this.model_name);
+            body.append('details', JSON.stringify(this.details));
+
+            axios({
+                method: "post",
+                url: "/transformer/transform",
                 data: body,
-                headers: {
-					"Content-Type": "multipart/form-data"
-				}
+                headers: { "Content-Type": "multipart/form-data" },
             }).then((response) => {
-				const mName = response.data._id.name;
-				const mProject = response.data._id.project;
-				const url = 'http://127.0.0.1:9004/projects/' + mProject + '/models/' + mName + '/functional';
-				window.open(url, '_blank');
-			});
+                this.load();
+            }).catch((error) => {});
         },
         addActor: function() {
             this.details.actors.push({

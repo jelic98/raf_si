@@ -5,9 +5,10 @@
         <p class="title" style="padding-left: 50px; padding-top: 50px; padding-right: 50px">
             {{ model_name }}
 
-            <b-dropdown class="is-pulled-right" @click = 'loadUsers'>
+            <b-dropdown class="is-pulled-right" >
             <template #trigger>
                 <b-button
+                @click = 'loadUsers'
                     label="Active users"
                     type="is-white"
                     style="border: 1px solid lightgray"
@@ -84,14 +85,37 @@
                         <b-table-column label="Author" v-slot="props">
                             {{props.row.author}}
                         </b-table-column>
-
                         <b-table-column label=" " v-slot="props">
-                            <b-button @click="history(props.row.id)" class="is-small" type="is-primary">
-                                Restore
+                            <b-button @click="view(props.row.id)" class="is-small" type="is-primary">
+                                View
                             </b-button>
                         </b-table-column>
                     </b-table>
                 </section>
+            </div>
+        </b-modal>
+
+        <b-modal :active.sync="viewModal" has-modal-card full-screen :can-cancel="false">
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{currentRevision}}</p>
+                    <button
+                            type="button"
+                            class="delete"
+                            @click="()=>{viewModal=false; historyModal=true;}"/>
+                </header>
+
+                <section class="modal-card-body" style="padding: 40px">
+                    <div id="view_revision" style='width: 80vw; height: 60vh;'>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                <div style="width:100%; text-align:center">
+                    <b-button @click="history(props.row.id)" type="is-primary">
+                                Restore
+                            </b-button>
+                </div>
+                </footer>
             </div>
         </b-modal>
 
@@ -118,6 +142,8 @@ export default {
     },
     data: function() {
         return {
+            working: false,
+            currentRevision: null,
             node_key: 0,
             nodes: [],
             links: [],
@@ -125,10 +151,25 @@ export default {
             relation_active: false,
             relation_type: null,
             diagram: null,
+            viewDiagram: null,
+            viewNodes: [],
+            viewLinks: [],
             user: [],
             users: [],
             historyModal: false,
-            revisions: [],
+            viewModal: false,
+            revisions: [
+                               {
+                    author: "user1",
+                    date:"1/1/1111",
+                    id:"1234"
+                },
+                {
+                    author: "user2",
+                    date:"1/1/1112",
+                    id:"1235"
+                }
+            ],
             states: [
                 {
                     display: 'Use Case',
@@ -206,28 +247,189 @@ export default {
     mounted: function() {
         this.user = JSON.parse(sessionStorage.getItem('auth-user'));
         this.loadModel();
+        this.loadUsername();
     },
     methods: {
-        loadUsers: function(){
+        loadUsername: function () {
+                let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+                if (jwt) {
+                    axios.defaults.headers.common['Authorization'] = jwt;
+                }
+                axios.get('/auth/users/username', {}).then((response) => {
+                    this.username = response.data;
+                    console.log(this.username)
+                }).catch((error) => {
+                });
+            },
+        initView: function(){
+            
+            this.viewDiagram =
+                $(go.Diagram, "view_revision",
+                    {
+                        layout: $(go.TreeLayout, {
+                            angle: 90,
+                            path: go.TreeLayout.PathSource,
+                            setsPortSpot: false,
+                            setsChildPortSpot: false,
+                            isOngoing: false,
+                            arrangement: go.TreeLayout.ArrangementHorizontal
+                        })
+                    });
 
-            //TODO get request za aktivne usere
+            let actorTemplate =
+                $(go.Node, "Vertical",
+                    { locationSpot: go.Spot.Center },
+                    new go.Binding('location', 'loc').makeTwoWay(),
+                    $(go.Picture,
+                        { maxSize: new go.Size(60, 60) },
+                        new go.Binding("source", "img")),
+                    $(go.TextBlock,
+                        {
+                            editable: true,
+                            margin: new go.Margin(3, 0, 0, 0),
+                            maxSize: new go.Size(100, 30),
+                            isMultiline: false
+                        },
+                        new go.Binding("text", "text")),
+                    );
 
-            //TODO load history 
-            axios.get('/', {
-               
-            }).then((response) => {
+            let useCaseTemplate =
+                $(go.Node, "Auto",  // the whole node panel
+                    { locationSpot: go.Spot.Center },
+                    new go.Binding('location', 'loc').makeTwoWay(),
+                    // define the node's outer shape, which will surround the TextBlock
+                    $(go.Shape, "Ellipse",
+                        { fill: "rgba(245, 246, 247)", stroke: "black" }),
+                    $(go.TextBlock,
+                        { editable: true, font: "bold 11pt helvetica, bold arial, sans-serif", margin: 13 },
+                        new go.Binding("text", "text")),
+                    );
+
+            let textLinkTemplate =
+                $(go.Link, {
+                        routing: go.Link.Orthogonal
+                    },
+                    $(go.Shape),
+                    $(go.Panel, "Auto",
+                        $(go.Shape,
+                            {
+                                fill: $(go.Brush, "Radial", { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
+                                stroke: null
+                            }),
+                        $(go.TextBlock,  // the label text
+                            {
+                                textAlign: "center",
+                                font: "10pt helvetica, arial, sans-serif",
+                                stroke: "#555555",
+                                margin: 4
+                            },
+                            new go.Binding("text", "text"),
+                            new go.Binding("toArrow", "relationship", this.convertToArrow),
+                            new go.Binding("fill", "relationship", this.convertFill)
+                        ),
+                    ),
+                    $(go.Shape, {
+                            scale: 1.5
+                        },
+                        new go.Binding("toArrow", "relationship", this.convertToArrow),
+                        new go.Binding("fill", "relationship", this.convertFill))
+                );
+
+            let noTextLinkTemplate =
+                $(go.Link, {
+                        routing: go.Link.Orthogonal
+                    },
+                    $(go.Shape),
+                    $(go.Panel, "Auto",
+                        $(go.TextBlock,  // the label text
+                            {
+                                textAlign: "center",
+                                font: "10pt helvetica, arial, sans-serif",
+                                stroke: "#555555",
+                                margin: 4
+                            },
+                            new go.Binding("text", "text"),
+                            new go.Binding("toArrow", "relationship", this.convertToArrow),
+                            new go.Binding("fill", "relationship", this.convertFill)
+                        ),
+                    ),
+                    $(go.Shape, {
+                            scale: 1.5
+                        },
+                        new go.Binding("toArrow", "relationship", this.convertToArrow),
+                        new go.Binding("fill", "relationship", this.convertFill))
+                );
+
+            let nodeTemplateMap = new go.Map();
+            nodeTemplateMap.add('use_case', useCaseTemplate);
+            nodeTemplateMap.add('actor', actorTemplate);
+
+            let linkTemplateMap = new go.Map();
+            linkTemplateMap.add('text', textLinkTemplate);
+            linkTemplateMap.add('no_text', noTextLinkTemplate);
+
+            this.viewDiagram.nodeTemplateMap = nodeTemplateMap;
+            this.viewDiagram.linkTemplateMap = linkTemplateMap;
+
+            this.viewDiagram.model = new go.GraphLinksModel(this.viewNodes, this.viewLinks);
+
+        },
+        view: function(id){
+
+            this.currentRevision=id;
+
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
+            }
+
+            // axios.get('/core/models', {
+            //     params: {
+            //         project: this.project_name,
+            //         model: this.model_name
+            //     }
+            // }).then((response) => {
+                this.viewNodes = [];
+                this.viewLinks = [];
+
+                // if (response.data) {let detalji = JSON.parse(response.data.details);
+                //     this.viewNodes = detalji.nodes;
+                //     this.viewLinks = detalji.links;
+                // } 
+                this.viewNodes=this.nodes;
+                this.viewLinks = this.links;
+                this.historyModal = false;
+                this.viewModal = true;
+                setTimeout(()=>{this.initView()}, 250)
+                // this.initView();
                 
-                this.users = response.data
-                //saljes mi listu usernames
+            // }).catch((error) => {
+            //     // this.initDiagram();
+            // });
 
-            }).catch((error) => {
-            });
+        },
+        loadUsers: function () {
+
+                //TODO get request za aktivne usere //ne bi se reklo da radi
+                console.log("AAAAAAAAAAAAAAA");
+                axios.get('/core/models/activeUsers', {
+                    params: {
+                        project: this.project_name,
+                        model: this.model_name
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    this.users = response.data;
+                    //saljes mi listu usernames
+                    console.log(this.users)
+                }).catch((error) => {
+                });
 
 
         },
         history: function(id) {
-            //TODO request kojim se podesava verzija, prosledju je joj se parametar id 
-
+            //TODO request kojim se podesava verzija (restoruje se stara verzija i ona postaje najnovija), prosledju je joj se parametar id 
             this.load()
         },
         undo: function() {
@@ -272,6 +474,7 @@ export default {
                 if (response.data) {let detalji = JSON.parse(response.data.details);
                     this.nodes = detalji.nodes;
                     this.links = detalji.links;
+                    console.log(detalji)
                 } else {
                     this.$router.push('/projects');
                 }
@@ -292,7 +495,6 @@ export default {
             }).catch((error) => {
             });
 
-            //TODO da li treba periodicno da se loaduje?
         },
         saveModel: function() {
             let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
@@ -311,7 +513,7 @@ export default {
                     links: this.links
                 }
             }));
-
+            console.log(this.nodes)
             axios({
                 method: 'post',
                 url: '/validator/validate',
@@ -479,6 +681,8 @@ export default {
             this.diagram.nodeTemplateMap = nodeTemplateMap;
             this.diagram.linkTemplateMap = linkTemplateMap;
             this.diagram.model.undoManager.isEnabled = true;
+            console.log(this.nodes)
+            console.log(this.links)
 
             this.diagram.model = new go.GraphLinksModel(this.nodes, this.links);
 
@@ -494,24 +698,99 @@ export default {
             this.diagram.addDiagramListener('LinkDrawn', this.createLink);
             this.diagram.addDiagramListener('ChangedSelection', this.selected);
         },
-        selected: function(e){
+        refresh: function(){
 
-            if(e.diagram.selection.size<=0){
-                //TODO request kada se deselektuje cvor
-                //console.log("deselektovano")
+            let jwt = JSON.parse(sessionStorage.getItem('auth-token'));
+
+            if (jwt) {
+                axios.defaults.headers.common['Authorization'] = jwt;
             }
-            else{
-                let selected = null;
-                e.diagram.selection.each((node) => {
-                if (!(node instanceof go.Node)) {
-                    return;
+
+            axios.get('/core/models', {
+                params: {
+                    project: this.project_name,
+                    model: this.model_name
+                }
+            }).then((response) => {
+                // this.nodes = [];
+                // this.links = [];
+
+                if (response.data) {let detalji = JSON.parse(response.data.details);
+                    // this.nodes = detalji.nodes;
+                    // this.links = detalji.links;
+                    console.log(detalji)
+                    
+                    let nodes = []
+                    let links = []
+                    detalji.nodes.forEach((node)=>{
+                        nodes.push({
+                            category: node.category,
+                            img: node.img,
+                            text: node.text,
+                            editing: node.editing,
+                            key: node.key,
+                            loc: new go.Point(node.loc.x, node.loc.y)
+                        })
+                    })
+                    this.diagram.clear();
+                     this.diagram.model.addNodeDataCollection(nodes);
+                     this.diagram.model.addLinkDataCollection(detalji.links);
+                } else {
+                    this.$router.push('/projects');
                 }
 
-                selected = node.data;
-                //console.log(node.data)
+                // this.initDiagram();
+            }).catch((error) => {
+                // this.initDiagram();
             });
-            //TODO request za selektovan cvor, liniju iznad imas sve iz node-a, vidi sta ti treba za request pa promeni liniju
-            }
+
+        },
+        selected: function(e){
+
+            if (e.diagram.selection.size <= 0) {
+                    console.log("deselektovano");
+                    axios.get('/core/models/deselect', {
+                        params: {
+                            project: this.project_name,
+                            model: this.model_name,
+                            user: this.username
+                        }
+                    });
+                    if(this.working){
+                        this.working =false
+                    }
+                    else{
+                        this.refresh();
+                    }
+                    
+                } else {
+                    e.diagram.selection.each((node) => {
+                        if (!(node instanceof go.Node)) {
+                            return;
+                        }
+                        // this.selectedNodes.push(node.data);
+                        axios.get('/core/models/select', {
+                            params: {
+                                project: this.project_name,
+                                model: this.model_name,
+                                nodeId: node.data.key,
+                                user: this.username
+                            }
+                        }).then((response) => {
+                            console.log(response.data);
+                            if (!response.data) {
+                                e.diagram.clearSelection();
+                            } else {
+                                console.log("loading Period");
+                                // this.loadPeriodically();
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+
+                    });
+
+                }
             
         },
         makePort: function(name, spot) {
@@ -530,8 +809,9 @@ export default {
             });
         },
         createNode: function(e) {
-            if (this.active_state.value === 'use_case' || this.active_state.value === 'actor') {
-
+            if (this.active_state && (this.active_state.value === 'use_case' || this.active_state.value === 'actor')) {
+                this.working=true;
+                // setTimeout(()=>{this.working=false}, 1000)
                 this.diagram.commit((d) => {
                     d.model.addNodeData({
                         key: this.node_key++,
@@ -545,6 +825,7 @@ export default {
             }
         },
         createLink: function(e) {
+            this.working=true;
             this.diagram.model.setDataProperty(e.subject.data, 'category', this.active_state.category);
             this.diagram.model.setDataProperty(e.subject.data, 'text', this.active_state.text);
             this.diagram.model.setDataProperty(e.subject.data, 'relationship', this.active_state.value);
