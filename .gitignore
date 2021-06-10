@@ -3,6 +3,7 @@
 .gradle/
 logs/
 */secret/
+package-lock.json
 token.txt
 mvnw.cmd
 mvnw
