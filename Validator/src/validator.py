@@ -59,7 +59,7 @@ class Validator:
                         if l['relationship'] == 'generalization':
                             n.parent.append(keys[l['to']])
                         elif l['relationship'] == 'extends':
-                            n.exnteds.append(keys[l['to']])
+                            n.extends.append(keys[l['to']])
                         elif l['relationship'] == 'includes':
                             n.includes.append(keys[l['to']])
                         elif l['relationship'] == 'associations':

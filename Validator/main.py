@@ -59,7 +59,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 response = {"code": 405, "message": "Not Found"}
                 self.wfile.write(bytes(json.dumps(response), 'utf8'))
-        except Exception as a:
+        except Exception as e:
             print(e)
 
     def do_OPTIONS(self):
@@ -70,7 +70,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Methods', '*')
             self.send_header('Content-Type', '*')
             self.end_headers()
-        except Exception as a:
+        except Exception as e:
             print(e)
 
 def _main():
