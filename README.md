@@ -4,7 +4,7 @@
 
 ## Uvod
 
-Ovim dokumentom je prikazana, analizirana i definisana potreba za Project1. Dokument se fokusira se na potrebe zainteresovanih strana i opisuje detalje o tome kako Project1 ispunjava potrebe.
+Ovim dokumentom je prikazana, analizirana i definisana potreba za Project1. Dokument se fokusira se na potrebe zainteresovanih strana i opisuje detalje o tome kako Project1 ispunjava potrebe. Specifikacija projekta se nalazi [ovde](https://github.com/jelic98/raf_si/blob/main/statement.pdf).
 
 ### Svrha
 
